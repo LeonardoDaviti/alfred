@@ -1,0 +1,14 @@
+[
+  {"id": "p2x_focus_session_01", "query": "start a focus session", "expected_route": "composite", "expected_pattern_id": "composite_focus_session", "gold_command_contains": [], "domain": "scenes", "notes": "focus+clock+media+settings"},
+  {"id": "p2x_focus_session_02", "query": "pomodoro time, begin a 25 minute deep work session", "expected_route": "composite", "expected_pattern_id": "composite_focus_session", "gold_command_contains": [], "domain": "scenes"},
+  {"id": "p2x_morning_alarm_01", "query": "set up my morning alarm routine", "expected_route": "composite", "expected_pattern_id": "composite_morning_alarm", "gold_command_contains": [], "domain": "scenes", "notes": "clock+focus+media"},
+  {"id": "p2x_morning_alarm_02", "query": "morning routine", "expected_route": "composite", "expected_pattern_id": "composite_morning_alarm", "gold_command_contains": [], "domain": "scenes"},
+  {"id": "p2x_goodnight_01", "query": "goodnight", "expected_route": "composite", "expected_pattern_id": "composite_goodnight_v2", "gold_command_contains": [], "domain": "scenes", "notes": "ha+clock+focus+media"},
+  {"id": "p2x_goodnight_02", "query": "I'm going to bed", "expected_route": "composite", "expected_pattern_id": "composite_goodnight_v2", "gold_command_contains": [], "domain": "scenes"},
+  {"id": "p2x_call_contact_01", "query": "look up John in contacts and call him", "expected_route": "composite", "expected_pattern_id": "composite_call_contact", "gold_command_contains": [], "domain": "call", "notes": "contacts+call, composite_slot name"},
+  {"id": "p2x_call_contact_02", "query": "find Mom in my contacts and dial her", "expected_route": "composite", "expected_pattern_id": "composite_call_contact", "gold_command_contains": [], "domain": "call"},
+  {"id": "p2x_leave_home_01", "query": "I'm leaving home", "expected_route": "composite", "expected_pattern_id": "composite_leave_home", "gold_command_contains": [], "domain": "scenes", "notes": "ha+settings+media"},
+  {"id": "p2x_leave_home_02", "query": "heading out, going out", "expected_route": "composite", "expected_pattern_id": "composite_leave_home", "gold_command_contains": [], "domain": "scenes"},
+  {"id": "p2x_dl_play_01", "query": "download the audio from this and play it https://youtu.be/abc123", "expected_route": "composite", "expected_pattern_id": "composite_download_and_play", "gold_command_contains": [], "domain": "media", "notes": "youtube+media, composite_slot url"},
+  {"id": "p2x_dl_play_02", "query": "grab this track and play it https://youtu.be/abc123", "expected_route": "composite", "expected_pattern_id": "composite_download_and_play", "gold_command_contains": [], "domain": "media"}
+]

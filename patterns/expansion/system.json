@@ -1,0 +1,244 @@
+[
+  {
+    "id": "atom_sys_volume_up",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "system",
+      "action": "volume_up",
+      "required_tools": ["bash"],
+      "required_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(turn up|volume up|louder|raise|increase|crank up)\\b)(?=.*\\b(volume|sound|audio|speakers?)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["turn up", "volume up", "louder", "raise", "increase", "crank up"],
+          "objects": ["volume", "sound", "audio"],
+          "skill_terms": ["volume", "sound", "audio", "speaker", "speakers"]
+        }
+      }
+    ],
+    "slots": [],
+    "steps": [
+      {"tool": "bash", "args_template": "sys volume up", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Mock skill — binding-only (command correctness). Sibling of volume down/mute/set — the direction subcommand is the discriminator."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Turn the system volume up.",
+      "example_queries": ["turn the volume up", "make it louder", "raise the system sound"]
+    }
+  },
+  {
+    "id": "atom_sys_volume_down",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "system",
+      "action": "volume_down",
+      "required_tools": ["bash"],
+      "required_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(turn down|volume down|quieter|lower|decrease|reduce)\\b)(?=.*\\b(volume|sound|audio|speakers?)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["turn down", "volume down", "quieter", "lower", "decrease", "reduce"],
+          "objects": ["volume", "sound", "audio"],
+          "skill_terms": ["volume", "sound", "audio", "speaker", "speakers"]
+        }
+      }
+    ],
+    "slots": [],
+    "steps": [
+      {"tool": "bash", "args_template": "sys volume down", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of volume up — opposite direction. Subcommand discriminates."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Turn the system volume down.",
+      "example_queries": ["turn the volume down", "make it quieter", "lower the system sound"]
+    }
+  },
+  {
+    "id": "atom_sys_volume_mute",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "system",
+      "action": "volume_mute",
+      "required_tools": ["bash"],
+      "required_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(mute|silence|unmute|toggle mute)\\b)(?=.*\\b(volume|sound|audio|speakers?|it|everything)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["mute", "silence", "unmute", "toggle mute"],
+          "objects": ["volume", "sound", "audio"],
+          "skill_terms": ["volume", "sound", "audio", "speaker", "speakers", "mute"]
+        }
+      }
+    ],
+    "slots": [],
+    "steps": [
+      {"tool": "bash", "args_template": "sys volume mute", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Third sibling in the volume family — mute toggle. Subcommand discriminates."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Mute the system audio.",
+      "example_queries": ["mute the sound", "silence the audio", "mute everything"]
+    }
+  },
+  {
+    "id": "atom_sys_volume_set",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "system",
+      "action": "volume_set",
+      "required_tools": ["bash"],
+      "required_slots": ["level"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(set|put|change|adjust)\\b)(?=.*\\b(volume|sound|audio)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["set", "put", "change", "adjust"],
+          "objects": ["volume", "sound", "audio"],
+          "skill_terms": ["volume", "sound", "audio"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "level", "type": "number", "required": true, "description": "Volume level 0-100"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "sys volume set --level {{level}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Hard sibling of volume up/down: same 'volume' subcommand but carries an explicit --level — the level slot is the discriminator, not the direction."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Set the system volume to a specific level.",
+      "example_queries": ["set the volume to 40", "put the sound at 75", "change the volume to 20 percent"]
+    }
+  },
+  {
+    "id": "atom_sys_brightness_set",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "system",
+      "action": "brightness_set",
+      "required_tools": ["bash"],
+      "required_slots": ["level"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(set|dim|brighten|lower|raise|adjust)\\b)(?=.*\\b(brightness|screen|display|backlight)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["set", "dim", "brighten", "lower", "raise", "adjust"],
+          "objects": ["brightness", "screen", "display"],
+          "skill_terms": ["brightness", "screen", "display", "backlight"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "level", "type": "number", "required": true, "description": "Brightness level 0-100"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "sys brightness set --level {{level}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Parameterised write — distinct 'brightness' subcommand, separate from the volume family."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Set the screen brightness to a specific level.",
+      "example_queries": ["set the screen brightness to 60", "dim the display to 30", "brighten the screen to 90"]
+    }
+  },
+  {
+    "id": "atom_sys_lock",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "system",
+      "action": "lock_screen",
+      "required_tools": ["bash"],
+      "required_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(lock|secure)\\b)(?=.*\\b(screen|computer|laptop|machine|session|desktop)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["lock", "secure"],
+          "objects": ["screen", "computer", "session"],
+          "skill_terms": ["screen", "computer", "laptop", "machine", "session", "desktop"]
+        }
+      }
+    ],
+    "slots": [],
+    "steps": [
+      {"tool": "bash", "args_template": "sys lock", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Power/session subcommand — sibling of suspend. Subcommand discriminates."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Lock the screen.",
+      "example_queries": ["lock the screen", "lock my computer", "secure the session"]
+    }
+  },
+  {
+    "id": "atom_sys_suspend",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "system",
+      "action": "suspend",
+      "required_tools": ["bash"],
+      "required_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(suspend|sleep|hibernate|standby)\\b)(?=.*\\b(computer|laptop|machine|system|it|pc)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["suspend", "sleep", "hibernate", "standby"],
+          "objects": ["computer", "laptop", "machine", "system"],
+          "skill_terms": ["computer", "laptop", "machine", "system", "pc"]
+        }
+      }
+    ],
+    "slots": [],
+    "steps": [
+      {"tool": "bash", "args_template": "sys suspend", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of lock — power-state subcommand. Subcommand discriminates."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Suspend (sleep) the computer.",
+      "example_queries": ["suspend the computer", "put the laptop to sleep", "hibernate the machine"]
+    }
+  }
+]

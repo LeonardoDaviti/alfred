@@ -1,0 +1,241 @@
+% A.L.F.R.E.D. — AICT2026 4-page paper bibliography
+% Final 15-paper cite list per docs/paper/deep_lit_survey.md §5 (2026-05-28).
+% All arXiv IDs verified by the deep-research agent fetching abstract pages.
+% IEEE conference style; refs ordered by narrative position in the paper.
+
+% ============================================================================
+% §1 Motivation — the SLM thesis
+% ============================================================================
+@article{belcak2025slm,
+  title   = {Small Language Models are the Future of Agentic AI},
+  author  = {Belcak, Peter and Heinrich, Greg and Diao, Shizhe and Fu, Yonggan and Dong, Xin and Muralidharan, Saurav and Lin, Yingyan Celine and Molchanov, Pavlo},
+  journal = {arXiv preprint arXiv:2506.02153},
+  year    = {2025},
+  note    = {NVIDIA Research position paper; thesis anchor in introduction}
+}
+
+% ============================================================================
+% §2 Related Work — agent reasoning & tool use
+% ============================================================================
+@inproceedings{yao2022react,
+  title     = {ReAct: Synergizing Reasoning and Acting in Language Models},
+  author    = {Yao, Shunyu and Zhao, Jeffrey and Yu, Dian and Du, Nan and Shafran, Izhak and Narasimhan, Karthik and Cao, Yuan},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2023},
+  note      = {arXiv:2210.03629; canonical loop the Thinker tier implements}
+}
+
+@inproceedings{schick2023toolformer,
+  title     = {Toolformer: Language Models Can Teach Themselves to Use Tools},
+  author    = {Schick, Timo and Dwivedi-Yu, Jane and Dess{\`i}, Roberto and Raileanu, Roberta and Lomeli, Maria and Zettlemoyer, Luke and Cancedda, Nicola and Scialom, Thomas},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2023},
+  note      = {arXiv:2302.04761}
+}
+
+@inproceedings{patil2023gorilla,
+  title     = {Gorilla: Large Language Model Connected with Massive APIs},
+  author    = {Patil, Shishir G. and Zhang, Tianjun and Wang, Xin and Gonzalez, Joseph E.},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2024},
+  note      = {arXiv:2305.15334}
+}
+
+@inproceedings{erdogan2024tinyagent,
+  title     = {TinyAgent: Function Calling at the Edge},
+  author    = {Erdogan, Lutfi Eren and Lee, Nicholas and Jha, Siddharth and Kim, Sehoon and Tabrizi, Ryan and Moon, Suhong and Hooper, Coleman and Anumanchipalli, Gopala and Keutzer, Kurt and Gholami, Amir},
+  booktitle = {EMNLP 2024 System Demonstrations},
+  year      = {2024},
+  note      = {arXiv:2409.00608; quantitative anchor for SLM tool-use on-device}
+}
+
+% ============================================================================
+% §2 Related Work — routing and cascading
+% ============================================================================
+@inproceedings{ong2024routellm,
+  title     = {RouteLLM: Learning to Route LLMs with Preference Data},
+  author    = {Ong, Isaac and Almahairi, Amjad and Wu, Vincent and Chiang, Wei-Lin and Wu, Tianhao and Gonzalez, Joseph E. and Kadous, M. Waleed and Stoica, Ion},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2025},
+  note      = {arXiv:2406.18665; closest routing predecessor}
+}
+
+@article{dekoninck2024unifiedrouting,
+  title   = {A Unified Approach to Routing and Cascading for {LLMs}},
+  author  = {Dekoninck, Jasper and Fischer, Marc and Vechev, Martin},
+  journal = {arXiv preprint arXiv:2410.10347},
+  year    = {2024},
+  note    = {Positions A.L.F.R.E.D.'s three-tier path as a structured cascade}
+}
+
+% ============================================================================
+% §2 Related Work — skill memory & procedural distillation (NEAREST NEIGHBOURS)
+% ============================================================================
+@article{wang2023voyager,
+  title   = {Voyager: An Open-Ended Embodied Agent with Large Language Models},
+  author  = {Wang, Guanzhi and Xie, Yuqi and Jiang, Yunfan and Mandlekar, Ajay and Xiao, Chaowei and Zhu, Yuke and Fan, Linxi and Anandkumar, Anima},
+  journal = {Transactions on Machine Learning Research (TMLR)},
+  year    = {2024},
+  note    = {arXiv:2305.16291; original skill-library framing for LLM agents}
+}
+
+@inproceedings{shinn2023reflexion,
+  title     = {Reflexion: Language Agents with Verbal Reinforcement Learning},
+  author    = {Shinn, Noah and Cassano, Federico and Berman, Edward and Gopinath, Ashwin and Narasimhan, Karthik and Yao, Shunyu},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2023},
+  note      = {arXiv:2303.11366; name-source for our cheap-path Reflexer (disambiguate explicitly in paper)}
+}
+
+@article{fang2025memp,
+  title   = {Memp: Exploring Agent Procedural Memory},
+  author  = {Fang, Runnan and Wang, Xiaobin and Liang, Yuan and Qiao, Shuofei and Wu, Jialong and Xi, Zekun and Zhang, Ningyu and Jiang, Yong and Xie, Pengjun and Huang, Fei},
+  journal = {arXiv preprint arXiv:2508.06433},
+  year    = {2025},
+  note    = {Closest "trajectory-to-skill distillation" neighbour; A.L.F.R.E.D. patterns are Memp's script abstractions compiled into deterministic templates}
+}
+
+@article{zhou2025memento,
+  title   = {Memento: Fine-tuning {LLM} Agents without Fine-tuning {LLMs}},
+  author  = {Zhou, Huichi and Chen, Yihang and Guo, Siyuan and Yan, Xue and Lee, Kin Hei and Wang, Zihan and Lee, Ka Yiu and Zhang, Guchun and Shao, Kun and Yang, Linyi and Wang, Jun},
+  journal = {arXiv preprint arXiv:2508.16153},
+  year    = {2025},
+  note    = {Foundation of the Memento line; non-parametric CBR over a growing Case Bank. CORRECTED arXiv ID (not 2408.11816)}
+}
+
+@article{zhou2026mementoskills,
+  title   = {Memento-Skills: Let Agents Design Agents},
+  author  = {Zhou, Huichi and Guo, Siyuan and Liu, Anjie and Yu, Zhongwei and Gong, Ziqin and Zhao, Bowen and Chen, Zhixun and Zhang, Menglong and Chen, Yihang and Li, Jinsong and Yang, Runyu and Liu, Qiangbin and Yu, Xinlei and Zhou, Jianmin and Wang, Na and Sun, Chunyang and Wang, Jun},
+  journal = {arXiv preprint arXiv:2603.18743},
+  year    = {2026},
+  note    = {NEAREST PUBLISHED NEIGHBOUR. Learned skill-router + Read-Write Reflective Learning over markdown skills. Position A.L.F.R.E.D.'s feature-engineered router and compiled patterns against their neural router and free-form skills}
+}
+
+% ============================================================================
+% §3-4 Methodology — programmatic prompt discipline
+% ============================================================================
+@inproceedings{khattab2024dspy,
+  title     = {DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines},
+  author    = {Khattab, Omar and Singhvi, Arnav and Maheshwari, Paridhi and Zhang, Zhiyuan and Santhanam, Keshav and Vardhamanan, Sri and Haq, Saiful and Sharma, Ashutosh and Joshi, Thomas T. and Moazam, Hanna and Miller, Heather and Zaharia, Matei and Potts, Christopher},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024},
+  note      = {arXiv:2310.03714; programmatic-prompt discipline analogue}
+}
+
+% ============================================================================
+% §5 Evaluation — benchmark comparisons
+% ============================================================================
+@inproceedings{yoran2024assistantbench,
+  title     = {AssistantBench: Can Web Agents Solve Realistic and Time-Consuming Tasks?},
+  author    = {Yoran, Ori and Amouyal, Samuel Joseph and Malaviya, Chaitanya and Bogin, Ben and Press, Ofir and Berant, Jonathan},
+  booktitle = {Empirical Methods in Natural Language Processing (EMNLP)},
+  year      = {2024},
+  note      = {arXiv:2407.15711; positions A.L.F.R.E.D.'s 53-task suite in the realistic-assistant benchmark line}
+}
+
+@inproceedings{liu2023agentbench,
+  title     = {AgentBench: Evaluating {LLMs} as Agents},
+  author    = {Liu, Xiao and Yu, Hao and Zhang, Hanchen and Xu, Yifan and Lei, Xuanyu and Lai, Hanyu and Gu, Yu and Ding, Hangliang and Men, Kaiwen and Yang, Kejuan and Zhang, Shudan and Deng, Xiang and Zeng, Aohan and Du, Zhengxiao and Zhang, Chenhui and Shen, Sheng and Zhang, Tianjun and Su, Yu and Sun, Huan and Huang, Minlie and Dong, Yuxiao and Tang, Jie},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024},
+  note      = {arXiv:2308.03688; standard agent-evaluation pattern adopted}
+}
+
+% ============================================================================
+% Optional 16th — industry artefact (cite only if page space permits)
+% ============================================================================
+@misc{anthropic2025skills,
+  title        = {Equipping Agents for the Real World with {Agent} {Skills}},
+  author       = {{Anthropic}},
+  howpublished = {\url{https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills}},
+  year         = {2025},
+  month        = oct,
+  note         = {Justifies the SKILL.md design choice; A.L.F.R.E.D. is structurally compatible with the open agentskills.io standard}
+}
+
+% ============================================================================
+% Mentioned-once references (alternative path, not closely compared)
+% ============================================================================
+% ============================================================================
+% Models used in experiments
+% ============================================================================
+@misc{ministral2025,
+  title        = {Ministral-3-3B-Instruct-2512},
+  author       = {{Mistral AI}},
+  howpublished = {\url{https://huggingface.co/mistralai/Ministral-3-3B-Instruct-2512}},
+  year         = {2025},
+  note         = {Instruction-tuned (non-reasoning) 3B model used as the Reflexer tier}
+}
+
+@misc{qwen3_6,
+  title        = {Qwen3.6-35B-A3B},
+  author       = {{Qwen Team}},
+  howpublished = {\url{https://huggingface.co/Qwen/Qwen3.6-35B-A3B}},
+  year         = {2026},
+  note         = {Mixture-of-experts model (35B total, 3B active) used as the Thinker tier}
+}
+
+% ============================================================================
+% Naming rationale — biological reflex arc and dual-process cognition
+% ============================================================================
+@book{sherrington1906,
+  title     = {The Integrative Action of the Nervous System},
+  author    = {Sherrington, Charles S.},
+  year      = {1906},
+  publisher = {Yale University Press},
+  note      = {Classic formulation of the reflex arc: a stimulus-driven motor response routed without higher cortical deliberation}
+}
+
+@book{kahneman2011,
+  title     = {Thinking, Fast and Slow},
+  author    = {Kahneman, Daniel},
+  year      = {2011},
+  publisher = {Farrar, Straus and Giroux},
+  note      = {Dual-process account: System 1 (fast, automatic) vs System 2 (slow, deliberate); maps to Reflexer vs Thinker}
+}
+
+@article{wang2026openclawrl,
+  title   = {OpenClaw-RL: Train Any Agent Simply by Talking},
+  author  = {Wang, Yinjie and Chen, Xuyang and Jin, Xiaolong and Wang, Mengdi and Yang, Ling},
+  journal = {arXiv preprint arXiv:2603.10165},
+  year    = {2026},
+  note    = {Async on-policy RL alternative to A.L.F.R.E.D.'s non-parametric pattern compilation. Cite once as the "weight-level personalisation" path we explicitly did not take}
+}
+
+% ============================================================================
+% Added for thesis: classical distillation + software-design principle
+% ============================================================================
+@article{hinton2015distilling,
+  title   = {Distilling the Knowledge in a Neural Network},
+  author  = {Hinton, Geoffrey and Vinyals, Oriol and Dean, Jeff},
+  journal = {arXiv preprint arXiv:1503.02531},
+  year    = {2015},
+  note    = {Foundational knowledge-distillation paper; A.L.F.R.E.D. distills into a symbolic artifact instead of student weights}
+}
+
+@book{ousterhout2018philosophy,
+  title     = {A Philosophy of Software Design},
+  author    = {Ousterhout, John},
+  year      = {2018},
+  publisher = {Yaknyam Press},
+  note      = {Deep-module principle underpinning the skill design}
+}
+
+% ============================================================================
+% Serving / runtime stack
+% ============================================================================
+@misc{llamacpp,
+  title        = {llama.cpp: LLM inference in C/C++},
+  author       = {Gerganov, Georgi and {llama.cpp contributors}},
+  howpublished = {\url{https://github.com/ggml-org/llama.cpp}},
+  year         = {2026},
+  note         = {Local OpenAI-compatible serving via llama-server; GGUF Q4 quantization}
+}
+
+@misc{pi-agent,
+  title        = {pi: a minimal agent loop ({pi-agent-core})},
+  author       = {Zechner, Mario},
+  howpublished = {npm package \texttt{@mariozechner/pi-agent-core}},
+  year         = {2026},
+  note         = {Agent loop driving the Thinker tier and the SET runners}
+}

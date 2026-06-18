@@ -1,0 +1,62 @@
+[
+  {
+    "id": "atom_call_dial",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "call", "action": "dial", "required_tools": ["bash"], "required_slots": ["contact"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(call|phone|dial|ring)\\b", "flags": "i",
+       "components": {"intent_verbs": ["call", "phone", "dial", "ring"], "objects": ["contact", "number"], "skill_terms": ["call", "phone", "dial", "ring"]}}
+    ],
+    "slots": [{"name": "contact", "type": "string", "required": true, "description": "Contact name or phone number"}],
+    "steps": [{"tool": "bash", "args_template": "call dial --to \"{{contact}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Mock telephony. Pairs with contacts.search in composite_call_contact (name -> number -> dial)."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Place a phone call to a contact or number.", "example_queries": ["call mom", "phone John Smith", "dial +995555123456"]}
+  },
+  {
+    "id": "atom_call_redial",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "call", "action": "redial", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(redial|call back|call again|ring back|last call)\\b", "flags": "i",
+       "components": {"intent_verbs": ["redial", "call back", "call again", "ring back"], "objects": ["last call"], "skill_terms": ["redial", "call back", "again"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "call redial", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of dial — no target, repeats the last number."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Redial the last called number.", "example_queries": ["redial", "call back the last number", "ring them again"]}
+  },
+  {
+    "id": "atom_call_hangup",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "call", "action": "hangup", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(hang up|hangup|end (the )?call|drop the call|disconnect)\\b", "flags": "i",
+       "components": {"intent_verbs": ["hang up", "end call", "drop the call", "disconnect"], "objects": ["call"], "skill_terms": ["hangup", "end call", "disconnect"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "call hangup", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of answer — opposite end of a call."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "End the current call.", "example_queries": ["hang up", "end the call", "disconnect the call"]}
+  },
+  {
+    "id": "atom_call_answer",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "call", "action": "answer", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(answer|pick up|accept (the )?call|take the call)\\b", "flags": "i",
+       "components": {"intent_verbs": ["answer", "pick up", "accept call", "take the call"], "objects": ["call"], "skill_terms": ["answer", "pick up", "accept"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "call answer", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of hangup."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Answer the incoming call.", "example_queries": ["answer the call", "pick up", "accept the call"]}
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "atom_app_open",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "app", "action": "open", "required_tools": ["bash"], "required_slots": ["name"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(open|launch|start|run)\\b(?!.*\\b(url|website|http|tab|browser to)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["open", "launch", "start", "run"], "objects": ["app", "application", "program"], "skill_terms": ["app", "application", "program", "launch"]}}
+    ],
+    "slots": [{"name": "name", "type": "string", "required": true, "description": "Application name"}],
+    "steps": [{"tool": "bash", "args_template": "app open --name \"{{name}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Launch an application. Collision with browser open (open app vs open url) — the 'app/application' noun discriminates from a URL."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Open/launch an application by name.", "example_queries": ["open Spotify", "launch the calculator app", "start Firefox"]}
+  },
+  {
+    "id": "atom_app_close",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "app", "action": "close", "required_tools": ["bash"], "required_slots": ["name"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(close|quit|kill|exit|stop)\\b.*\\b(app|application|program)\\b", "flags": "i",
+       "components": {"intent_verbs": ["close", "quit", "kill", "exit", "stop"], "objects": ["app", "application", "program"], "skill_terms": ["app", "application", "program"]}}
+    ],
+    "slots": [{"name": "name", "type": "string", "required": true, "description": "Application name"}],
+    "steps": [{"tool": "bash", "args_template": "app close --name \"{{name}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of open."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Close/quit an application by name.", "example_queries": ["close the Spotify app", "quit Firefox", "kill the calculator application"]}
+  },
+  {
+    "id": "atom_app_switch",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "app", "action": "switch", "required_tools": ["bash"], "required_slots": ["name"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(switch to|go to|bring up|focus|activate)\\b.*\\b(app|application|window)\\b", "flags": "i",
+       "components": {"intent_verbs": ["switch to", "go to", "bring up", "focus", "activate"], "objects": ["app", "window"], "skill_terms": ["app", "application", "window", "switch"]}}
+    ],
+    "slots": [{"name": "name", "type": "string", "required": true, "description": "Application name"}],
+    "steps": [{"tool": "bash", "args_template": "app switch --name \"{{name}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of open/close — focus an already-running app window."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Switch focus to a running application.", "example_queries": ["switch to the Firefox app", "bring up the Spotify window", "go to the terminal application"]}
+  }
+]

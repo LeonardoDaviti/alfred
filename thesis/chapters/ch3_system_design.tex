@@ -1,0 +1,249 @@
+\chapter{System Design}
+\label{ch:design}
+
+This chapter describes A.L.F.R.E.D.\ as a system: the two execution tiers, the
+artifacts that connect them, and the design principles that hold the whole thing
+together. The goal is to fix the vocabulary that the methodology and evaluation
+chapters reuse, and to make one architectural claim concrete before any number
+is reported: \emph{most on-device requests do not need a model to reason; they
+need a model to fill in a blank}.
+
+\section{Overview: two tiers, one router}
+\label{sec:overview}
+
+A.L.F.R.E.D.\ sits between a user's natural-language request and the device's
+capabilities. Every request enters a \textbf{router}, which makes a single
+decision: can this request be served by a known, repeatable \emph{pattern}, or
+does it require open-ended problem solving? The first case is dispatched to the
+\textbf{reflexer}; the second to the \textbf{thinker}.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\textwidth]{fig_architecture.pdf}
+  \caption{The two-tier architecture. The router classifies each request; the
+  reflexer handles the deterministic head with a distilled pattern, the thinker
+  handles the long tail with a full agent loop. Both emit commands to the same
+  skill CLIs.}
+  \label{fig:architecture}
+\end{figure}
+
+The split is an economic bet, not a capability ranking. The reflexer is cheap,
+fast, and runs comfortably on the device; it is also narrow, because it can only
+serve intents for which a pattern exists. The thinker is general but expensive:
+it runs an agent loop, costs an order of magnitude more tokens and latency per
+request, and---at the sizes that reason well---does not fit on the device at
+all. Neither tier is sufficient alone. The contribution of the architecture is
+the \emph{division of labour}: route the high-frequency, repeatable head to the
+reflexer and reserve the thinker for the tail. Chapter~\ref{ch:eval} quantifies
+exactly where that bet pays.
+
+\section{The reflexer: an executioner, not a generator}
+\label{sec:reflexer}
+
+The reflexer is a small language model (in this work, \texttt{qwen-3.5-2b})
+whose job is deliberately impoverished. It does not decide \emph{what} to do or
+\emph{how} to do it. Given a request that the router has already matched to a
+pattern, the reflexer extracts the variable parts of the request---the
+\emph{slots}---and substitutes them into a fixed command template supplied by
+that pattern. It then emits exactly one shell command. This is why we call it an
+\emph{executioner} rather than a generator: it carries out a decision that was
+made once, offline, by something else.
+
+This framing is the central design choice of the thesis, and it separates
+A.L.F.R.E.D.\ from the on-device assistant models shipped by Google and Apple.
+Those models are asked to be creative within a constrained surface; they
+generate. The reflexer is asked for none of that. It performs slot extraction
+and template binding, and nothing more. The benefit is reliability: the space of
+things the reflexer can get wrong shrinks to the space of slot values, because
+the command shape itself is not the model's to invent. The cost is generality,
+paid up front as the requirement that a pattern must exist
+(Section~\ref{sec:distillation}).
+
+Concretely, the runtime is the short pipeline in
+Figure~\ref{fig:reflexer}. The matched pattern supplies a \emph{command shape}
+(the \texttt{args\_template} with its slots rendered as typed placeholders) and a
+list of slot descriptions; these, with the user query, form the entire prompt to
+the 2B model. The model emits one shell command directly---there is no JSON step
+and no separate template-rendering pass. The command is executed once through a
+shell (with a per-step timeout and an optional retry), and the pattern's
+\emph{validators} assert over the result. If the model errors, the command fails
+to execute, or a validator rejects the outcome, the reflexer does not improvise:
+it \emph{escalates} to the thinker with a tagged reason. Success is recorded; the
+loop ends.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.98\textwidth]{fig_reflexer.pdf}
+  \caption{Inside the reflexer. The pattern's command shape and slot descriptions
+  prompt the 2B model, which emits a single shell command in one forward pass; the
+  command is executed and validated, and any failure escalates to the thinker
+  rather than being retried by reasoning.}
+  \label{fig:reflexer}
+\end{figure}
+
+A single forward pass is the entire reflexer runtime. There is no tool-use loop,
+no planning step. When routing is correct and a pattern exists, this
+constrained executor reaches \textbf{100\% binding accuracy} on the atom task set
+(Chapter~\ref{ch:eval}). The point worth stating early is structural rather than
+numerical: the reflexer succeeds not because the 2B model is strong, but because
+the pattern has removed almost everything it could fail at.
+
+\section{The thinker: a general agent for the tail}
+\label{sec:thinker}
+
+The thinker is a full agent loop in the ReAct style~\cite{yao2022react}: the
+model is given the relevant skill documentation and a set of tools (a shell, a
+file reader), and it reasons, acts, observes, and repeats until it judges the
+task complete. It is invoked for everything the reflexer cannot serve:
+multi-intent or compound requests, requests requiring clarification or planning,
+and any intent for which no pattern has been distilled.
+
+The thinker is where capability lives, but it is also where the architecture
+pays its costs. An agent loop emits many commands across several turns, consumes
+substantially more tokens and wall-clock time than a single reflexer call, and
+at the parameter scale required for reliable reasoning it must run off-device.
+A recurring theme of the evaluation is that raw thinker capability does not
+translate cleanly into reliable \emph{binding}: a free-form model, even a large
+one, tends to substitute its own pretraining priors (real Linux commands,
+documented backend mechanisms) for the skill's defined vocabulary. The thinker
+is therefore the right tool for novel problems and the wrong tool for the
+repeatable head---precisely the asymmetry the two-tier split exploits.
+
+\section{Patterns: atoms and composites}
+\label{sec:patterns}
+
+A \textbf{pattern} is the artifact that makes the reflexer possible. It is a
+small, immutable JSON record that encodes one repeatable intent. Each pattern
+carries: a trigger (how the router recognizes the intent), a set of typed
+\emph{slots} (the variable parts to extract from the request), an
+\texttt{args\_template} (the exact command shape, with slot placeholders),
+optional validators (constraints on slot values), and natural-language example
+queries used by the router's embedding index.
+
+Patterns come in two kinds. An \textbf{atom} encodes a single action---set the
+screen brightness, start a timer, toggle Wi-Fi---and binds to exactly one
+command. A \textbf{composite} encodes a routine made of several atoms executed in
+sequence, such as a ``good night'' action that dims the screen, enables Do Not
+Disturb, and sets an alarm. Atoms are the unit of reliability: they are stable,
+reusable, and in our measurements essentially perfectly reflexable. Composites
+are more demanding, because some require values produced at runtime (a contact
+name, a URL) rather than known in advance; these remain the harder case for the
+reflexer and, where they need open-ended slot extraction, are better left to the
+thinker.
+
+Critically, the \texttt{args\_template} is a \emph{hard} constraint, not a
+suggestion. Where the thinker reads skill prose and may reason its way to a
+different command, the reflexer is handed the command shape directly and only
+fills the slots. This distinction---soft prose for the thinker versus a hard
+template for the reflexer---explains much of the reliability gap between the two
+tiers and is revisited in Chapter~\ref{ch:eval}.
+
+\section{The skill model: deep modules behind a CLI}
+\label{sec:skills}
+
+A \textbf{skill} packages a device capability behind a command-line interface
+and a documentation file (\texttt{SKILL.md}). The CLI is the only surface either
+tier touches: the reflexer fills a template that calls it, and the thinker reads
+the \texttt{SKILL.md} and invokes it through the shell. Skills emit structured
+results (a JSON object reporting success, data, and errors), so that outcomes can
+be checked uniformly regardless of which tier produced the command.
+
+The skill model is an application of Ousterhout's principle of \emph{deep
+modules}: a simple interface that hides substantial implementation
+complexity~\cite{ousterhout2018philosophy}. A well-designed skill exposes a
+small, intent-shaped vocabulary (\texttt{clock timer --duration 10m}) while
+absorbing the messy device-specific mechanism behind it. This depth is what lets
+even a small model act competently when it is given the right tool: on a clean,
+deep settings interface the 2B reflexer succeeds on multi-step tasks that it
+fails when forced to manipulate the raw state directly (Chapter~\ref{ch:eval}).
+The corollary, also measured, is that a \emph{leaky} skill---one whose
+documentation exposes its backend mechanism---degrades the thinker, which
+reasons toward the familiar mechanism instead of the intended alias. Interface
+design is therefore not cosmetic; it is a determinant of binding accuracy.
+
+\section{Distillation: from teacher to a symbolic pattern}
+\label{sec:distillation}
+
+Patterns are not written by hand at scale; they are \emph{distilled}. A capable
+\textbf{teacher} model is used once, offline, to convert a skill's documentation
+and device conventions into the pattern that the cheap on-device
+\textbf{student} (the reflexer) then applies forever. This is the mechanism that
+pays for the reflexer's narrowness: the one-time cost of minting a pattern is
+amortized over every subsequent on-device invocation.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\textwidth]{fig_distillation.pdf}
+  \caption{Symbolic distillation. A strong teacher reads the skill documentation
+  and schema and mints a frozen JSON pattern once, offline; the cheap 2B student
+  applies that pattern on-device on every subsequent request. The teacher's cost
+  is paid at distillation time, not at inference time.}
+  \label{fig:pipeline}
+\end{figure}
+
+The relationship to classical knowledge distillation is deliberate and worth
+making precise. In the original formulation, a large teacher network is
+compressed into the \emph{weights} of a smaller student
+network~\cite{hinton2015distilling}. A.L.F.R.E.D.\ distills along the same
+teacher$\rightarrow$student axis, but into a different target: a teacher model
+compresses its knowledge of a device's conventions into an \emph{inspectable
+symbolic artifact}---the pattern---rather than into student parameters. The trade
+is explicit. Weight distillation yields a general student but requires
+retraining to extend and is opaque to inspection. Symbolic distillation yields a
+student that is plug-and-play (adding a capability is adding a JSON file, with no
+retraining), auditable (the encoded convention can be read and corrected), and
+composable, at the cost of covering only the intents that have been distilled.
+For an on-device system that must be extended by skill authors and trusted by
+users, that trade is the right one.
+
+Two regimes of distillation appear in this work. In \textbf{cold-start}
+distillation the teacher sees only the skill documentation and the API schema,
+never any task or its expected outcome; it must encode each convention from
+documentation and prior knowledge alone. In \textbf{session-based} (grounded)
+distillation the teacher additionally observes the real device---reading back
+actual setting codes before committing an encoding. Cold-start is cheaper and
+captures well-documented conventions, but it cannot recover genuinely
+device-specific values that no amount of reasoning can derive; those require
+grounding. The boundary between what cold-start captures and what only grounding
+can fix is one of the empirical results of Chapter~\ref{ch:eval}. A strict
+integrity rule governs both regimes: the teacher must never see the evaluation
+tasks or their gold outcomes, and a distilled pattern, once minted, is frozen
+and never edited after observing failures---editing it would leak the benchmark
+into the artifact under test.
+
+\section{Design principles}
+\label{sec:principles}
+
+Three principles run through the design and are stated here because they recur as
+justifications later.
+
+\paragraph{Contract-first.} Each benchmark is specified before it is built. The
+invariants (state isolation, a single success oracle, the metrics) and the
+oracle itself are written down as a contract, and only then is the mechanism
+implemented against that contract. This ordering prevents the common failure of
+letting an evaluation drift to match whatever the system happens to produce.
+
+\paragraph{Success is an end state, not a command.} A.L.F.R.E.D.\ is judged on
+whether the device reaches the requested state without collateral changes, not on
+whether it emitted a particular command string. This catches two failures that
+command matching misses: a syntactically valid command that produces the wrong
+outcome, and an over-eager agent that achieves the goal but also changes things
+it was not asked to. The end-state oracle that enforces this is detailed in
+Chapter~\ref{ch:method}.
+
+\paragraph{Distillation is the learning phase; the reflex is frozen.} All
+adaptation, iteration, and feedback live in the offline teaching step. The
+runtime reflex is a single pass over a fixed pattern and never changes during
+execution. This separation keeps the on-device path simple and predictable
+however much effort the teacher spends producing the pattern---the analogue of a
+practiced human reflex, refined slowly through feedback yet executed instantly
+and without deliberation.
+
+\bigskip
+\noindent
+Together these pieces define the system under test: a router that splits traffic,
+a reflexer that executes distilled patterns in one shot, a thinker that handles
+the tail, skills that present deep interfaces, and a distillation step that mints
+the patterns offline. The chapters that follow put numbers to every claim made
+here---how much model binding really needs, when the abstraction helps, where
+scale stops helping, and how much the choice of teacher matters.

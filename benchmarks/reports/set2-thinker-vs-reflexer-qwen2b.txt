@@ -1,0 +1,188 @@
+########## SET-2 THINKER (discover) full 15 ##########
+▶ SET-2 thinker — model=qwen-3.5-2b tasks=15 ceiling=20 backstop=90000ms
+  [✗] s01 set the brightness to 75%                  calls=3 tok=1142 ms=3723  wrong=[{"path":"system.screen_brightness","want":191,"got":192}]
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py put system screen_brightness 192
+  [✗] s02 set brightness to 100%                     calls=3 tok=1030 ms=2625  wrong=[{"path":"system.screen_brightness","want":255,"got":100}]
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py put system screen_brightness 100
+  [✗] s03 turn on auto-brightness                    calls=5 tok=1660 ms=8834  wrong=[{"path":"system.screen_brightness_mode","want":1,"got":0}]
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py list secure
+        · bash: python3 SET-2/settings.py put system screen_brightness_mode 1
+        · bash: python3 SET-2/settings.py put system screen_brightness_mode 0
+  [✗] s04 set the screen timeout to 1 minute         calls=20 tok=2330 ms=10206  wrong=[{"path":"system.screen_off_timeout","want":60000,"got":30000}]
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list global screen_timeout
+        · bash: python3 SET-2/settings.py list global --help
+        · bash: python3 SET-2/settings.py list global screen
+        · bash: python3 SET-2/settings.py list global --help
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list global --help
+        · bash: python3 SET-2/settings.py list global screen_timeout
+        · bash: python3 SET-2/settings.py list global --help
+        · bash: python3 SET-2/settings.py list global screen_timeout
+        · bash: python3 SET-2/settings.py list global --help
+        · bash: python3 SET-2/settings.py list global screen_timeout
+        · bash: python3 SET-2/settings.py list global --help
+        · bash: python3 SET-2/settings.py list global screen_timeout
+        · bash: python3 SET-2/settings.py list global --help
+        · bash: python3 SET-2/settings.py list global screen_timeout
+        · bash: python3 SET-2/settings.py list global --help
+        · bash: python3 SET-2/settings.py list global screen_timeout
+        · bash: python3 SET-2/settings.py list global --help
+        · bash: python3 SET-2/settings.py list global screen_timeout
+  [✗] s05 set screen timeout to 2 minutes            calls=10 tok=2100 ms=6021  wrong=[{"path":"system.screen_off_timeout","want":120000,"got":120}]
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list global screen_timeout
+        · bash: python3 SET-2/settings.py list global screen_time
+        · bash: python3 SET-2/settings.py list global screen_time
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list secure
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py put system screen_off_timeout 120
+        · bash: python3 SET-2/settings.py list system screen_off_timeout
+        · bash: python3 SET-2/settings.py list system
+  [✗] s06 enable airplane mode                       calls=1 tok=620 ms=742  wrong=[{"path":"global.airplane_mode_on","want":1,"got":0}]
+        · bash: python3 SET-2/settings.py put global airplane_mode 1
+  [✗] s07 turn off auto-rotate                       calls=20 tok=2600 ms=9763  wrong=[{"path":"system.accelerometer_rotation","want":0,"got":1}]
+        · bash: python3 SET-2/settings.py list system app_settings
+        · bash: python3 SET-2/settings.py list system app_settings
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py list secure
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list system app_settings
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py list secure
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list system app_settings
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py list secure
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list system app_settings
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py list secure
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list system app_settings
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py list secure
+  [✗] s08 set location to high accuracy              calls=9 tok=1565 ms=5628  wrong=[{"path":"secure.location_mode","want":3,"got":1}]
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py list system location
+        · bash: python3 SET-2/settings.py list system location
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py list secure
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py put secure location_mode 0
+        · bash: python3 SET-2/settings.py put secure location_mode 1
+        · bash: python3 SET-2/settings.py list secure
+  [✓] s09 turn off location                          calls=3 tok=834 ms=1674
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list secure
+        · bash: python3 SET-2/settings.py put secure location_mode 0
+  [✓] s10 disable haptic feedback                    calls=8 tok=1425 ms=4949
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list global haptic
+        · bash: python3 SET-2/settings.py list global haptic_feedback
+        · bash: python3 SET-2/settings.py list global haptic
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py list secure
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py put system haptic_feedback_enabled 0
+  [✗] s11 turn off bluetooth                         calls=2 tok=712 ms=1198  wrong=[{"path":"global.bluetooth_on","want":0,"got":1}]
+        · bash: python3 SET-2/settings.py get global bluetooth
+        · bash: python3 SET-2/settings.py put global bluetooth 0
+  [✓] s12 enable data roaming                        calls=2 tok=754 ms=1416
+        · bash: python3 SET-2/settings.py list global
+        · bash: python3 SET-2/settings.py put global data_roaming 1
+  [✗] s13 set location to battery saving mode        calls=3 tok=879 ms=1981  wrong=[{"path":"secure.location_mode","want":2,"got":0}]
+        · bash: python3 SET-2/settings.py list system
+        · bash: python3 SET-2/settings.py list secure
+        · bash: python3 SET-2/settings.py put secure location_mode 0
+  [✗] s14 turn on usb debugging                      calls=2 tok=734 ms=1414  wrong=[{"path":"secure.adb_enabled","want":1,"got":0}]
+        · bash: python3 SET-2/settings.py get global usb_debugging
+        · bash: python3 SET-2/settings.py put global usb_debugging 1
+  [✗] s15 set the brightness to 25%                  calls=20 tok=2931 ms=16359  wrong=[{"path":"system.screen_brightness","want":64,"got":128}]
+        · read: settings/system.xml
+        · bash: python3 -c "
+import sys
+sys.path.insert(0, '/home/normie/Documents/Projects/Thesis/SET-2')
+from SET-2.settings import Settin
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system 2>&1 | head -100
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+        · bash: python3 /home/normie/Documents/Projects/Thesis/SET-2/settings.py list system screen_brightness 2>&1
+
+== SET-2 thinker ==  model=qwen-3.5-2b
+oracle pass: 3/15 = 20.0%
+median calls: 3  median tokens: 1142  median ms: 3723
+
+✓ report → /home/normie/Documents/Projects/Thesis/benchmark/reports/set2-thinker-qwen-3.5-2b-2026-06-17T17-28-14.json
+
+########## SET-2 REFLEXER (pattern) full 15 ##########
+▶ SET-2 reflexer — model=qwen-3.5-2b tasks=15 ceiling=4 backstop=60000ms
+  [✗] s01 set the brightness to 75%                  calls=0 tok=294 ms=947  wrong=[{"path":"system.screen_brightness","want":191,"got":128}]
+  [✓] s02 set brightness to 100%                     calls=1 tok=321 ms=710
+        · bash: python3 SET-2/settings.py put system screen_brightness 255
+  [✓] s03 turn on auto-brightness                    calls=1 tok=290 ms=692
+        · bash: python3 SET-2/settings.py put system screen_brightness_mode 1
+  [✓] s04 set the screen timeout to 1 minute         calls=2 tok=1284 ms=1474
+        · read: SET-2/settings.py
+        · bash: python3 SET-2/settings.py put system screen_off_timeout 60000
+  [✓] s05 set screen timeout to 2 minutes            calls=2 tok=1287 ms=1503
+        · read: SET-2/settings.py
+        · bash: python3 SET-2/settings.py put system screen_off_timeout 120000
+  [✓] s06 enable airplane mode                       calls=2 tok=1247 ms=1304
+        · read: SET-2/settings.py
+        · bash: python3 SET-2/settings.py put global airplane_mode_on 1
+  [✓] s07 turn off auto-rotate                       calls=4 tok=1384 ms=2257
+        · read: SET-2/settings.py
+        · bash: python3 SET-2/settings.py put system accelerometer_rotation 0
+        · bash: python3 SET-2/settings.py put system accelerometer_rotation 1
+        · bash: python3 SET-2/settings.py put system accelerometer_rotation 0
+  [✗] s08 set location to high accuracy              calls=1 tok=296 ms=685  wrong=[{"path":"secure.location_mode","want":3,"got":"high_accuracy"}]
+        · bash: python3 SET-2/settings.py put secure location_mode high_accuracy
+  [✓] s09 turn off location                          calls=1 tok=291 ms=661
+        · bash: python3 SET-2/settings.py put secure location_mode 0
+  [✓] s10 disable haptic feedback                    calls=2 tok=1250 ms=1316
+        · read: SET-2/settings.py
+        · bash: python3 SET-2/settings.py put system haptic_feedback_enabled 0
+  [✓] s11 turn off bluetooth                         calls=4 tok=1374 ms=2252
+        · read: SET-2/settings.py
+        · bash: python3 SET-2/settings.py put global bluetooth_on 0
+        · bash: python3 SET-2/settings.py put global bluetooth_on 0
+        · bash: python3 SET-2/settings.py put global bluetooth_on 0
+  [✓] s12 enable data roaming                        calls=1 tok=283 ms=674
+        · bash: python3 SET-2/settings.py put global data_roaming 1
+  [✗] s13 set location to battery saving mode        calls=1 tok=301 ms=716  wrong=[{"path":"secure.location_mode","want":2,"got":"battery_saving"}]
+        · bash: python3 SET-2/settings.py put secure location_mode battery_saving
+  [✓] s14 turn on usb debugging                      calls=3 tok=1351 ms=1855
+        · read: SET-2/settings.py
+        · bash: python3 SET-2/settings.py put secure adb_enabled 1
+        · bash: python3 SET-2/settings.py get secure adb_enabled
+  [✗] s15 set the brightness to 25%                  calls=1 tok=432 ms=1944  wrong=[{"path":"system.screen_brightness","want":64,"got":6}]
+        · bash: python3 SET-2/settings.py put system screen_brightness 6
+
+== SET-2 reflexer ==  model=qwen-3.5-2b
+oracle pass: 11/15 = 73.3%
+median calls: 1  median tokens: 432  median ms: 1304
+
+✓ report → /home/normie/Documents/Projects/Thesis/benchmark/reports/set2-reflexer-qwen-3.5-2b-2026-06-17T17-28-34.json
+ALL DONE

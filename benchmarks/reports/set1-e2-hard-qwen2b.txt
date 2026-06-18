@@ -1,0 +1,74 @@
+▶ SET-1 e2 — model=qwen-3.5-2b tasks=10 ceiling=20 backstop=90000ms
+  [✓] h01 multi      set up movie night: drop the brightness to 2   calls=5 tok=1078 ms=3067
+        · bash: python3 SET-1/settings.py get display.brightness
+        · bash: python3 SET-1/settings.py get device.dark_mode
+        · bash: python3 SET-1/settings.py search dark_mode
+        · bash: python3 SET-1/settings.py set display.brightness 2
+        · bash: python3 SET-1/settings.py set display.dark_mode on
+  [✓] h02 multi      I'm going to bed — turn on airplane mode, tu   calls=6 tok=1224 ms=3818
+        · bash: python3 SET-1/settings.py search "airplane"
+        · bash: python3 SET-1/settings.py search "wifi"
+        · bash: python3 SET-1/settings.py search "brightness"
+        · bash: python3 SET-1/settings.py set connectivity.airplane_mode on
+        · bash: python3 SET-1/settings.py set connectivity.wifi off
+        · bash: python3 SET-1/settings.py set display.brightness 0
+  [✓] h03 multi      privacy mode: turn off location access for M   calls=4 tok=1026 ms=2992
+        · bash: python3 SET-1/settings.py search "location"
+        · bash: python3 SET-1/settings.py search "spotify"
+        · bash: python3 SET-1/settings.py set apps.maps.location off
+        · bash: python3 SET-1/settings.py set apps.spotify.notifications off
+  [✓] h04 multi      battery saver: lower the brightness by 3 and   calls=5 tok=1149 ms=4386
+        · bash: python3 SET-1/settings.py get connectivity.brightness
+        · bash: python3 SET-1/settings.py search brightness
+        · bash: python3 SET-1/settings.py search animation_speed
+        · bash: python3 SET-1/settings.py set display.brightness 2
+        · bash: python3 SET-1/settings.py set display.animation_speed 1
+  [✓] h05 multi      personalize my phone: rename it to Falcon an   calls=4 tok=1014 ms=3346
+        · bash: python3 SET-1/settings.py search device.name
+        · bash: python3 SET-1/settings.py search wallpaper
+        · bash: python3 SET-1/settings.py set device.name "Falcon"
+        · bash: python3 SET-1/settings.py set device.wallpaper "Nebula"
+  [✓] h06 multi      focus setup: turn off bluetooth, mute Spotif   calls=6 tok=1180 ms=4100
+        · bash: python3 SET-1/settings.py search bluetooth
+        · bash: python3 SET-1/settings.py search spotify
+        · bash: python3 SET-1/settings.py search screen_timeout
+        · bash: python3 SET-1/settings.py set connectivity.bluetooth off
+        · bash: python3 SET-1/settings.py set apps.spotify.notifications off
+        · bash: python3 SET-1/settings.py set display.screen_timeout 1
+  [✓] h07 multi      crank the display: set brightness, text size   calls=7 tok=1312 ms=4961
+        · bash: python3 SET-1/settings.py get connectivity.brightness
+        · bash: python3 SET-1/settings.py search brightness
+        · bash: python3 SET-1/settings.py search text_size
+        · bash: python3 SET-1/settings.py search screen_timeout
+        · bash: python3 SET-1/settings.py set display.brightness 10
+        · bash: python3 SET-1/settings.py set display.text_size 10
+        · bash: python3 SET-1/settings.py set display.screen_timeout 10
+  [✓] h08 multi      enable airplane mode, then turn wifi back on   calls=6 tok=1159 ms=3851
+        · bash: python3 SET-1/settings.py search airplane_mode
+        · bash: python3 SET-1/settings.py search wifi
+        · bash: python3 SET-1/settings.py search hotspot
+        · bash: python3 SET-1/settings.py set connectivity.airplane_mode on
+        · bash: python3 SET-1/settings.py set connectivity.wifi on
+        · bash: python3 SET-1/settings.py set connectivity.hotspot on
+  [✓] h09 multi      increase the brightness by 4 and turn on dar   calls=6 tok=1220 ms=4604
+        · bash: python3 SET-1/settings.py get display.brightness
+        · bash: python3 SET-1/settings.py get device.dark_mode
+        · bash: python3 SET-1/settings.py search dark_mode
+        · bash: python3 SET-1/settings.py set display.brightness 9
+        · bash: python3 SET-1/settings.py set device.dark_mode on
+        · bash: python3 SET-1/settings.py set display.dark_mode on
+  [✓] h10 multi      guest setup: turn off Maps notifications, tu   calls=6 tok=1221 ms=4173
+        · bash: python3 SET-1/settings.py search "Maps"
+        · bash: python3 SET-1/settings.py search "Spotify"
+        · bash: python3 SET-1/settings.py search "device"
+        · bash: python3 SET-1/settings.py set apps.maps.notifications off
+        · bash: python3 SET-1/settings.py set apps.spotify.notifications off
+        · bash: python3 SET-1/settings.py set device.name Guest
+
+== SET-1 e2 ==  model=qwen-3.5-2b
+oracle pass: 10/10 = 100.0%
+median calls: 6  median tokens: 1180  median ms: 4100
+per type:
+  multi       10/10 = 100.0%
+
+✓ report → /home/normie/Documents/Projects/Thesis/benchmark/reports/set1-e2-tasks_hard-qwen-3.5-2b-2026-06-17T17-07-29.json

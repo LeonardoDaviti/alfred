@@ -1,0 +1,12 @@
+{
+  "brightness_pct": "python3 SET-2/settings.py put system screen_brightness <N>   # N = round(percent * 255 / 100). e.g. 50% -> 128. brightness is 0-255 in the `system` namespace",
+  "auto_brightness": "python3 SET-2/settings.py put system screen_brightness_mode <0|1>   # 0 = manual, 1 = automatic; `system` namespace",
+  "screen_timeout": "python3 SET-2/settings.py put system screen_off_timeout <MS>   # MS in MILLISECONDS = seconds * 1000 (1 min = 60000); `system` namespace",
+  "airplane": "python3 SET-2/settings.py put global airplane_mode_on <0|1>   # boolean 0/1 in the `global` namespace",
+  "autorotate": "python3 SET-2/settings.py put system accelerometer_rotation <0|1>   # 1 = auto-rotate on, 0 = off; `system` namespace",
+  "location_mode": "python3 SET-2/settings.py put secure location_mode <CODE>   # enum in `secure`: off=0, sensors_only=1, battery_saving=2, high_accuracy=3",
+  "haptics": "python3 SET-2/settings.py put system haptic_feedback_enabled <0|1>   # boolean 0/1 in the `system` namespace",
+  "bluetooth": "python3 SET-2/settings.py put global bluetooth_on <0|1>   # boolean 0/1 in the `global` namespace",
+  "data_roaming": "python3 SET-2/settings.py put global data_roaming <0|1>   # boolean 0/1 in the `global` namespace",
+  "adb": "python3 SET-2/settings.py put secure adb_enabled <0|1>   # boolean 0/1 in the `secure` namespace (usb debugging)"
+}

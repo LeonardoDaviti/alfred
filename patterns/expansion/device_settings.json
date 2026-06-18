@@ -1,0 +1,92 @@
+[
+  {
+    "id": "atom_settings_wifi",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "device_settings", "action": "wifi", "required_tools": ["bash"], "required_slots": ["state"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(turn|switch|enable|disable|toggle)\\b)(?=.*\\b(wifi|wi-fi|wireless|wlan)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["turn", "switch", "enable", "disable", "toggle"], "objects": ["wifi", "wireless"], "skill_terms": ["wifi", "wi-fi", "wireless", "wlan"]}}
+    ],
+    "slots": [{"name": "state", "type": "string", "required": true, "description": "on | off"}],
+    "steps": [{"tool": "bash", "args_template": "settings wifi --state {{state}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Connectivity toggle family — all five share '--state on/off'; the subcommand (wifi/bluetooth/airplane/dnd/dark-mode) is the only discriminator. A dense sibling family for router stress."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Turn Wi-Fi on or off.", "example_queries": ["turn wifi off", "enable wireless", "switch wi-fi on"]}
+  },
+  {
+    "id": "atom_settings_bluetooth",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "device_settings", "action": "bluetooth", "required_tools": ["bash"], "required_slots": ["state"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(turn|switch|enable|disable|toggle)\\b)(?=.*\\b(bluetooth|bt)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["turn", "switch", "enable", "disable", "toggle"], "objects": ["bluetooth"], "skill_terms": ["bluetooth", "bt"]}}
+    ],
+    "slots": [{"name": "state", "type": "string", "required": true, "description": "on | off"}],
+    "steps": [{"tool": "bash", "args_template": "settings bluetooth --state {{state}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of wifi/airplane/dnd/dark-mode."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Turn Bluetooth on or off.", "example_queries": ["turn off bluetooth", "enable bluetooth", "switch bt on"]}
+  },
+  {
+    "id": "atom_settings_airplane",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "device_settings", "action": "airplane", "required_tools": ["bash"], "required_slots": ["state"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(turn|switch|enable|disable|toggle)\\b)(?=.*\\b(airplane|flight)\\s*mode\\b)", "flags": "i",
+       "components": {"intent_verbs": ["turn", "switch", "enable", "disable", "toggle"], "objects": ["airplane mode", "flight mode"], "skill_terms": ["airplane", "flight", "mode"]}}
+    ],
+    "slots": [{"name": "state", "type": "string", "required": true, "description": "on | off"}],
+    "steps": [{"tool": "bash", "args_template": "settings airplane --state {{state}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of wifi/bluetooth/dnd/dark-mode."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Turn airplane mode on or off.", "example_queries": ["turn on airplane mode", "enable flight mode", "switch off airplane mode"]}
+  },
+  {
+    "id": "atom_settings_dnd",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "device_settings", "action": "dnd", "required_tools": ["bash"], "required_slots": ["state"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(turn|switch|enable|disable|toggle)\\b)(?=.*\\b(do not disturb|dnd|silent mode|notifications)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["turn", "switch", "enable", "disable", "toggle"], "objects": ["do not disturb", "dnd", "notifications"], "skill_terms": ["do not disturb", "dnd", "silent", "notifications"]}}
+    ],
+    "slots": [{"name": "state", "type": "string", "required": true, "description": "on | off"}],
+    "steps": [{"tool": "bash", "args_template": "settings dnd --state {{state}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Raw DND toggle. CROSS-SKILL collision with focus on/off (focus is a named profile; this is the raw notifications toggle)."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Turn do-not-disturb on or off.", "example_queries": ["turn on do not disturb", "enable dnd", "switch off silent mode"]}
+  },
+  {
+    "id": "atom_settings_dark_mode",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "device_settings", "action": "dark_mode", "required_tools": ["bash"], "required_slots": ["state"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(turn|switch|enable|disable|toggle)\\b)(?=.*\\b(dark mode|night mode)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["turn", "switch", "enable", "disable", "toggle"], "objects": ["dark mode", "theme"], "skill_terms": ["dark mode", "night mode", "theme"]}}
+    ],
+    "slots": [{"name": "state", "type": "string", "required": true, "description": "on | off"}],
+    "steps": [{"tool": "bash", "args_template": "settings dark-mode --state {{state}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of wifi/bluetooth/airplane/dnd. Note dashed subcommand 'dark-mode' — a vocabulary-compliance check. Hard sibling of light-mode (opposite theme)."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Turn dark mode on or off.", "example_queries": ["turn on dark mode", "enable night mode", "switch dark mode off"]}
+  },
+  {
+    "id": "atom_settings_light_mode",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "device_settings", "action": "light_mode", "required_tools": ["bash"], "required_slots": ["state"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(turn|switch|enable|disable|toggle)\\b)(?=.*\\b(light mode|day mode)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["turn", "switch", "enable", "disable", "toggle"], "objects": ["light mode", "theme"], "skill_terms": ["light mode", "day mode", "theme"]}}
+    ],
+    "slots": [{"name": "state", "type": "string", "required": true, "description": "on | off"}],
+    "steps": [{"tool": "bash", "args_template": "settings light-mode --state {{state}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Hard sibling of dark-mode (complementary theme). Both dashed subcommands — the dark/light noun is the only discriminator."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Turn light mode on or off.", "example_queries": ["switch to light mode", "turn on light mode", "enable day mode"]}
+  }
+]

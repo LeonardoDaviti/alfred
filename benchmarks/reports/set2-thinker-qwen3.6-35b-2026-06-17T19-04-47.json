@@ -1,0 +1,127 @@
+{
+  "mode": "thinker",
+  "model": "qwen3.6-35b",
+  "ceiling": 20,
+  "backstopMs": 240000,
+  "total": 5,
+  "ok": 2,
+  "rows": [
+    {
+      "id": "s26",
+      "pattern": "",
+      "query": "bedtime: dim the brightness to 5%, turn on do not disturb total silence, and turn off wifi",
+      "pass": true,
+      "calls": 20,
+      "tokens": 2704,
+      "ms": 25693,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py list system | grep -i bright",
+        "bash: python3 SET-2/settings.py list system | grep -i screen",
+        "bash: python3 SET-2/settings.py list secure | grep -i dnd",
+        "bash: python3 SET-2/settings.py list system | grep -i wifi",
+        "bash: python3 SET-2/settings.py list secure | grep -i wifi",
+        "bash: python3 SET-2/settings.py list global | grep -i wifi",
+        "bash: python3 SET-2/settings.py list secure | grep -i dnd",
+        "bash: python3 SET-2/settings.py list system | grep -i dnd",
+        "bash: python3 SET-2/settings.py list secure | grep -i ringer",
+        "bash: python3 SET-2/settings.py list global | grep -i zen",
+        "bash: python3 SET-2/settings.py list global | grep -i dnd",
+        "bash: python3 SET-2/settings.py list system | grep -i ringer",
+        "bash: python3 SET-2/settings.py list system | grep -i mode",
+        "bash: python3 SET-2/settings.py get system ringer_mode",
+        "bash: python3 SET-2/settings.py get global zen_mode",
+        "bash: python3 SET-2/settings.py get system screen_brightness",
+        "bash: python3 SET-2/settings.py get system screen_brightness_mode",
+        "bash: python3 SET-2/settings.py put system screen_brightness 13",
+        "bash: python3 SET-2/settings.py put global zen_mode 2",
+        "bash: python3 SET-2/settings.py put global wifi_on 0"
+      ]
+    },
+    {
+      "id": "s27",
+      "pattern": "",
+      "query": "battery saver mode: turn on low power, drop the brightness to 20%, and set the screen timeout to 15 seconds",
+      "pass": true,
+      "calls": 7,
+      "tokens": 2301,
+      "ms": 17125,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py list system | grep -i \"power\\|battery\\|saver\\|screen_timeout\\|sleep\\|brightness\"",
+        "bash: python3 SET-2/settings.py list secure | grep -i \"power\\|battery\\|saver\\|screen_timeout\\|sleep\\|brightness\"",
+        "bash: python3 SET-2/settings.py list global | grep -i \"power\\|battery\\|saver\\|screen_timeout\\|sleep\\|brightness\"",
+        "bash: python3 SET-2/settings.py list system | grep -i \"brightness\"",
+        "bash: python3 SET-2/settings.py put global low_power 1",
+        "bash: python3 SET-2/settings.py put system screen_brightness 51",
+        "bash: python3 SET-2/settings.py put system screen_off_timeout 15000"
+      ]
+    },
+    {
+      "id": "s32",
+      "pattern": "",
+      "query": "set up the phone for my grandmother: largest font, turn on high contrast text, and enable accessibility",
+      "pass": false,
+      "calls": 9,
+      "tokens": 1900,
+      "ms": 19011,
+      "detail": "wrong=[{\"path\":\"system.font_scale\",\"want\":\"1.30\",\"got\":\"1.5\"}]",
+      "commands": [
+        "bash: python3 SET-2/settings.py list system 2>&1 | grep -iE \"font|text|display\"",
+        "bash: python3 SET-2/settings.py list system 2>&1 | grep -iE \"accessibility\"",
+        "bash: python3 SET-2/settings.py list secure 2>&1 | grep -iE \"font|text|contrast|accessibility\"",
+        "bash: python3 SET-2/settings.py list global 2>&1 | grep -iE \"font|text|contrast|accessibility\"",
+        "bash: python3 SET-2/settings.py get system font_scale",
+        "bash: python3 SET-2/settings.py put system font_scale 1.5",
+        "bash: python3 SET-2/settings.py put secure high_text_contrast_enabled 1",
+        "bash: python3 SET-2/settings.py put secure accessibility_enabled 1",
+        "bash: python3 SET-2/settings.py get system font_scale && python3 SET-2/settings.py get secure high_text_contrast_enabled && python3 SET-2/settings.py get secure accessibility_enabled"
+      ]
+    },
+    {
+      "id": "s33",
+      "pattern": "",
+      "query": "gaming mode: max brightness, do not disturb total silence, and screen timeout to 10 minutes",
+      "pass": false,
+      "calls": 12,
+      "tokens": 2650,
+      "ms": 24175,
+      "detail": "wrong=[{\"path\":\"global.zen_mode\",\"want\":2,\"got\":1}]",
+      "commands": [
+        "bash: python3 SET-2/settings.py list system | grep -i \"brightness\\|screen_on_timeout\\|sleep\"",
+        "bash: python3 SET-2/settings.py list secure | grep -i \"dnd\\|do_not_disturb\\|priority\\|mode\"",
+        "bash: python3 SET-2/settings.py list secure | grep -i \"dnd\\|notification\\|priority\\|mode\"",
+        "bash: python3 SET-2/settings.py list global | grep -i \"dnd\\|do_not_disturb\\|priority\\|mode\"",
+        "bash: python3 SET-2/settings.py get system screen_brightness_mode",
+        "bash: python3 SET-2/settings.py list system | grep -i \"brightness\"",
+        "bash: python3 SET-2/settings.py list global | grep -i \"zen\\|dnd\\|priority\\|silence\\|alarm\"",
+        "bash: python3 SET-2/settings.py get system ringer_mode",
+        "bash: python3 SET-2/settings.py put system screen_brightness 255",
+        "bash: python3 SET-2/settings.py put system screen_off_timeout 600000",
+        "bash: python3 SET-2/settings.py put global zen_mode 1",
+        "bash: python3 SET-2/settings.py get system screen_brightness && python3 SET-2/settings.py get system screen_off_timeout && python3 SET-2/settings.py get global zen_mode"
+      ]
+    },
+    {
+      "id": "s37",
+      "pattern": "",
+      "query": "deep work focus: do not disturb important only, screen timeout to 30 minutes, and turn off heads-up notifications",
+      "pass": false,
+      "calls": 9,
+      "tokens": 1952,
+      "ms": 20359,
+      "detail": "wrong=[{\"path\":\"global.zen_mode\",\"want\":1,\"got\":2}]",
+      "commands": [
+        "bash: python3 SET-2/settings.py list system | grep -iE \"dnd|notification|timeout|sleep\"",
+        "bash: python3 SET-2/settings.py list secure | grep -iE \"dnd|notification|timeout|sleep\"",
+        "bash: python3 SET-2/settings.py list global | grep -iE \"dnd|notification|timeout|sleep\"",
+        "bash: python3 SET-2/settings.py get system screen_off_timeout",
+        "bash: python3 SET-2/settings.py get global zen_mode",
+        "bash: python3 SET-2/settings.py get global heads_up_notifications_enabled",
+        "bash: python3 SET-2/settings.py put system screen_off_timeout 1800000",
+        "bash: python3 SET-2/settings.py put global zen_mode 2",
+        "bash: python3 SET-2/settings.py put global heads_up_notifications_enabled 0"
+      ]
+    }
+  ]
+}

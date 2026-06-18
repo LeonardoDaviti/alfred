@@ -1,0 +1,321 @@
+{
+  "atoms": {
+    "set_brightness": {
+      "intent": "set screen brightness to a percentage",
+      "command": "python3 SET-2/settings.py put system screen_brightness <VALUE>",
+      "encoding": "VALUE = round(percent / 100 * 255), clamped to 0–255. Examples: 0%→0, 25%→64, 50%→128, 75%→191, 100%→255. Default is 128 (~50%)."
+    },
+    "set_brightness_mode": {
+      "intent": "enable or disable automatic adaptive brightness",
+      "command": "python3 SET-2/settings.py put system screen_brightness_mode <VALUE>",
+      "encoding": "VALUE: 0 = manual brightness (user-controlled), 1 = automatic/adaptive brightness. Default is 0 (manual)."
+    },
+    "set_screen_timeout": {
+      "intent": "set how long the screen stays on before turning off",
+      "command": "python3 SET-2/settings.py put system screen_off_timeout <VALUE>",
+      "encoding": "VALUE is in milliseconds. Multiply seconds by 1000, or minutes by 60000. Common values: 15s→15000, 30s→30000, 1min→60000, 2min→120000, 5min→300000, 10min→600000, 30min→1800000, never→2147483647. Default is 30000 (30 seconds)."
+    },
+    "set_auto_rotate": {
+      "intent": "enable or disable automatic screen rotation",
+      "command": "python3 SET-2/settings.py put system accelerometer_rotation <VALUE>",
+      "encoding": "VALUE: 1 = auto-rotate enabled (screen rotates with device orientation), 0 = rotation locked (portrait). Default is 1 (auto-rotate on)."
+    },
+    "set_haptic_feedback": {
+      "intent": "enable or disable haptic feedback / vibration for taps and UI interactions",
+      "command": "python3 SET-2/settings.py put system haptic_feedback_enabled <VALUE>",
+      "encoding": "VALUE: 1 = haptic feedback enabled, 0 = disabled. Controls vibration on keyboard taps, button presses, etc. Default is 1 (enabled)."
+    },
+    "set_vibrate_when_ringing": {
+      "intent": "enable or disable vibration when receiving calls",
+      "command": "python3 SET-2/settings.py put system vibrate_when_ringing <VALUE>",
+      "encoding": "VALUE: 1 = phone vibrates while ringing for calls, 0 = no vibration during ring. Default is 1 (vibrate on)."
+    },
+    "set_font_scale": {
+      "intent": "set the system font size scale",
+      "command": "python3 SET-2/settings.py put system font_scale <VALUE>",
+      "encoding": "VALUE is a string float. Standard Android scale steps: '0.85' = small, '1.0' = default/normal, '1.15' = large, '1.30' = larger, '1.45' = largest (accessibility). Some devices extend to '2.0'. Always store as a quoted decimal string with no trailing zeros beyond one decimal place. Default is '1.0'."
+    },
+    "set_sound_effects": {
+      "intent": "enable or disable UI sound effects (touch sounds, lock sounds, keyboard clicks)",
+      "command": "python3 SET-2/settings.py put system sound_effects_enabled <VALUE>",
+      "encoding": "VALUE: 1 = sound effects on (touches, lock/unlock, etc.), 0 = silent UI sounds. Default is 1 (enabled)."
+    },
+    "set_ringer_mode": {
+      "intent": "set the ringer mode (normal, vibrate, or silent)",
+      "command": "python3 SET-2/settings.py put system ringer_mode <VALUE>",
+      "encoding": "VALUE: 0 = silent (no sound, no vibration), 1 = vibrate only (no ringtone), 2 = normal/ring (audible ringtone). Default is 2 (normal). Note: setting zen_mode may override or interact with ringer_mode."
+    },
+    "set_notification_light": {
+      "intent": "enable or disable the notification LED / blinking light pulse",
+      "command": "python3 SET-2/settings.py put system notification_light_pulse <VALUE>",
+      "encoding": "VALUE: 1 = notification LED blinks for missed notifications, 0 = LED disabled. Default is 1 (enabled). Only relevant on devices with a physical notification LED."
+    },
+    "set_location_mode": {
+      "intent": "set location accuracy mode or disable location entirely",
+      "command": "python3 SET-2/settings.py put secure location_mode <VALUE>",
+      "encoding": "VALUE (Android location mode enum): 0 = off (location disabled), 1 = sensors only / device only (GPS only, no network), 2 = battery saving (network/Wi-Fi only, no GPS), 3 = high accuracy (GPS + Wi-Fi + mobile network). Default is 1 (sensors/device only). Modern Android (API 28+) collapses to on/off but the key still accepts these codes."
+    },
+    "set_adb": {
+      "intent": "enable or disable USB debugging (ADB)",
+      "command": "python3 SET-2/settings.py put secure adb_enabled <VALUE>",
+      "encoding": "VALUE: 1 = ADB/USB debugging enabled, 0 = disabled. Default is 0 (disabled). Requires development_settings_enabled=1 in global namespace to take effect."
+    },
+    "set_install_unknown_apps": {
+      "intent": "enable or disable installation of apps from unknown sources (outside Play Store)",
+      "command": "python3 SET-2/settings.py put secure install_non_market_apps <VALUE>",
+      "encoding": "VALUE: 1 = allow sideloading / unknown sources, 0 = only Play Store installs allowed. Default is 0 (disabled). On Android 8+, per-app permission supersedes this global, but the key is still respected on many devices."
+    },
+    "set_accessibility": {
+      "intent": "enable or disable the master accessibility services switch",
+      "command": "python3 SET-2/settings.py put secure accessibility_enabled <VALUE>",
+      "encoding": "VALUE: 1 = accessibility services are active, 0 = disabled. Default is 0. Individual services also need to be listed in enabled_accessibility_services; this key is the master gate."
+    },
+    "set_screensaver": {
+      "intent": "enable or disable the screensaver / daydream when charging or docked",
+      "command": "python3 SET-2/settings.py put secure screensaver_enabled <VALUE>",
+      "encoding": "VALUE: 1 = screensaver/daydream enabled (activates when charging/docked), 0 = disabled. Default is 1 (enabled)."
+    },
+    "set_always_on_display": {
+      "intent": "enable or disable always-on display (AOD) / ambient display",
+      "command": "python3 SET-2/settings.py put secure doze_always_on <VALUE>",
+      "encoding": "VALUE: 1 = always-on display active (shows clock/notifications when screen off), 0 = disabled. Default is 0. Enabling consumes more battery."
+    },
+    "set_input_method": {
+      "intent": "set the default keyboard / input method",
+      "command": "python3 SET-2/settings.py put secure default_input_method <VALUE>",
+      "encoding": "VALUE is a string: the component name of the IME (Input Method Editor). Examples: 'gboard' or 'com.google.android.inputmethod.latin/.LatinIME' for Gboard, 'com.swiftkey.SwiftKey/.keyboard.KeyboardService' for SwiftKey. Use the exact package/component string. Default is 'gboard'."
+    },
+    "set_high_text_contrast": {
+      "intent": "enable or disable high text contrast for improved readability",
+      "command": "python3 SET-2/settings.py put secure high_text_contrast_enabled <VALUE>",
+      "encoding": "VALUE: 1 = high contrast text enabled (bolder, higher-contrast font rendering), 0 = normal text rendering. Default is 0 (disabled). Accessibility feature."
+    },
+    "set_airplane_mode": {
+      "intent": "enable or disable airplane mode (disables all radios)",
+      "command": "python3 SET-2/settings.py put global airplane_mode_on <VALUE>",
+      "encoding": "VALUE: 1 = airplane mode on (Wi-Fi, Bluetooth, mobile data, NFC all disabled), 0 = airplane mode off. Default is 0. Note: the setting alone may not toggle hardware radios on all devices — a broadcast intent is also typically needed, but this key records the state."
+    },
+    "set_wifi": {
+      "intent": "enable or disable Wi-Fi",
+      "command": "python3 SET-2/settings.py put global wifi_on <VALUE>",
+      "encoding": "VALUE: 1 = Wi-Fi enabled, 0 = Wi-Fi disabled. Default is 1 (on)."
+    },
+    "set_bluetooth": {
+      "intent": "enable or disable Bluetooth",
+      "command": "python3 SET-2/settings.py put global bluetooth_on <VALUE>",
+      "encoding": "VALUE: 1 = Bluetooth enabled, 0 = Bluetooth disabled. Default is 1 (on)."
+    },
+    "set_mobile_data": {
+      "intent": "enable or disable mobile / cellular data",
+      "command": "python3 SET-2/settings.py put global mobile_data <VALUE>",
+      "encoding": "VALUE: 1 = mobile data enabled, 0 = mobile data disabled. Default is 1 (on)."
+    },
+    "set_data_roaming": {
+      "intent": "enable or disable data roaming on cellular networks",
+      "command": "python3 SET-2/settings.py put global data_roaming <VALUE>",
+      "encoding": "VALUE: 1 = data roaming enabled (use data on foreign/partner networks), 0 = roaming disabled. Default is 0 (disabled, avoids unexpected charges)."
+    },
+    "set_nfc": {
+      "intent": "enable or disable NFC (Near Field Communication)",
+      "command": "python3 SET-2/settings.py put global nfc_on <VALUE>",
+      "encoding": "VALUE: 1 = NFC enabled (contactless payments, beam, tags), 0 = NFC disabled. Default is 1 (on)."
+    },
+    "set_auto_time": {
+      "intent": "enable or disable automatic date and time synchronization",
+      "command": "python3 SET-2/settings.py put global auto_time <VALUE>",
+      "encoding": "VALUE: 1 = automatically set date/time from network (NTP), 0 = manual date/time. Default is 1 (auto on)."
+    },
+    "set_auto_timezone": {
+      "intent": "enable or disable automatic time zone detection",
+      "command": "python3 SET-2/settings.py put global auto_time_zone <VALUE>",
+      "encoding": "VALUE: 1 = automatically set time zone from network/location, 0 = manual time zone. Default is 1 (auto on)."
+    },
+    "set_device_name": {
+      "intent": "set the device name / hostname visible to other devices",
+      "command": "python3 SET-2/settings.py put global device_name <VALUE>",
+      "encoding": "VALUE is a plain string, e.g. 'Pixel-8', 'MyPhone', 'John-Pixel'. Shown in Bluetooth device lists, Wi-Fi hotspot, and nearby-share. No quotes needed in the command. Default is 'Pixel-8'."
+    },
+    "set_zen_mode": {
+      "intent": "set Do Not Disturb (DND) / zen mode level",
+      "command": "python3 SET-2/settings.py put global zen_mode <VALUE>",
+      "encoding": "VALUE (Android zen_mode enum): 0 = off (all notifications allowed), 1 = important interruptions only (priority contacts/alarms break through), 2 = total silence (nothing gets through, including alarms), 3 = alarms only (only alarm clock sounds). Default is 0 (off). Note: code 1 is sometimes labeled 'priority only'; code 2 is full DND silence."
+    },
+    "set_battery_saver": {
+      "intent": "enable or disable battery saver / low power mode",
+      "command": "python3 SET-2/settings.py put global low_power <VALUE>",
+      "encoding": "VALUE: 1 = battery saver on (restricts background activity, reduces performance, dims screen), 0 = normal mode. Default is 0 (off). Typically auto-activates below 15–20% if configured."
+    },
+    "set_heads_up_notifications": {
+      "intent": "enable or disable heads-up / peek notifications (pop-over banners while using phone)",
+      "command": "python3 SET-2/settings.py put global heads_up_notifications_enabled <VALUE>",
+      "encoding": "VALUE: 1 = heads-up notifications enabled (banners float over current app), 0 = disabled (notifications only appear in status bar/shade). Default is 1 (enabled)."
+    },
+    "set_developer_options": {
+      "intent": "enable or disable the developer options menu",
+      "command": "python3 SET-2/settings.py put global development_settings_enabled <VALUE>",
+      "encoding": "VALUE: 1 = developer options visible and active in Settings, 0 = developer options hidden. Default is 0 (hidden). Required before adb_enabled takes effect."
+    },
+    "set_wifi_sleep_policy": {
+      "intent": "set when Wi-Fi is allowed to sleep (turn off) to save battery",
+      "command": "python3 SET-2/settings.py put global wifi_sleep_policy <VALUE>",
+      "encoding": "VALUE (Android wifi_sleep_policy enum): 0 = never sleep (Wi-Fi stays on always), 1 = sleep only when plugged in (stays on on battery, sleeps when charging and screen off), 2 = always sleep when screen is off (default power-saving behavior). Default is 2."
+    }
+  },
+  "composites": {
+    "bedtime_routine": {
+      "intent": "prepare the phone for sleep: silence, dim, long timeout, DND alarms-only",
+      "steps": [
+        "set_zen_mode",
+        "set_ringer_mode",
+        "set_brightness",
+        "set_screen_timeout",
+        "set_heads_up_notifications",
+        "set_always_on_display",
+        "set_haptic_feedback",
+        "set_vibrate_when_ringing"
+      ],
+      "note": "zen_mode=3 (alarms only), ringer_mode=0 (silent), brightness=10% (~26), screen_off_timeout=120000 (2 min), heads_up=0, doze_always_on=0 (save battery overnight), haptic=0, vibrate_when_ringing=0"
+    },
+    "battery_saver_routine": {
+      "intent": "aggressively extend battery life",
+      "steps": [
+        "set_battery_saver",
+        "set_brightness",
+        "set_brightness_mode",
+        "set_screen_timeout",
+        "set_bluetooth",
+        "set_nfc",
+        "set_always_on_display",
+        "set_wifi_sleep_policy",
+        "set_mobile_data",
+        "set_location_mode"
+      ],
+      "note": "low_power=1, brightness=20% (~51), brightness_mode=0 (manual to avoid sensor drain), screen_off_timeout=15000 (15s), bluetooth=0, nfc=0, doze_always_on=0, wifi_sleep_policy=2, mobile_data=1 (keep for notifications), location_mode=0 (off to save GPS)"
+    },
+    "driving_routine": {
+      "intent": "optimise phone for safe in-car use: loud ring, auto-rotate off, screen on, DND except calls",
+      "steps": [
+        "set_ringer_mode",
+        "set_vibrate_when_ringing",
+        "set_zen_mode",
+        "set_brightness",
+        "set_brightness_mode",
+        "set_screen_timeout",
+        "set_auto_rotate",
+        "set_bluetooth",
+        "set_heads_up_notifications"
+      ],
+      "note": "ringer_mode=2 (normal/loud), vibrate_when_ringing=0, zen_mode=1 (priority — calls break through), brightness=100% (255) or brightness_mode=1 (auto), screen_off_timeout=600000 (10 min), accelerometer_rotation=0 (lock landscape for mount), bluetooth=1 (for car audio), heads_up=0 (reduce distraction)"
+    },
+    "airplane_flight_routine": {
+      "intent": "enable airplane mode for flights, optionally re-enable Wi-Fi for in-flight entertainment",
+      "steps": [
+        "set_airplane_mode",
+        "set_wifi",
+        "set_bluetooth",
+        "set_screen_timeout",
+        "set_brightness"
+      ],
+      "note": "airplane_mode_on=1, then wifi_on=1 if in-flight Wi-Fi available, bluetooth_on=1 for headphones, screen_off_timeout=300000 (5 min), brightness=50% (128) for cabin comfort"
+    },
+    "focus_dnd_routine": {
+      "intent": "deep work / focus session: total silence, no banners, minimal distractions",
+      "steps": [
+        "set_zen_mode",
+        "set_ringer_mode",
+        "set_heads_up_notifications",
+        "set_vibrate_when_ringing",
+        "set_haptic_feedback",
+        "set_sound_effects",
+        "set_notification_light"
+      ],
+      "note": "zen_mode=2 (total silence), ringer_mode=0 (silent), heads_up=0, vibrate_when_ringing=0, haptic=0, sound_effects=0, notification_light=0 — zero interruptions"
+    },
+    "gaming_routine": {
+      "intent": "maximise display and responsiveness for gaming: bright screen, no interruptions, long timeout",
+      "steps": [
+        "set_brightness",
+        "set_brightness_mode",
+        "set_screen_timeout",
+        "set_auto_rotate",
+        "set_zen_mode",
+        "set_heads_up_notifications",
+        "set_haptic_feedback",
+        "set_sound_effects"
+      ],
+      "note": "brightness=100% (255), brightness_mode=0 (manual, stable), screen_off_timeout=1800000 (30 min), accelerometer_rotation=1 (auto-rotate for landscape games), zen_mode=1 (priority only — no popups), heads_up=0, haptic=1 (game feedback), sound_effects=1"
+    },
+    "accessibility_routine": {
+      "intent": "enable key accessibility features for users with visual or motor impairments",
+      "steps": [
+        "set_font_scale",
+        "set_high_text_contrast",
+        "set_brightness",
+        "set_brightness_mode",
+        "set_accessibility",
+        "set_screen_timeout",
+        "set_haptic_feedback"
+      ],
+      "note": "font_scale='1.45' (largest standard), high_text_contrast=1, brightness=80% (204), brightness_mode=1 (auto), accessibility_enabled=1, screen_off_timeout=300000 (5 min — more time to read), haptic=1"
+    },
+    "privacy_lockdown_routine": {
+      "intent": "reduce data exposure: disable radios, location, ADB, unknown sources, roaming",
+      "steps": [
+        "set_location_mode",
+        "set_adb",
+        "set_install_unknown_apps",
+        "set_data_roaming",
+        "set_nfc",
+        "set_bluetooth",
+        "set_developer_options",
+        "set_always_on_display"
+      ],
+      "note": "location_mode=0 (off), adb=0, install_non_market_apps=0, data_roaming=0, nfc=0, bluetooth=0, development_settings=0, doze_always_on=0 (no ambient sensor exposure)"
+    },
+    "presentation_mode_routine": {
+      "intent": "give a presentation or demo: bright stable screen, silent, no notifications, no rotation surprises",
+      "steps": [
+        "set_brightness",
+        "set_brightness_mode",
+        "set_screen_timeout",
+        "set_auto_rotate",
+        "set_zen_mode",
+        "set_ringer_mode",
+        "set_heads_up_notifications",
+        "set_sound_effects"
+      ],
+      "note": "brightness=100% (255), brightness_mode=0 (manual, no flicker), screen_off_timeout=1800000 (30 min), accelerometer_rotation=0 (lock — avoid accidental rotation), zen_mode=2 (total silence), ringer_mode=0, heads_up=0, sound_effects=0"
+    },
+    "outdoor_bright_routine": {
+      "intent": "maximise visibility in bright sunlight",
+      "steps": [
+        "set_brightness",
+        "set_brightness_mode",
+        "set_screen_timeout"
+      ],
+      "note": "brightness=255 (100%), brightness_mode=1 (auto-adaptive for sunlight boost on Pixel), screen_off_timeout=120000 (2 min to balance battery)"
+    },
+    "developer_debug_routine": {
+      "intent": "enable developer tools and ADB for development/debugging work",
+      "steps": [
+        "set_developer_options",
+        "set_adb",
+        "set_screen_timeout",
+        "set_always_on_display"
+      ],
+      "note": "development_settings_enabled=1 first (required), then adb_enabled=1, screen_off_timeout=600000 (10 min — avoid reconnects), doze_always_on=0 (avoid screen staying on only for AOD)"
+    },
+    "travel_roaming_routine": {
+      "intent": "prepare phone for international travel: enable roaming, auto time zone, set device name, disable NFC tap-to-pay risk",
+      "steps": [
+        "set_data_roaming",
+        "set_auto_time",
+        "set_auto_timezone",
+        "set_nfc",
+        "set_wifi",
+        "set_device_name"
+      ],
+      "note": "data_roaming=1, auto_time=1, auto_time_zone=1, nfc=0 (reduce skimming risk in crowded places), wifi_on=1 (use hotel/airport Wi-Fi), device_name as preferred (e.g. 'MyPhone-Travel')"
+    }
+  }
+}

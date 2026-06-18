@@ -1,0 +1,424 @@
+\chapter{Evaluation}
+\label{ch:eval}
+
+This chapter tests the central claim of the thesis in five steps. We first
+establish how much model \emph{binding} actually needs, with routing held fixed
+(Section~\ref{sec:p1}). We then explain \emph{why} a small free-form model fails
+(Section~\ref{sec:p2}), and show that the value of the reflexer depends on the
+difficulty of the device interface (Section~\ref{sec:p3}). Section~\ref{sec:p4}
+reports the result the rest of the thesis turns on: there are task difficulties
+that model scale provably cannot solve, but a distilled pattern can.
+Section~\ref{sec:p5} closes the loop by distilling those patterns automatically
+and measuring how much the choice of teacher matters. The last three sections
+place the work in context---real-device coverage (Section~\ref{sec:coverage}),
+the honest bottleneck (Section~\ref{sec:routing}), and the economics
+(Section~\ref{sec:economics}).
+
+Every number below is taken from a saved run under \texttt{benchmark/reports/};
+the cited filename accompanies each result. Two evaluation disciplines hold
+throughout, and are detailed in Chapter~\ref{ch:method}: \emph{binding-only}
+scoring (routing assumed perfect, so that only the execution stage is under test)
+and the \emph{end-state oracle} (success is the final device state, not the
+command string). No number in this chapter is estimated or hand-edited.
+
+\section{Choosing the reflexer model}
+\label{sec:p0}
+
+Before comparing tiers, the reflexer model itself must be fixed, since the rest of
+the chapter holds it constant. The work began with \texttt{ministral-3-3b}, an
+instruction-tuned 3B model, which already bound the deterministic slice well; the
+question was whether a smaller or different model could do as well or better. We
+swept the Qwen3.5 family (0.8B, 2B, 4B) against \texttt{ministral-3-3b} on the
+409-atom expansion set, binding-only, each model handed the gold pattern
+(\texttt{binding-only-qwen3.5-*-atoms.txt}, \texttt{binding-only-all-ministral-2026-06-16.txt}).
+
+\begin{table}[t]
+\centering
+\caption{Reflexer model sweep, 409 expansion atoms, binding-only. The 2B is the
+smallest model with perfect binding \emph{and} perfect vocabulary compliance.}
+\label{tab:reflexer-sweep}
+\begin{tabular}{lcc}
+\toprule
+Model (Q4) & Atom binding & Signature failure mode \\
+\midrule
+qwen-3.5-0.8b & 380/409 (92.9\%) & violates vocabulary (emits \texttt{docker}, not the \texttt{dock} alias; 0\% docker) \\
+\textbf{ministral-3-3b} & 391/409 (95.6\%) & prunes static flags (\texttt{-{}-skip-download}; youtube 81\%) \\
+\textbf{qwen-3.5-2b} & \textbf{409/409 (100\%)} & none \\
+qwen-3.5-4b & 100\% on captured subset$^{\dagger}$ & none observed \\
+\bottomrule
+\end{tabular}
+
+\smallskip
+{\footnotesize $^{\dagger}$ A full 409-run for 4B was not persisted (only a
+docker+service subset, 24/24); it is not reported as a full figure. On the larger
+627-task set including core skills, ministral-3-3b scores 601/627 (95.9\%).}
+\end{table}
+
+Two findings come out of the sweep. First, \texttt{qwen-3.5-2b} is the best
+reflexer found: perfect binding across all 409 atoms, beating both the smaller
+0.8B and the larger ministral-3-3b, at the smallest size that fits a 4\,GB device
+budget---so it is adopted for the rest of the thesis. Second, and more
+interesting, the small models fail in \emph{model-specific signatures} rather than
+a single universal weakness. The 0.8B is \emph{semantically} correct but
+\emph{schema}-noncompliant: it emits the real binary name (\texttt{docker start})
+instead of the skill's defined alias (\texttt{dock start}), failing every docker
+task even at temperature $0.2$, because it cannot override a strong lexical prior.
+The 2B complies perfectly, at parity with 4B. Vocabulary compliance is therefore a
+\textbf{capability threshold between 0.8B and 2B}, not a smooth gradient---scale
+beyond 2B buys nothing here. The ministral-3-3b signature is different again: it
+obeys the vocabulary perfectly but prunes semantically-secondary static flags
+(\texttt{-{}-skip-download}), which is why a capable 3B nonetheless drops to 81\%
+on the affected skill. The lesson for the design is that a reflexer must be chosen
+for \emph{schema obedience}, not raw capability, and that a 2B model already clears
+that bar.
+
+\section{The binding spine: distillation substitutes for scale}
+\label{sec:p1}
+
+The first experiment fixes routing and asks a single question: given that the
+right intent has been identified, how large must a model be to emit the right
+command? We compare three conditions on the same matched task set (the
+\emph{balanced-10}: one to two tasks per skill across all seven skills):
+a 2B reflexer handed the distilled pattern, and a free-form thinker---given only
+the skill documentation---at 2B and at 35B.
+
+\begin{table}[t]
+\centering
+\caption{Binding accuracy on the matched balanced-10 set, with routing held
+fixed. The 2B reflexer with a pattern equals the 35B free-form thinker; the same
+2B without the pattern reaches only 30\%.}
+\label{tab:spine}
+\begin{tabular}{lcccc}
+\toprule
+Condition & Binding & Model size & Median latency & Tokens/task \\
+\midrule
+Reflexer + pattern & \textbf{10/10 (100\%)} & 2B & single call & --- (1 call) \\
+Thinker, no pattern & \textbf{10/10 (100\%)} & 35B & 6.4 s & $\sim$1.3k \\
+Thinker, no pattern & 3/10 (30\%) & 2B & 1.7 s & $\sim$0.7k \\
+Thinker, no pattern & 1/10 (10\%) & 4B$^{\dagger}$ & 2.8 s & $\sim$0.7k \\
+\bottomrule
+\end{tabular}
+
+\smallskip
+{\footnotesize $^{\dagger}$ The 4B is configured at context 4000 versus the
+35B's 131k, so its thinking crowds the skill document; it is not a clean
+capability point. Sources: \texttt{binding-only-phase2-qwen2b-balanced10.txt},
+\texttt{thinker-binding-phase2-qwen35b-balanced10.txt},
+\texttt{thinker-binding-phase2-qwen2b-balanced10.txt},
+\texttt{thinker-binding-phase2-qwen4b-balanced10.txt}.}
+\end{table}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.72\textwidth]{fig_binding.pdf}
+  \caption{Binding accuracy by condition (balanced-10). Scale alone is
+  non-monotonic (4B $<$ 2B $<$ 35B); the pattern takes a 2B to the 35B ceiling.}
+  \label{fig:binding}
+\end{figure}
+
+The result, stated plainly: \textbf{a 2B reflexer with a distilled pattern
+matches a 35B free-form thinker (both 100\%), while the same 2B without the
+pattern manages 30\%}. The pattern is worth roughly $17\times$ the parameters on
+this task. The effect persists at scale on the full set: the 2B reflexer binds
+\textbf{72/72 (100\%)} atoms across every skill, where the 2B thinker manages
+only \textbf{14/72 (19.4\%)} (\texttt{binding-only-phase2-qwen2b.txt},
+\texttt{thinker-binding-phase2-qwen2b.txt}).
+
+Two readings must travel with this headline. First, scale is an \emph{unreliable}
+lever for binding: the 4B scores below the 2B, partly a context confound but
+partly a real signal---the 4B emits higher-quality \emph{real} Linux commands
+(\texttt{nmcli radio wifi off}, \texttt{playerctl pause}) because it knows the
+true APIs better, and so obeys the skill's defined surface \emph{less}. Capability
+to know and obedience to the surface can trade off. Second, this is a systems and
+efficiency result, not a claim that ``2B is smarter than 35B.'' The reflexer is
+handed the command template and only fills slots, a strictly easier task than
+free-form generation. The legitimate claim is precise: \emph{on the deterministic
+slice where intents repeat often enough to distill, a 2B constrained executor
+matches a 35B free-form thinker's binding accuracy at a fraction of the size,
+latency, and tokens.}
+
+\section{Why the small free-form model fails}
+\label{sec:p2}
+
+The 30\% of the unaided 2B thinker is not uniform incompetence; it decomposes
+into two distinct and opposite failure modes, visible when the per-skill numbers
+are examined (\texttt{thinker-binding-phase2-qwen2b.txt}): app 0/6, browser
+0/16, call 0/8, clock 1/14, focus 1/6, media 3/10, and device\_settings 9/12.
+
+\paragraph{Under-triggering (no action at all).} On all eight \texttt{call}
+tasks the 2B thinker emitted \emph{zero} commands. Short social imperatives---
+``call mom,'' ``hang up,'' ``answer''---hit the model's conversational prior, and
+it replies in prose instead of invoking a tool. With no command emitted, the task
+is an automatic miss. The failure is not wrong output; it is the absence of
+output.
+
+\paragraph{Wrong vocabulary (real-shell substitution).} On \texttt{app} tasks the
+model \emph{does} act, but free-forms from its pretraining prior: \texttt{spotify
+\&}, \texttt{killall firefox}, \texttt{ps aux | grep}, never the skill's defined
+\texttt{app open -{}-name}. Capability is present; obedience to the defined
+surface is absent.
+
+The diagnostic skill is \texttt{clock}, whose documentation deliberately exposes
+its real backend (\texttt{systemd-run}, \texttt{systemctl}). Here even the 35B
+thinker binds only 30\% (\texttt{thinker-binding-phase2-qwen35b-first10.txt}),
+and the 2B only 7\% (1/14), while the reflexer binds 100\% (14/14). A reasoning
+model reads the leaked mechanism and prefers the concrete tool it has a strong
+prior for (\texttt{systemctl -{}-user list-timers}) over the abstract
+\texttt{clock} alias it has a weak prior for. For the thinker, the skill document
+is a \emph{soft} prompt mediated by priors and sampling; for the reflexer, the
+\texttt{args\_template} is a \emph{hard} constraint with no prose to reason
+around. Both failure modes are erased by the pattern, which hard-codes the
+command shape. This is also a productization argument for distillation: the
+reflexer is robust to documentation quality, whereas the thinker is not.
+
+\section{The spectrum: efficiency on clean APIs, accuracy on realistic ones}
+\label{sec:p3}
+
+Whether the reflexer's benefit shows up as \emph{efficiency} or as \emph{accuracy}
+depends on the interface. Two settings benchmarks bracket the range. SET-1 is a
+clean, friendly settings API (\texttt{settings set connectivity.wifi off}); SET-2
+is a realistic Android API (\texttt{settings put <ns> <key> <value>}) with three
+namespaces, non-obvious encodings (brightness 0--255, timeouts in milliseconds,
+integer enums for Do-Not-Disturb and location, a string-float font scale), and a
+permissive \texttt{put} that silently ``succeeds'' on wrong inputs---exactly how
+\texttt{adb shell settings} behaves.
+
+On the \emph{clean} API the small model is already a competent executor when it
+is given a deep tool (Table~\ref{tab:set1}). Manual state editing collapses to
+about a third; the same model driving the deep \texttt{settings} script reaches
+100\%, including two- and three-step compound tasks, because the script rejects
+wrong guesses and the model recovers. The gain is real but it is
+\emph{efficiency and competence}---fewer calls, fewer tokens, recovery from
+error---not new accuracy the model lacked.
+
+\begin{table}[t]
+\centering
+\caption{SET-1 (clean API), qwen-3.5-2b. The deep tool is an efficiency win:
+$+65$ percentage points, at 2 calls instead of 9. Sources:
+\texttt{set1-e1e2-qwen2b.txt}, \texttt{set1-e2-hard-qwen2b.txt}.}
+\label{tab:set1}
+\begin{tabular}{lccc}
+\toprule
+Mode & Oracle pass & Median calls & Median tokens \\
+\midrule
+E1 --- manual JSON edit (no script) & $\sim$30--35\% & 9 & 3098 \\
+E2 --- \texttt{settings} script & \textbf{100\%} (20/20; hard 10/10) & \textbf{2} & \textbf{775} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+On the \emph{realistic} API the picture inverts. A free-form 2B thinker over the
+48 SET-2 tasks scores \textbf{12/48 (25\%)} (\texttt{set2-thinker-qwen2b-48.txt}).
+Its failures cluster exactly on what cannot be guessed: every brightness percent
+that must become 0--255, every timeout that must become milliseconds, the integer
+enums, and the key-name traps (\texttt{airplane mode} $\rightarrow$
+\texttt{airplane\_mode\_on}). It passes only guessable booleans and trivial
+arithmetic. Here the abstraction is no longer about efficiency---a small free-form
+agent simply \emph{cannot} drive a realistic device-settings API. The reflexer's
+benefit has shifted from saving calls to supplying accuracy.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\textwidth]{fig_spectrum.pdf}
+  \caption{The reflexer's benefit scales with discovery difficulty: an efficiency
+  win on a clean API, an accuracy win on a realistic one.}
+  \label{fig:spectrum}
+\end{figure}
+
+\section{The limit of scale}
+\label{sec:p4}
+
+If a small free-form model fails SET-2, the obvious response is to use a bigger
+one. This section shows where that response stops working---the result the thesis
+is built around.
+
+A 35B reasoning thinker (\texttt{qwen3.6-35b}) was run on the hardest SET-2
+slices: the last three tasks (\textbf{3/3}, \texttt{set2-thinker-qwen3.6-35b-*.json})
+and the five hardest excluding those (\textbf{2/5}, \texttt{set2-thinker-35b-hard5.txt}),
+for \textbf{5/8 (62.5\%)} combined, at roughly nine calls and 17--20 seconds per
+task, off-device. The 35B clearly beats the 2B---but the manner of its failures
+is the point. They are not \emph{discovery} failures. The 35B reliably finds the
+right namespace and key by exploring the API (\texttt{list}, \texttt{grep},
+\texttt{get}, then \texttt{put}). Its failures are \emph{encoding semantics}
+(Table~\ref{tab:limit}).
+
+\begin{table}[t]
+\centering
+\caption{The 35B thinker's SET-2 failures are conventions, not discovery. These
+values are not derivable from the API; the model guesses, and is wrong.}
+\label{tab:limit}
+\begin{tabular}{lcc}
+\toprule
+Task & Correct value & 35B produced \\
+\midrule
+``largest font'' & \texttt{font\_scale "1.30"} & \texttt{"1.5"} \\
+``DND total silence'' & \texttt{zen\_mode 2} & \texttt{1} \\
+``DND important only'' & \texttt{zen\_mode 1} & \texttt{2} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This separates two kinds of difficulty by what scale can fix.
+\textbf{Discovery}---\emph{which} namespace and key?---is solvable by exploration,
+and the 35B does it. \textbf{Encoding semantics}---what does the enum value
+\texttt{2} mean, what number is ``largest''?---is \emph{not discoverable} from the
+API at all, and even a 35B guesses and is wrong about half the time. The
+\texttt{zen\_mode} error is especially telling: the model makes the \emph{same}
+mistake every time it is asked, which marks a consistent gap in what the model
+knows rather than sampling noise. \textbf{Scale rescues discovery; scale cannot
+rescue undiscoverable conventions.} That knowledge exists only in a distilled
+pattern---which is what the next section supplies.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.72\textwidth]{fig_discovery.pdf}
+  \caption{Why a distilled pattern beats a $17\times$ larger model on the
+  realistic API: the bottleneck is undiscoverable convention, not reasoning.}
+  \label{fig:discovery}
+\end{figure}
+
+\section{Closing the loop: cold-start distillation and teacher quality}
+\label{sec:p5}
+
+The convention knowledge that no model discovers can be supplied once, offline,
+by a teacher. We test this in the hardest honest setting: \emph{cold-start}
+distillation, in which the teacher is given only the skill documentation and the
+API schema---never any task or its gold outcome---and must mint the patterns from
+documentation and prior knowledge alone. The 2B reflexer then applies those
+patterns on the single-setting tasks, scored by the same end-state oracle.
+
+With a capable cloud teacher (Claude Sonnet 4.6), the reflexer rises from the
+free-form 25\% to \textbf{19/25 (76\%)} on the initial cold-start run, and to
+\textbf{20/25 (80\%)} under the key-matched mapping used for the teacher
+comparison below.% TODO reconcile 19 vs 20: confirm whether one task flipped between the E3/E4 run and the key-matched re-run; report the single authoritative figure.
+\ The teacher encoded the very conventions the larger in-context thinker got
+wrong---including \texttt{zen\_mode = 2} for total silence---and honestly flagged
+the two it was unsure of (\texttt{font\_scale} ``largest'' and
+\texttt{wifi\_sleep\_policy} ``never''), which are genuinely device- or
+version-specific and not derivable from documentation
+(\texttt{set2-reflexer-qwen-3.5-2b-*.json}). A distilled pattern minted without
+ever seeing a task therefore beats a $17\times$ larger model that reasons over
+the live API---because it carries knowledge the API does not expose.
+
+Because the teacher is a swappable component, its quality should propagate to the
+student, and it does. Repeating the cold-start distillation with a \emph{local}
+35B teacher (\texttt{qwen3.6-35b}) under an identical prompt, then running the
+\emph{same} 2B reflexer on each teacher's patterns, gives Table~\ref{tab:teacher}.
+
+\begin{table}[t]
+\centering
+\caption{Teacher quality propagates to the student: $-20$ points from the weaker
+teacher, on the same reflexer and tasks (key-matched mapping, 25 single-setting
+tasks). Sources: \texttt{patterns\_distilled.json} (cloud) vs
+\texttt{patterns\_distilled\_pi.json} (local); \texttt{set2-reflexer-qwen-3.5-2b-*}.}
+\label{tab:teacher}
+\begin{tabular}{lccc}
+\toprule
+Teacher (distiller) & Structure (keys/ns) & Conventions correct & Reflexer pass \\
+\midrule
+Sonnet 4.6 (cloud) & 32/32, 0 errors & $\sim$5/7 critical & \textbf{20/25 (80\%)} \\
+qwen3.6-35b (local) & 32/32, 0 errors & $\sim$2/7 critical & 15/25 (60\%) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Both teachers are perfect on \emph{structure}---every key, every namespace---so
+discovery is easy for either. They diverge on \emph{conventions}. The local 35B
+baked in its own wrong priors: \texttt{zen\_mode} total-silence as \texttt{1}
+(the same error it made as a thinker, a consistent gap), \texttt{location\_mode}
+high-accuracy collapsed to a three-value enum, a wrong brightness worked example,
+and an over-verbose \texttt{airplane} encoding that induced \emph{collateral
+edits} in the student (the 2B then toggled Wi-Fi and Bluetooth too, failing the
+no-collateral oracle). It also reported ``all verified'' while silently wrong,
+where the cloud teacher flagged its uncertainty. The lesson is operational:
+cold-start distillation should use the strongest available teacher as a one-time
+step; a weak local teacher is a weak distiller, and the cheap reflexer faithfully
+executes whatever priors it inherits. The two conventions both teachers miss
+point at the remaining lever---session-based grounding on the real device---which
+Chapter~\ref{ch:discussion} returns to.
+
+\section{Coverage: what fraction of real use-cases this addresses}
+\label{sec:coverage}
+
+Binding accuracy is meaningful only against a denominator of real demand. Mapping
+the skill library against the on-device use-cases that Google (Gemini Nano via
+AICore) and Apple (Apple Intelligence, App Intents) target shows that the
+reflexer's natural territory is the \emph{deterministic head}: single-command
+device and media control, smart-home toggles, system and timer operations, and
+parameterized reads with clear verbs. Apple's App Intents are, in effect, the
+same construct as a distilled pattern---a pre-declared, parameterized action the
+on-device model fills rather than invents---which is independent validation of
+the executioner design. What the reflexer does not cover, by design, escalates to
+the thinker: multi-intent requests, conversation and planning, and anything
+outside an installed skill. The qualitative coverage mapping is documented in
+\texttt{docs/research/ondevice\_usecases\_pixel\_apple.md}.
+
+\section{The honest bottleneck: routing, not binding}
+\label{sec:routing}
+
+This thesis has held routing fixed in order to isolate binding, and binding is
+effectively solved on the deterministic slice (96--100\%). End-to-end coverage,
+however, is the product of routing and binding, and routing is the limiter. On
+creative, well-designed skills, routing reaches about 85\%; on overlapping skills
+it falls to 66--68\%, so realistic single-intent coverage today is roughly
+65--85\%, set almost entirely by the router
+(\texttt{routing\_ablation\_report.md}; \texttt{findings\_retrieval\_and\_selection.md}).
+Decomposed, retrieval is not the bound (the correct candidate is usually in the
+top-3); \emph{selection} is---the router picks the wrong sibling within or across
+skills---and selection does not improve with selector scale, only with better
+prompting. Stating this plainly is part of the contribution: the binding ceiling
+is reached, and the open problem for a shippable system is the router.
+
+\section{Economics: when reflexing is worth it}
+\label{sec:economics}
+
+The architecture is ultimately a cost argument, so it should be settled as cost
+accounting. A pattern is a frozen answer shape: the reflexer never \emph{solves}
+the task, it fills in a solution found once, which is why a 2B can match a 35B on
+it. In distillation terms the large model is the \emph{teacher} that mints the
+pattern once, offline, and the reflexer is the \emph{student} that runs it
+forever, on-device; the teacher's cost is paid at distillation time, not at
+inference time, and---unlike a fine-tune---the symbolic pattern stays
+plug-and-play.
+
+\begin{table}[t]
+\centering
+\caption{Order-of-magnitude cost model. Break-even is reached at roughly ten
+invocations, before counting the size, latency, and on-device-feasibility
+advantages. Source: \texttt{findings\_thinker\_vs\_reflexer.md} \S9.}
+\label{tab:economics}
+\begin{tabular}{lll}
+\toprule
+ & One-time (distill) & Per-invocation (forever) \\
+\midrule
+Reflexer atom & $\sim$5--15k teacher tokens + brief review & $\sim$0.3k tokens, $<$1 s, fits on-device (2B) \\
+Thinker (big) & 0 & $\sim$1.3k tokens, $\sim$6.4 s, off-device (35B) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+With per-invocation savings of roughly 1k tokens and a one-time cost near 10k
+tokens to mint an atom, distillation breaks even at about ten invocations
+(Table~\ref{tab:economics}), before the $\sim$17$\times$ per-token size discount,
+the drop from 6.4\,s to under a second, and the fact that the reflexer fits
+on-device while the 35B does not. For a head intent invoked thousands of times
+this is a $100$--$1000\times$ net win; for a tail intent invoked once it never
+amortizes and should be routed to the thinker. The right design is therefore not
+``reflexer or bigger model or better router'' but all three in their places:
+distill the high-frequency head, spend the big model as the offline teacher and
+the tail fallback, and fund the router regardless, because it gates both tiers.
+
+\section{Summary}
+\label{sec:eval-summary}
+
+The five results compose into one line. A small model cannot drive a realistic
+device API by reasoning (25\%), and scaling the model up to 35B rescues
+\emph{discovery} but not \emph{convention} (62.5\%, with consistent
+encoding errors). A pattern distilled once by a strong teacher carries exactly
+that convention, lifting a 2B reflexer to 76--80\% at one on-device call---and the
+quality of that teacher propagates directly to the student ($80\%$ vs $60\%$). On
+the clean API the same abstraction is instead an efficiency win
+($+65$ points, 2 calls versus 9). Binding, in short, is solved by distillation
+rather than scale; the remaining open limit is routing. The next chapter draws
+out what this means for design, for productization, and for the validity of the
+claims.

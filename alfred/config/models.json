@@ -1,0 +1,148 @@
+{
+  "models": [
+    {
+      "name": "qwen3.6-35b",
+      "id": "qwen3.6-35b",
+      "provider": "llama-cpp",
+      "api": "openai-completions",
+      "baseUrl": "http://127.0.0.1:8001/v1",
+      "reasoning": true,
+      "input": ["text", "image"],
+      "cost": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "contextWindow": 131072,
+      "maxTokens": 32768,
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens",
+        "thinkingFormat": "qwen-chat-template"
+      }
+    },
+    {
+      "name": "nemotron-4b",
+      "id": "nemotron-4b",
+      "provider": "llama-cpp",
+      "api": "openai-completions",
+      "baseUrl": "http://127.0.0.1:8002/v1",
+      "reasoning": false,
+      "input": ["text"],
+      "cost": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "contextWindow": 8192,
+      "maxTokens": 2048,
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens",
+        "thinkingFormat": null
+      }
+    },
+    {
+      "name": "ministral-3-3b",
+      "id": "ministral-3-3b",
+      "provider": "llama-cpp",
+      "api": "openai-completions",
+      "baseUrl": "http://127.0.0.1:8003/v1",
+      "reasoning": false,
+      "input": ["text"],
+      "cost": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "contextWindow": 8192,
+      "maxTokens": 2048,
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens",
+        "thinkingFormat": null
+      }
+    },
+    {
+      "name": "qwen-3.5-4b",
+      "id": "qwen-3.5-4b",
+      "provider": "llama-cpp",
+      "api": "openai-completions",
+      "baseUrl": "http://127.0.0.1:8004/v1",
+      "reasoning": true,
+      "input": ["text"],
+      "cost": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "contextWindow": 4000,
+      "maxTokens": 4096,
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens",
+        "thinkingFormat": "qwen-chat-template"
+      }
+    },
+    {
+      "name": "qwen-3.5-0.8b",
+      "id": "qwen-3.5-0.8b",
+      "provider": "llama-cpp",
+      "api": "openai-completions",
+      "baseUrl": "http://127.0.0.1:8006/v1",
+      "reasoning": false,
+      "input": ["text"],
+      "cost": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "contextWindow": 4000,
+      "maxTokens": 4096,
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens",
+        "thinkingFormat": null
+      }
+    },
+    {
+      "name": "qwen-3.5-2b",
+      "id": "qwen-3.5-2b",
+      "provider": "llama-cpp",
+      "api": "openai-completions",
+      "baseUrl": "http://127.0.0.1:8005/v1",
+      "reasoning": false,
+      "input": ["text"],
+      "cost": {
+        "input": 0,
+        "output": 0,
+        "cacheRead": 0,
+        "cacheWrite": 0
+      },
+      "contextWindow": 4000,
+      "maxTokens": 4096,
+      "compat": {
+        "supportsDeveloperRole": false,
+        "supportsReasoningEffort": false,
+        "supportsUsageInStreaming": true,
+        "maxTokensField": "max_tokens",
+        "thinkingFormat": null
+      }
+    }
+  ]
+}

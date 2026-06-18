@@ -1,0 +1,291 @@
+[
+  {
+    "id": "atom_ha_turn_on",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "home_assistant",
+      "action": "turn_on_entity",
+      "required_tools": ["bash"],
+      "required_slots": ["entity"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(turn on|switch on|power on|enable|activate)\\b)(?=.*\\b(light|lights|lamp|switch|plug|fan|outlet|tv|heater|device|kitchen|bedroom|living room|garage)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["turn on", "switch on", "power on", "enable", "activate"],
+          "objects": ["light", "lamp", "switch", "plug", "fan", "device"],
+          "skill_terms": ["light", "lights", "lamp", "switch", "plug", "fan", "outlet", "tv", "heater", "kitchen", "bedroom", "living room", "garage"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "entity", "type": "string", "required": true, "description": "Entity id or friendly name, e.g. light.kitchen"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ha call --domain {{domain}} --service turn_on --entity \"{{entity}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Mock skill — binding-only (command correctness). Sibling of turn_off/toggle."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Turn on a Home Assistant device or light.",
+      "example_queries": ["turn on the kitchen light", "switch on the living room lamp", "power on the bedroom fan"]
+    }
+  },
+  {
+    "id": "atom_ha_turn_off",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "home_assistant",
+      "action": "turn_off_entity",
+      "required_tools": ["bash"],
+      "required_slots": ["entity"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(turn off|switch off|power off|disable|deactivate|shut off)\\b)(?=.*\\b(light|lights|lamp|switch|plug|fan|outlet|tv|heater|device|kitchen|bedroom|living room|garage)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["turn off", "switch off", "power off", "disable", "shut off"],
+          "objects": ["light", "lamp", "switch", "plug", "fan", "device"],
+          "skill_terms": ["light", "lights", "lamp", "switch", "plug", "fan", "outlet", "tv", "heater", "kitchen", "bedroom", "living room", "garage"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "entity", "type": "string", "required": true, "description": "Entity id or friendly name"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ha call --domain {{domain}} --service turn_off --entity \"{{entity}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of turn_on — the action verb is the only discriminator."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Turn off a Home Assistant device or light.",
+      "example_queries": ["turn off the kitchen light", "switch off the tv", "shut off the garage heater"]
+    }
+  },
+  {
+    "id": "atom_ha_toggle",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "home_assistant",
+      "action": "toggle_entity",
+      "required_tools": ["bash"],
+      "required_slots": ["entity"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(toggle|flip)\\b)(?=.*\\b(light|lights|lamp|switch|plug|fan|outlet|tv|device)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["toggle", "flip"],
+          "objects": ["light", "lamp", "switch", "device"],
+          "skill_terms": ["light", "lights", "lamp", "switch", "plug", "fan", "outlet", "tv", "device"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "entity", "type": "string", "required": true, "description": "Entity id or friendly name"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ha call --domain {{domain}} --service toggle --entity \"{{entity}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Third sibling in the on/off/toggle family."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Toggle a Home Assistant device between on and off.",
+      "example_queries": ["toggle the hallway light", "flip the desk lamp"]
+    }
+  },
+  {
+    "id": "atom_ha_get_state",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "home_assistant",
+      "action": "read_entity_state",
+      "required_tools": ["bash"],
+      "required_slots": ["entity"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(state|status|is|what'?s|reading|value|level)\\b)(?=.*\\b(sensor|thermostat|temperature|humidity|door|lock|battery|light|switch|garage)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["state", "status", "what's", "reading", "value", "level"],
+          "objects": ["sensor", "thermostat", "door", "lock", "battery"],
+          "skill_terms": ["sensor", "thermostat", "temperature", "humidity", "door", "lock", "battery", "light", "switch", "garage"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "entity", "type": "string", "required": true, "description": "Entity id to query, e.g. sensor.living_room_temperature"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ha state --entity \"{{entity}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Read action — sibling-distinct from the call/turn_* writes."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Read the current state of a Home Assistant sensor or device.",
+      "example_queries": ["what's the living room temperature sensor reading", "is the front door locked", "check the garage battery level"]
+    }
+  },
+  {
+    "id": "atom_ha_set_temperature",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "home_assistant",
+      "action": "set_climate_temperature",
+      "required_tools": ["bash"],
+      "required_slots": ["entity", "temp"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(set|change|adjust|put)\\b)(?=.*\\b(thermostat|temperature|heat|heating|climate|ac|degrees)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["set", "change", "adjust", "put"],
+          "objects": ["thermostat", "temperature", "climate"],
+          "skill_terms": ["thermostat", "temperature", "heat", "heating", "climate", "ac", "degrees"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "entity", "type": "string", "required": true, "description": "Climate entity, e.g. climate.living_room"},
+      {"name": "temp", "type": "number", "required": true, "description": "Target temperature"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ha call --domain climate --service set_temperature --entity \"{{entity}}\" --temp {{temp}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Parameterised write — distinct service from turn_on."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Set the thermostat target temperature in Home Assistant.",
+      "example_queries": ["set the thermostat to 21 degrees", "change the living room temperature to 19", "put the heating at 23"]
+    }
+  },
+  {
+    "id": "atom_ha_set_brightness",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "home_assistant",
+      "action": "set_light_brightness",
+      "required_tools": ["bash"],
+      "required_slots": ["entity", "level"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(dim|brighten|set|adjust)\\b)(?=.*\\b(light|lights|lamp|brightness)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["dim", "brighten", "set brightness", "adjust"],
+          "objects": ["light", "lamp", "brightness"],
+          "skill_terms": ["light", "lights", "lamp", "brightness"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "entity", "type": "string", "required": true, "description": "Light entity"},
+      {"name": "level", "type": "number", "required": true, "description": "Brightness 0-255"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ha call --domain light --service turn_on --entity \"{{entity}}\" --brightness {{level}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Hard sibling: same turn_on service as atom_ha_turn_on but carries --brightness — the discriminator is the brightness slot, not the verb."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Dim or brighten a Home Assistant light to a brightness level.",
+      "example_queries": ["dim the bedroom lights to 50", "brighten the kitchen light to 200", "set the lamp brightness to 120"]
+    }
+  },
+  {
+    "id": "atom_ha_run_scene",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "home_assistant",
+      "action": "activate_scene",
+      "required_tools": ["bash"],
+      "required_slots": ["scene"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(scene|mode|activate|set the mood|movie night|dinner)\\b)(?=.*\\b(scene|mode|lighting|ambiance|night)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["activate scene", "set scene", "mode", "movie night"],
+          "objects": ["scene", "mode"],
+          "skill_terms": ["scene", "mode", "lighting", "ambiance", "night"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "scene", "type": "string", "required": true, "description": "Scene name, e.g. movie_night"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ha scene --name \"{{scene}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Distinct subcommand (scene) — separates the scene family from call/state."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Activate a Home Assistant scene.",
+      "example_queries": ["activate movie night scene", "set the dinner lighting mode", "run the good morning scene"]
+    }
+  },
+  {
+    "id": "composite_ha_goodnight",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {
+      "domain": "home_assistant",
+      "action": "goodnight_routine",
+      "required_tools": ["bash"],
+      "composite_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)\\b(goodnight|good night|bedtime|going to (bed|sleep)|night mode|i'?m off to bed)\\b",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["goodnight", "bedtime", "going to bed", "night mode"]
+        }
+      }
+    ],
+    "atoms": [
+      {"pattern_id": "atom_ha_turn_off", "slot_bindings": {"entity": "light.all", "domain": "light"}},
+      {"pattern_id": "atom_ha_set_temperature", "slot_bindings": {"entity": "climate.bedroom", "temp": 18}}
+    ],
+    "output_template": "[HA] lights off, thermostat set to 18C — goodnight.",
+    "parse_schema": {},
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Goodnight routine: turn off all lights and lower the thermostat.",
+      "example_queries": ["goodnight", "I'm off to bed", "set night mode", "bedtime routine"],
+      "estimated_atoms_run": 2,
+      "estimated_llm_calls": 0
+    }
+  }
+]

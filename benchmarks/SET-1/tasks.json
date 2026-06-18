@@ -1,0 +1,25 @@
+[
+  {"id": "t01", "type": "toggle", "query": "turn off wifi", "initial": {}, "gold": {"connectivity.wifi": false}},
+  {"id": "t02", "type": "toggle", "query": "enable airplane mode", "initial": {}, "gold": {"connectivity.airplane_mode": true}},
+  {"id": "t03", "type": "toggle", "query": "turn on the hotspot", "initial": {}, "gold": {"connectivity.hotspot": true}},
+  {"id": "t04", "type": "toggle", "query": "switch on dark mode", "initial": {}, "gold": {"display.dark_mode": true}},
+  {"id": "t05", "type": "toggle", "query": "disable bluetooth", "initial": {}, "gold": {"connectivity.bluetooth": false}},
+
+  {"id": "t06", "type": "ranged", "query": "set the brightness to 8", "initial": {}, "gold": {"display.brightness": 8}},
+  {"id": "t07", "type": "ranged", "query": "increase the brightness by 2", "initial": {"display.brightness": 5}, "gold": {"display.brightness": 7}, "relative": true},
+  {"id": "t08", "type": "ranged", "query": "lower the text size to 1", "initial": {}, "gold": {"display.text_size": 1}},
+  {"id": "t09", "type": "ranged", "query": "turn the animation speed down by 3", "initial": {"display.animation_speed": 5}, "gold": {"display.animation_speed": 2}, "relative": true},
+  {"id": "t10", "type": "ranged", "query": "max out the screen timeout", "initial": {}, "gold": {"display.screen_timeout": 10}},
+
+  {"id": "t11", "type": "free_text", "query": "rename my device to Nova", "initial": {}, "gold": {"device.name": "Nova"}},
+  {"id": "t12", "type": "free_text", "query": "change the ringtone to Beacon", "initial": {}, "gold": {"device.ringtone": "Beacon"}},
+  {"id": "t13", "type": "free_text", "query": "set the wallpaper to Galaxy", "initial": {}, "gold": {"device.wallpaper": "Galaxy"}},
+  {"id": "t14", "type": "free_text", "query": "rename the phone to Pixel-Pro", "initial": {}, "gold": {"device.name": "Pixel-Pro"}},
+  {"id": "t15", "type": "free_text", "query": "change my ringtone to Silence", "initial": {}, "gold": {"device.ringtone": "Silence"}},
+
+  {"id": "t16", "type": "nested_app", "query": "turn off Spotify notifications", "initial": {}, "gold": {"apps.spotify.notifications": false}},
+  {"id": "t17", "type": "nested_app", "query": "set Spotify data usage to 2", "initial": {}, "gold": {"apps.spotify.data_usage": 2}},
+  {"id": "t18", "type": "nested_app", "query": "disable location access for Maps", "initial": {}, "gold": {"apps.maps.location": false}},
+  {"id": "t19", "type": "nested_app", "query": "turn on camera location tagging", "initial": {}, "gold": {"apps.camera.location_tag": true}},
+  {"id": "t20", "type": "nested_app", "query": "turn off Maps notifications", "initial": {}, "gold": {"apps.maps.notifications": false}}
+]

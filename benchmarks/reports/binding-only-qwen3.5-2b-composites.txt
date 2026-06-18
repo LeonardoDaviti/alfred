@@ -1,0 +1,42 @@
+== composite binding-only (routing assumed correct) ==  model=qwen-3.5-2b
+composite tasks: 167  (across 36 distinct composites)
+bound  (no executor error)   : 145/167 = 86.8%
+filled (all slots resolved)  : 59/167 = 35.3%
+
+per composite (filled/total):
+  composite_birthday_reminder        0/5  <-
+  composite_calendar_aware_reply     0/4  <-
+  composite_command_center           0/4  <-
+  composite_commute_check            2/5  <-
+  composite_due_reminders_digest     4/4
+  composite_export_to_gmaps          4/5  <-
+  composite_ffmpeg_clip_to_gif       0/9  <-
+  composite_flight_deal_watch        0/5  <-
+  composite_focus_mode               2/2
+  composite_ha_goodnight             9/9
+  composite_hydration_nudge          0/5  <-
+  composite_local_scout              5/5
+  composite_medication_reminder      0/4  <-
+  composite_morning_brief            5/5
+  composite_movie_night              2/2
+  composite_podcast_clip             0/2  <-
+  composite_rain_umbrella_alert      0/5  <-
+  composite_rain_umbrella_reminder   0/4  <-
+  composite_rainy_commute_guard      0/4  <-
+  composite_reach_out                5/5
+  composite_reminders_today          5/5
+  composite_reply_from_context       0/4  <-
+  composite_schedule_meeting         0/4  <-
+  composite_set_reminder_confirm     0/4  <-
+  composite_smart_meeting_proposal   0/4  <-
+  composite_smart_notify             0/4  <-
+  composite_spotify_party_mode       9/9
+  composite_triage_and_notify        0/4  <-
+  composite_trip_brief               0/5  <-
+  composite_trip_departure_brief     0/4  <-
+  composite_weather_now              0/5  <-
+  composite_weekend_forecast         0/4  <-
+  composite_weekend_planner          5/5
+  composite_workout_session          2/2
+  composite_youtube_clip_to_gif      0/2  <-
+  composite_youtube_to_mp3           0/9  <-

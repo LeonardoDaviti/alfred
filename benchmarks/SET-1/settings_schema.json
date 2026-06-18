@@ -1,0 +1,10 @@
+{
+  "connectivity": {"wifi": true, "bluetooth": true, "airplane_mode": false, "hotspot": false, "nfc": true},
+  "display": {"brightness": 5, "text_size": 3, "animation_speed": 5, "screen_timeout": 4, "dark_mode": false},
+  "device": {"name": "Pixel-8", "ringtone": "Cosmos", "wallpaper": "Aurora"},
+  "apps": {
+    "spotify": {"notifications": true, "data_usage": 5},
+    "maps": {"location": true, "notifications": true},
+    "camera": {"location_tag": false}
+  }
+}

@@ -1,0 +1,12 @@
+== composite binding-only (routing assumed correct) ==  model=qwen-3.5-2b
+composite tasks: 12  (across 6 distinct composites)
+bound  (no executor error)   : 8/12 = 66.7%
+filled (all slots resolved)  : 8/12 = 66.7%
+
+per composite (filled/total):
+  composite_call_contact             0/2  <-
+  composite_download_and_play        0/2  <-
+  composite_focus_session            2/2
+  composite_goodnight_v2             2/2
+  composite_leave_home               2/2
+  composite_morning_alarm            2/2

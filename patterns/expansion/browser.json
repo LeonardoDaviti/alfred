@@ -1,0 +1,125 @@
+[
+  {
+    "id": "atom_browser_open_url",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "browser", "action": "open_url", "required_tools": ["bash"], "required_slots": ["url"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(open|go to|navigate to|visit|load)\\b.*\\b(url|site|website|page|https?://|\\.com|\\.org)\\b", "flags": "i",
+       "components": {"intent_verbs": ["open", "go to", "navigate to", "visit", "load"], "objects": ["url", "website", "page"], "skill_terms": ["url", "website", "site", "page", "browser"]}}
+    ],
+    "slots": [{"name": "url", "type": "string", "required": true, "description": "URL to open"}],
+    "steps": [{"tool": "bash", "args_template": "browser open --url \"{{url}}\"", "retries": 0, "timeout": 30, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Real backend: Playwright connect_over_cdp to the user's Chromium/Brave. Collision with app open (url vs app name)."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Open a URL in the browser.", "example_queries": ["open github.com", "navigate to https://news.ycombinator.com", "visit the wikipedia page"]}
+  },
+  {
+    "id": "atom_browser_search",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "browser", "action": "search", "required_tools": ["bash"], "required_slots": ["query"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(search|google|look up|find online|web search)\\b", "flags": "i",
+       "components": {"intent_verbs": ["search", "google", "look up", "find online", "web search"], "objects": ["query", "web"], "skill_terms": ["search", "google", "web", "online", "browser"]}}
+    ],
+    "slots": [{"name": "query", "type": "string", "required": true, "description": "Search query"}],
+    "steps": [{"tool": "bash", "args_template": "browser search --query \"{{query}}\"", "retries": 0, "timeout": 30, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Collision with maps search (web vs places) and spotify search (web vs music)."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Run a web search in the browser.", "example_queries": ["search for python decorators", "google the weather in Tbilisi", "look up the best ramen recipe online"]}
+  },
+  {
+    "id": "atom_browser_read_text",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "browser", "action": "read_text", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(read|get|extract|grab|what does it say)\\b.*\\b(page|text|content|article)\\b", "flags": "i",
+       "components": {"intent_verbs": ["read", "get", "extract", "grab"], "objects": ["page", "text", "content"], "skill_terms": ["page", "text", "content", "article", "browser"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "browser read-text", "retries": 0, "timeout": 30, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Read the visible page text. Dashed subcommand 'read-text' — vocabulary-compliance check."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Read the visible text of the current page.", "example_queries": ["read the page", "get the article text", "what does this page say"]}
+  },
+  {
+    "id": "atom_browser_click",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "browser", "action": "click", "required_tools": ["bash"], "required_slots": ["target"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(click|press|tap|select)\\b", "flags": "i",
+       "components": {"intent_verbs": ["click", "press", "tap", "select"], "objects": ["button", "link", "element"], "skill_terms": ["click", "button", "link", "element"]}}
+    ],
+    "slots": [{"name": "target", "type": "string", "required": true, "description": "CSS selector or visible text of the element"}],
+    "steps": [{"tool": "bash", "args_template": "browser click --target \"{{target}}\"", "retries": 0, "timeout": 30, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["On multi-match the real backend returns 'ambiguous' rather than guessing."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Click an element by selector or visible text.", "example_queries": ["click the login button", "press Sign in", "tap the first link"]}
+  },
+  {
+    "id": "atom_browser_type",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "browser", "action": "type", "required_tools": ["bash"], "required_slots": ["selector", "text"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(type|enter|fill in|input)\\b.*\\b(field|box|into|form)\\b", "flags": "i",
+       "components": {"intent_verbs": ["type", "enter", "fill in", "input"], "objects": ["field", "box", "form"], "skill_terms": ["type", "field", "input", "form", "box"]}}
+    ],
+    "slots": [
+      {"name": "selector", "type": "string", "required": true, "description": "CSS selector of the input"},
+      {"name": "text", "type": "string", "required": true, "description": "Text to type"}
+    ],
+    "steps": [{"tool": "bash", "args_template": "browser type --selector \"{{selector}}\" --text \"{{text}}\"", "retries": 0, "timeout": 30, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Two-slot atom — both selector and text required."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Type text into an input field.", "example_queries": ["type my email into the email field", "enter hello into the search box", "fill in the username field with admin"]}
+  },
+  {
+    "id": "atom_browser_screenshot",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "browser", "action": "screenshot", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(screenshot|capture|snap|grab a picture)\\b.*\\b(page|screen|browser|tab)\\b|\\btake a screenshot\\b", "flags": "i",
+       "components": {"intent_verbs": ["screenshot", "capture", "snap", "take a screenshot"], "objects": ["page", "screen"], "skill_terms": ["screenshot", "capture", "page", "browser"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "browser screenshot", "retries": 0, "timeout": 30, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Save a screenshot of the current page; returns the path."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Take a screenshot of the current page.", "example_queries": ["take a screenshot of the page", "capture the browser tab", "snap a picture of this page"]}
+  },
+  {
+    "id": "atom_browser_tabs",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "browser", "action": "tabs_list", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(list|show|what)\\b.*\\b(tabs|open tabs)\\b", "flags": "i",
+       "components": {"intent_verbs": ["list", "show", "what"], "objects": ["tabs"], "skill_terms": ["tabs", "open tabs", "browser"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "browser tabs", "retries": 0, "timeout": 30, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["List open tabs (CDP Target domain)."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "List the open browser tabs.", "example_queries": ["list my open tabs", "show all browser tabs", "what tabs do I have open"]}
+  },
+  {
+    "id": "atom_browser_tab_switch",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "browser", "action": "tab_switch", "required_tools": ["bash"], "required_slots": ["id"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(switch to|go to|activate)\\b.*\\btab\\b", "flags": "i",
+       "components": {"intent_verbs": ["switch to", "go to", "activate"], "objects": ["tab"], "skill_terms": ["tab", "switch", "browser"]}}
+    ],
+    "slots": [{"name": "id", "type": "string", "required": true, "description": "Tab id or index"}],
+    "steps": [{"tool": "bash", "args_template": "browser tab-switch --id {{id}}", "retries": 0, "timeout": 30, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Collision with app switch (tab vs app window). Dashed subcommand 'tab-switch'."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Switch to a browser tab by id/index.", "example_queries": ["switch to tab 2", "go to the third tab", "activate tab 0"]}
+  }
+]

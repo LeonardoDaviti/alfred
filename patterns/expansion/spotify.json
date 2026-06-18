@@ -1,0 +1,284 @@
+[
+  {
+    "id": "atom_spotify_play",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "spotify",
+      "action": "play_playback",
+      "required_tools": ["bash"],
+      "required_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(play|resume|start|put on)\\b)(?=.*\\b(music|song|track|spotify|playback|tune|playlist|something)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["play", "resume", "start", "put on"],
+          "objects": ["music", "song", "track", "playlist"],
+          "skill_terms": ["music", "song", "track", "spotify", "playback", "tune", "playlist"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "query", "type": "string", "required": false, "description": "Optional track/artist to play"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "spotify play{{?query: --track \"{{query}}\"}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Mock skill — binding-only. Sibling of pause/next/previous."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Start or resume Spotify playback, optionally a specific track.",
+      "example_queries": ["play some music", "resume spotify", "put on the daft punk track", "start playback"]
+    }
+  },
+  {
+    "id": "atom_spotify_pause",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "spotify",
+      "action": "pause_playback",
+      "required_tools": ["bash"],
+      "required_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(pause|stop|halt|hold)\\b)(?=.*\\b(music|song|track|spotify|playback|tune|playing)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["pause", "stop", "halt", "hold"],
+          "objects": ["music", "song", "playback"],
+          "skill_terms": ["music", "song", "track", "spotify", "playback", "tune", "playing"]
+        }
+      }
+    ],
+    "slots": [],
+    "steps": [
+      {"tool": "bash", "args_template": "spotify pause", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of play — opposite action, same domain."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Pause Spotify playback.",
+      "example_queries": ["pause the music", "stop spotify", "hold the song"]
+    }
+  },
+  {
+    "id": "atom_spotify_next",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "spotify",
+      "action": "skip_next",
+      "required_tools": ["bash"],
+      "required_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(next|skip|forward|advance)\\b)(?=.*\\b(song|track|music|spotify|tune)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["next", "skip", "forward", "advance"],
+          "objects": ["song", "track"],
+          "skill_terms": ["song", "track", "music", "spotify", "tune"]
+        }
+      }
+    ],
+    "slots": [],
+    "steps": [
+      {"tool": "bash", "args_template": "spotify next", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of previous — direction is the discriminator."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Skip to the next track on Spotify.",
+      "example_queries": ["next song", "skip this track", "forward to the next tune"]
+    }
+  },
+  {
+    "id": "atom_spotify_previous",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "spotify",
+      "action": "skip_previous",
+      "required_tools": ["bash"],
+      "required_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(previous|back|last|replay|go back)\\b)(?=.*\\b(song|track|music|spotify|tune)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["previous", "back", "last", "replay", "go back"],
+          "objects": ["song", "track"],
+          "skill_terms": ["song", "track", "music", "spotify", "tune"]
+        }
+      }
+    ],
+    "slots": [],
+    "steps": [
+      {"tool": "bash", "args_template": "spotify previous", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of next."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Go back to the previous track on Spotify.",
+      "example_queries": ["previous song", "go back a track", "replay the last tune"]
+    }
+  },
+  {
+    "id": "atom_spotify_search",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "spotify",
+      "action": "search_catalog",
+      "required_tools": ["bash"],
+      "required_slots": ["query"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(search|find|look up|look for)\\b)(?=.*\\b(song|track|artist|album|spotify|music|playlist)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["search", "find", "look up", "look for"],
+          "objects": ["song", "artist", "album"],
+          "skill_terms": ["song", "track", "artist", "album", "spotify", "music", "playlist"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "query", "type": "string", "required": true, "description": "Search query (artist/track/album)"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "spotify search --query \"{{query}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Read action — distinct from playback control siblings."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Search the Spotify catalog for a track, artist, or album.",
+      "example_queries": ["search spotify for bohemian rhapsody", "find songs by radiohead", "look up the new kendrick album"]
+    }
+  },
+  {
+    "id": "atom_spotify_add_to_playlist",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "spotify",
+      "action": "add_track_to_playlist",
+      "required_tools": ["bash"],
+      "required_slots": ["track", "playlist"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(add|save|put|queue)\\b)(?=.*\\b(playlist|liked|library|queue)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["add", "save", "put", "queue"],
+          "objects": ["playlist", "library"],
+          "skill_terms": ["playlist", "liked", "library", "queue"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "track", "type": "string", "required": true, "description": "Track to add"},
+      {"name": "playlist", "type": "string", "required": true, "description": "Target playlist"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "spotify add --track \"{{track}}\" --playlist \"{{playlist}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Two-slot write."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Add a track to a Spotify playlist.",
+      "example_queries": ["add this song to my workout playlist", "save bohemian rhapsody to favourites", "put this track in my chill playlist"]
+    }
+  },
+  {
+    "id": "atom_spotify_set_volume",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "spotify",
+      "action": "set_volume",
+      "required_tools": ["bash"],
+      "required_slots": ["level"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(volume|louder|quieter|turn up|turn down|set)\\b)(?=.*\\b(volume|music|spotify|sound|loud)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["volume", "louder", "quieter", "turn up", "turn down"],
+          "objects": ["volume", "sound"],
+          "skill_terms": ["volume", "music", "spotify", "sound", "loud"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "level", "type": "number", "required": true, "description": "Volume 0-100"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "spotify volume --level {{level}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Parameterised control."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Set the Spotify playback volume.",
+      "example_queries": ["set the volume to 70", "turn the music down to 30", "make spotify louder, 90 percent"]
+    }
+  },
+  {
+    "id": "composite_spotify_party_mode",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {
+      "domain": "spotify",
+      "action": "party_mode",
+      "required_tools": ["bash"],
+      "composite_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)\\b(party mode|get the party (started|going)|crank it up|party time)\\b",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["party mode", "get the party started", "crank it up", "party time"]
+        }
+      }
+    ],
+    "atoms": [
+      {"pattern_id": "atom_spotify_set_volume", "slot_bindings": {"level": 90}},
+      {"pattern_id": "atom_spotify_play", "slot_bindings": {"query": "Party Hits"}}
+    ],
+    "output_template": "[SPOTIFY] volume 90, playing Party Hits — party mode on.",
+    "parse_schema": {},
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Party mode: max the volume and start a party playlist.",
+      "example_queries": ["party mode", "crank it up", "get the party started", "party time"],
+      "estimated_atoms_run": 2,
+      "estimated_llm_calls": 0
+    }
+  }
+]

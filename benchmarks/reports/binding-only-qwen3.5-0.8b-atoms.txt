@@ -1,0 +1,86 @@
+== binding-only (routing assumed correct) ==  model=qwen-3.5-0.8b
+tasks (atoms w/ gold tokens): 409  from 4 files
+binding accuracy: 380/409 = 92.9%
+
+per domain:
+  docker           0/12 = 0.0%
+  ffmpeg           84/84 = 100.0%
+  home_assistant   92/103 = 89.3%
+  service          10/12 = 83.3%
+  spotify          96/100 = 96.0%
+  system           14/14 = 100.0%
+  youtube          84/84 = 100.0%
+
+most-missed gold tokens:
+    7x  'ha state'
+    4x  'spotify pause'
+    2x  'set_temperature'
+    2x  '--temp'
+    2x  'dock start'
+    2x  'dock stop'
+    2x  '--container'
+    2x  'dock restart'
+    2x  'dock remove'
+    2x  'dock logs'
+    2x  'dock ps'
+    1x  'turn_on'
+
+binding misses (29):
+  [home_assistant] what's the living room temperature sensor re   MISSING ['ha state']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the team chat" --text "wha
+  [home_assistant] set the thermostat to 21 degrees               MISSING ['set_temperature', '--temp']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the thermostat" --text "21
+  [spotify       ] stop spotify                                   MISSING ['spotify pause']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "@me" --text "stop spotify"
+  [home_assistant] get the kitchen lights going its pitch black   MISSING ['turn_on']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the team chat" --text "get
+  [home_assistant] what's the living room temperature sensor re   MISSING ['ha state']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the team chat" --text "wha
+  [home_assistant] whats the humidity in the bedroom rn           MISSING ['ha state']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the user" --text "whats th
+  [home_assistant] is the kitchen light currently on or off       MISSING ['ha state']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the team chat" --text "is 
+  [home_assistant] how warm is it in the living room according    MISSING ['ha state']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the team chat" --text "how
+  [home_assistant] tell me the value of the bedroom humidity se   MISSING ['ha state']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the team chat" --text "tel
+  [home_assistant] whats the temperature reading downstairs       MISSING ['ha state']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the team chat" --text "wha
+  [home_assistant] thermostat 21                                  MISSING ['set_temperature', '--temp']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the thermostat" --text "21
+  [home_assistant] set the dinner lighting mode                   MISSING ['ha scene']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the team chat" --text "set
+  [spotify       ] stop spotify                                   MISSING ['spotify pause']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "@me" --text "stop spotify"
+  [spotify       ] can you stop the track im on a call            MISSING ['spotify pause']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the team chat" --text "sto
+  [spotify       ] kill the tune for a minute                     MISSING ['spotify pause']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the team chat" --text "kil
+  [service       ] bring up the docker daemon unit                MISSING ['svc start']
+                   -> <LLMError:llm_error: wrong_binary docker start --unit "docker.service">
+  [service       ] make the docker daemon auto-start at boot      MISSING ['svc enable']
+                   -> <LLMError:llm_error: wrong_binary docker daemon --start-on-boot --unit "default"
+  [docker        ] start the redis container                      MISSING ['dock start']
+                   -> <LLMError:llm_error: wrong_binary docker start --container "redis">
+  [docker        ] bring up the nginx docker container            MISSING ['dock start']
+                   -> <LLMError:llm_error: wrong_binary docker start --container "nginx">
+  [docker        ] stop the redis container                       MISSING ['dock stop', '--container']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the team chat" --text "sto
+  [docker        ] shut down the postgres docker container        MISSING ['dock stop']
+                   -> <LLMError:llm_error: wrong_binary docker stop --container "postgres">
+  [docker        ] restart the redis container                    MISSING ['dock restart']
+                   -> <LLMError:llm_error: wrong_binary docker restart --container "redis">
+  [docker        ] bounce the nginx docker container              MISSING ['dock restart']
+                   -> <LLMError:llm_error: wrong_binary docker restart --container "nginx">
+  [docker        ] remove the redis container                     MISSING ['dock remove', '--container']
+                   -> <LLMError:llm_error: wrong_binary telegram send --to "the team chat" --text "rem
+  [docker        ] delete the old nginx docker container          MISSING ['dock remove']
+                   -> <LLMError:llm_error: wrong_binary docker remove --container "nginx">
+  [docker        ] show the logs for the redis container          MISSING ['dock logs']
+                   -> <LLMError:llm_error: wrong_binary docker logs --container "redis">
+  [docker        ] tail the nginx docker container logs           MISSING ['dock logs']
+                   -> <LLMError:llm_error: wrong_binary docker logs --container "nginx">
+  [docker        ] list the running docker containers             MISSING ['dock ps']
+                   -> <LLMError:llm_error: wrong_binary docker ps>
+  [docker        ] show me what docker containers are running     MISSING ['dock ps']
+                   -> <LLMError:llm_error: wrong_binary docker ps>

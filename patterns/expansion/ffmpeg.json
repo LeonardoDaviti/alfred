@@ -1,0 +1,263 @@
+[
+  {
+    "id": "atom_ffmpeg_extract_audio",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "ffmpeg",
+      "action": "extract_audio_to_mp3",
+      "required_tools": ["bash"],
+      "required_slots": ["input", "output"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(extract|rip|get|convert|pull|grab)\\b)(?=.*\\b(audio|mp3|sound|music|soundtrack)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["extract", "rip", "convert to", "pull", "grab"],
+          "objects": ["audio", "mp3", "sound"],
+          "skill_terms": ["audio", "mp3", "sound", "music", "soundtrack"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "input", "type": "string", "required": true, "description": "Input video file"},
+      {"name": "output", "type": "string", "required": true, "description": "Output mp3 file"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ffmpeg -i \"{{input}}\" -vn -acodec libmp3lame \"{{output}}\"", "retries": 0, "timeout": 60, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "exit_code == 0"}],
+    "notes": ["Real ffmpeg flags; binding-only checks -vn / libmp3lame."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Extract the audio track from a video file as MP3.",
+      "example_queries": ["extract the audio from clip.mp4 to song.mp3", "rip the mp3 out of this video", "convert lecture.mp4 to mp3"]
+    }
+  },
+  {
+    "id": "atom_ffmpeg_transcode",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "ffmpeg",
+      "action": "transcode_format",
+      "required_tools": ["bash"],
+      "required_slots": ["input", "output"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(convert|transcode|change|re-?encode|turn)\\b)(?=.*\\b(video|format|mp4|mkv|webm|mov|avi|file)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["convert", "transcode", "re-encode", "change format"],
+          "objects": ["video", "format"],
+          "skill_terms": ["video", "format", "mp4", "mkv", "webm", "mov", "avi", "file"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "input", "type": "string", "required": true, "description": "Input file"},
+      {"name": "output", "type": "string", "required": true, "description": "Output file (extension sets the format)"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ffmpeg -i \"{{input}}\" \"{{output}}\"", "retries": 0, "timeout": 120, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "exit_code == 0"}],
+    "notes": ["Format conversion driven by output extension."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Transcode a media file from one container/format to another.",
+      "example_queries": ["convert movie.mkv to mp4", "transcode clip.webm into clip.mp4", "change this mov file to avi"]
+    }
+  },
+  {
+    "id": "atom_ffmpeg_trim",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "ffmpeg",
+      "action": "trim_segment",
+      "required_tools": ["bash"],
+      "required_slots": ["input", "start", "end", "output"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(trim|cut|clip|crop|extract a (clip|segment)|chop)\\b)(?=.*\\b(video|clip|segment|part|seconds|minutes|from|between)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["trim", "cut", "clip", "crop", "chop"],
+          "objects": ["video", "clip", "segment"],
+          "skill_terms": ["video", "clip", "segment", "part", "seconds", "minutes", "from", "between"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "input", "type": "string", "required": true, "description": "Input file"},
+      {"name": "start", "type": "string", "required": true, "description": "Start timestamp, e.g. 00:00:10"},
+      {"name": "end", "type": "string", "required": true, "description": "End timestamp, e.g. 00:00:30"},
+      {"name": "output", "type": "string", "required": true, "description": "Output clip file"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ffmpeg -i \"{{input}}\" -ss {{start}} -to {{end}} -c copy \"{{output}}\"", "retries": 0, "timeout": 60, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "exit_code == 0"}],
+    "notes": ["Discriminator: -ss/-to flags."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Trim a video to a time segment.",
+      "example_queries": ["cut clip.mp4 from 00:00:10 to 00:00:30", "trim the first 30 seconds of video.mp4", "clip the segment between 1:00 and 2:00"]
+    }
+  },
+  {
+    "id": "atom_ffmpeg_extract_frame",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "ffmpeg",
+      "action": "extract_single_frame",
+      "required_tools": ["bash"],
+      "required_slots": ["input", "time", "output"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(screenshot|frame|thumbnail|still|snapshot|capture|grab)\\b)(?=.*\\b(video|frame|image|png|jpg|at)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["screenshot", "grab a frame", "thumbnail", "snapshot", "capture"],
+          "objects": ["frame", "image", "still"],
+          "skill_terms": ["video", "frame", "image", "png", "jpg", "thumbnail"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "input", "type": "string", "required": true, "description": "Input video"},
+      {"name": "time", "type": "string", "required": true, "description": "Timestamp to capture"},
+      {"name": "output", "type": "string", "required": true, "description": "Output image file"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ffmpeg -i \"{{input}}\" -ss {{time}} -vframes 1 \"{{output}}\"", "retries": 0, "timeout": 30, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "exit_code == 0"}],
+    "notes": ["Discriminator: -vframes 1."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Capture a single frame of a video as an image.",
+      "example_queries": ["grab a frame of video.mp4 at 00:01:00 as thumb.png", "screenshot the video at 5 seconds", "take a still from clip.mp4"]
+    }
+  },
+  {
+    "id": "atom_ffmpeg_resize",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "ffmpeg",
+      "action": "resize_scale",
+      "required_tools": ["bash"],
+      "required_slots": ["input", "width", "output"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(resize|scale|shrink|downscale|resolution|compress)\\b)(?=.*\\b(video|resolution|width|720|1080|480|pixels)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["resize", "scale", "shrink", "downscale"],
+          "objects": ["video", "resolution"],
+          "skill_terms": ["video", "resolution", "width", "720", "1080", "480", "pixels"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "input", "type": "string", "required": true, "description": "Input video"},
+      {"name": "width", "type": "number", "required": true, "description": "Target width in pixels"},
+      {"name": "output", "type": "string", "required": true, "description": "Output video"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ffmpeg -i \"{{input}}\" -vf scale={{width}}:-1 \"{{output}}\"", "retries": 0, "timeout": 120, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "exit_code == 0"}],
+    "notes": ["Discriminator: -vf scale."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Resize a video to a target width.",
+      "example_queries": ["resize video.mp4 to 720 wide", "downscale this clip to 480", "shrink movie.mp4 to 1080 width"]
+    }
+  },
+  {
+    "id": "atom_ffmpeg_concat",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "ffmpeg",
+      "action": "concat_files",
+      "required_tools": ["bash"],
+      "required_slots": ["list", "output"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(concat|concatenate|join|merge|combine|stitch|append)\\b)(?=.*\\b(video|videos|clips|files|together)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["concat", "join", "merge", "combine", "stitch"],
+          "objects": ["videos", "clips", "files"],
+          "skill_terms": ["video", "videos", "clips", "files", "together"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "list", "type": "string", "required": true, "description": "Text file listing inputs"},
+      {"name": "output", "type": "string", "required": true, "description": "Merged output"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "ffmpeg -f concat -i \"{{list}}\" -c copy \"{{output}}\"", "retries": 0, "timeout": 120, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "exit_code == 0"}],
+    "notes": ["Discriminator: -f concat."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Concatenate multiple video files into one.",
+      "example_queries": ["join all the clips in list.txt into out.mp4", "merge these videos together", "stitch the parts into one file"]
+    }
+  },
+  {
+    "id": "composite_ffmpeg_clip_to_gif",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {
+      "domain": "ffmpeg",
+      "action": "clip_to_gif",
+      "required_tools": ["bash"],
+      "composite_slots": ["input", "start", "end"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)\\b(make a gif|turn .* into a gif|gif from|create a gif|to gif)\\b",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["make a gif", "turn into a gif", "gif from", "create a gif"]
+        }
+      }
+    ],
+    "atoms": [
+      {"pattern_id": "atom_ffmpeg_trim", "slot_bindings": {"input": "{{input}}", "start": "{{start}}", "end": "{{end}}", "output": "/tmp/_clip.mp4"}},
+      {"pattern_id": "atom_ffmpeg_transcode", "slot_bindings": {"input": "/tmp/_clip.mp4", "output": "/tmp/_out.gif"}}
+    ],
+    "output_template": "[FFMPEG] trimmed {{input}} and converted to GIF.",
+    "parse_schema": {},
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Make a GIF from a video segment: trim then convert to gif.",
+      "example_queries": ["make a gif from video.mp4 between 0:05 and 0:08", "turn the first 3 seconds into a gif", "create a gif from this clip"],
+      "estimated_atoms_run": 2,
+      "estimated_llm_calls": 0
+    }
+  }
+]

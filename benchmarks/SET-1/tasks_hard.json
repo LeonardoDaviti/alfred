@@ -1,0 +1,12 @@
+[
+  {"id": "h01", "type": "multi", "query": "set up movie night: drop the brightness to 2 and turn on dark mode", "initial": {}, "gold": {"display.brightness": 2, "display.dark_mode": true}},
+  {"id": "h02", "type": "multi", "query": "I'm going to bed — turn on airplane mode, turn off wifi, and set brightness to 0", "initial": {}, "gold": {"connectivity.airplane_mode": true, "connectivity.wifi": false, "display.brightness": 0}},
+  {"id": "h03", "type": "multi", "query": "privacy mode: turn off location access for Maps and turn off Spotify notifications", "initial": {}, "gold": {"apps.maps.location": false, "apps.spotify.notifications": false}},
+  {"id": "h04", "type": "multi", "query": "battery saver: lower the brightness by 3 and set animation speed to 1", "initial": {}, "gold": {"display.brightness": 2, "display.animation_speed": 1}},
+  {"id": "h05", "type": "multi", "query": "personalize my phone: rename it to Falcon and set the wallpaper to Nebula", "initial": {}, "gold": {"device.name": "Falcon", "device.wallpaper": "Nebula"}},
+  {"id": "h06", "type": "multi", "query": "focus setup: turn off bluetooth, mute Spotify notifications, and set the screen timeout to 1", "initial": {}, "gold": {"connectivity.bluetooth": false, "apps.spotify.notifications": false, "display.screen_timeout": 1}},
+  {"id": "h07", "type": "multi", "query": "crank the display: set brightness, text size, and screen timeout all to the max", "initial": {}, "gold": {"display.brightness": 10, "display.text_size": 10, "display.screen_timeout": 10}},
+  {"id": "h08", "type": "multi", "query": "enable airplane mode, then turn wifi back on and switch on the hotspot", "initial": {"connectivity.wifi": false}, "gold": {"connectivity.airplane_mode": true, "connectivity.wifi": true, "connectivity.hotspot": true}},
+  {"id": "h09", "type": "multi", "query": "increase the brightness by 4 and turn on dark mode", "initial": {}, "gold": {"display.brightness": 9, "display.dark_mode": true}},
+  {"id": "h10", "type": "multi", "query": "guest setup: turn off Maps notifications, turn off Spotify notifications, and rename the device to Guest", "initial": {}, "gold": {"apps.maps.notifications": false, "apps.spotify.notifications": false, "device.name": "Guest"}}
+]

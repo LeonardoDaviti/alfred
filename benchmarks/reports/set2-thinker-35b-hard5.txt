@@ -1,0 +1,71 @@
+▶ SET-2 thinker — model=qwen3.6-35b tasks=5 ceiling=20 backstop=240000ms
+(node:95169) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  [✓] s26 bedtime: dim the brightness to 5%, turn    calls=20 tok=2704 ms=25693
+        · bash: python3 SET-2/settings.py list system | grep -i bright
+        · bash: python3 SET-2/settings.py list system | grep -i screen
+        · bash: python3 SET-2/settings.py list secure | grep -i dnd
+        · bash: python3 SET-2/settings.py list system | grep -i wifi
+        · bash: python3 SET-2/settings.py list secure | grep -i wifi
+        · bash: python3 SET-2/settings.py list global | grep -i wifi
+        · bash: python3 SET-2/settings.py list secure | grep -i dnd
+        · bash: python3 SET-2/settings.py list system | grep -i dnd
+        · bash: python3 SET-2/settings.py list secure | grep -i ringer
+        · bash: python3 SET-2/settings.py list global | grep -i zen
+        · bash: python3 SET-2/settings.py list global | grep -i dnd
+        · bash: python3 SET-2/settings.py list system | grep -i ringer
+        · bash: python3 SET-2/settings.py list system | grep -i mode
+        · bash: python3 SET-2/settings.py get system ringer_mode
+        · bash: python3 SET-2/settings.py get global zen_mode
+        · bash: python3 SET-2/settings.py get system screen_brightness
+        · bash: python3 SET-2/settings.py get system screen_brightness_mode
+        · bash: python3 SET-2/settings.py put system screen_brightness 13
+        · bash: python3 SET-2/settings.py put global zen_mode 2
+        · bash: python3 SET-2/settings.py put global wifi_on 0
+  [✓] s27 battery saver mode: turn on low power, d   calls=7 tok=2301 ms=17125
+        · bash: python3 SET-2/settings.py list system | grep -i "power\|battery\|saver\|screen_timeout\|sleep\|brightness"
+        · bash: python3 SET-2/settings.py list secure | grep -i "power\|battery\|saver\|screen_timeout\|sleep\|brightness"
+        · bash: python3 SET-2/settings.py list global | grep -i "power\|battery\|saver\|screen_timeout\|sleep\|brightness"
+        · bash: python3 SET-2/settings.py list system | grep -i "brightness"
+        · bash: python3 SET-2/settings.py put global low_power 1
+        · bash: python3 SET-2/settings.py put system screen_brightness 51
+        · bash: python3 SET-2/settings.py put system screen_off_timeout 15000
+  [✗] s32 set up the phone for my grandmother: lar   calls=9 tok=1900 ms=19011  wrong=[{"path":"system.font_scale","want":"1.30","got":"1.5"}]
+        · bash: python3 SET-2/settings.py list system 2>&1 | grep -iE "font|text|display"
+        · bash: python3 SET-2/settings.py list system 2>&1 | grep -iE "accessibility"
+        · bash: python3 SET-2/settings.py list secure 2>&1 | grep -iE "font|text|contrast|accessibility"
+        · bash: python3 SET-2/settings.py list global 2>&1 | grep -iE "font|text|contrast|accessibility"
+        · bash: python3 SET-2/settings.py get system font_scale
+        · bash: python3 SET-2/settings.py put system font_scale 1.5
+        · bash: python3 SET-2/settings.py put secure high_text_contrast_enabled 1
+        · bash: python3 SET-2/settings.py put secure accessibility_enabled 1
+        · bash: python3 SET-2/settings.py get system font_scale && python3 SET-2/settings.py get secure high_text_contrast_enabled && python
+  [✗] s33 gaming mode: max brightness, do not dist   calls=12 tok=2650 ms=24175  wrong=[{"path":"global.zen_mode","want":2,"got":1}]
+        · bash: python3 SET-2/settings.py list system | grep -i "brightness\|screen_on_timeout\|sleep"
+        · bash: python3 SET-2/settings.py list secure | grep -i "dnd\|do_not_disturb\|priority\|mode"
+        · bash: python3 SET-2/settings.py list secure | grep -i "dnd\|notification\|priority\|mode"
+        · bash: python3 SET-2/settings.py list global | grep -i "dnd\|do_not_disturb\|priority\|mode"
+        · bash: python3 SET-2/settings.py get system screen_brightness_mode
+        · bash: python3 SET-2/settings.py list system | grep -i "brightness"
+        · bash: python3 SET-2/settings.py list global | grep -i "zen\|dnd\|priority\|silence\|alarm"
+        · bash: python3 SET-2/settings.py get system ringer_mode
+        · bash: python3 SET-2/settings.py put system screen_brightness 255
+        · bash: python3 SET-2/settings.py put system screen_off_timeout 600000
+        · bash: python3 SET-2/settings.py put global zen_mode 1
+        · bash: python3 SET-2/settings.py get system screen_brightness && python3 SET-2/settings.py get system screen_off_timeout && python3
+  [✗] s37 deep work focus: do not disturb importan   calls=9 tok=1952 ms=20359  wrong=[{"path":"global.zen_mode","want":1,"got":2}]
+        · bash: python3 SET-2/settings.py list system | grep -iE "dnd|notification|timeout|sleep"
+        · bash: python3 SET-2/settings.py list secure | grep -iE "dnd|notification|timeout|sleep"
+        · bash: python3 SET-2/settings.py list global | grep -iE "dnd|notification|timeout|sleep"
+        · bash: python3 SET-2/settings.py get system screen_off_timeout
+        · bash: python3 SET-2/settings.py get global zen_mode
+        · bash: python3 SET-2/settings.py get global heads_up_notifications_enabled
+        · bash: python3 SET-2/settings.py put system screen_off_timeout 1800000
+        · bash: python3 SET-2/settings.py put global zen_mode 2
+        · bash: python3 SET-2/settings.py put global heads_up_notifications_enabled 0
+
+== SET-2 thinker ==  model=qwen3.6-35b
+oracle pass: 2/5 = 40.0%
+median calls: 9  median tokens: 2301  median ms: 20359
+
+✓ report → /home/normie/Documents/Projects/Thesis/benchmark/reports/set2-thinker-qwen3.6-35b-2026-06-17T19-04-47.json

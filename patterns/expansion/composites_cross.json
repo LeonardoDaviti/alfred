@@ -1,0 +1,180 @@
+[
+  {
+    "id": "composite_movie_night",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {
+      "domain": "scenes",
+      "action": "movie_night",
+      "required_tools": ["bash"],
+      "composite_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)\\b(movie night|film night|lets watch a (movie|film)|movie time|cinema mode|set up movie)\\b",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["movie night", "film night", "movie time", "cinema mode", "lets watch a movie"]
+        }
+      }
+    ],
+    "atoms": [
+      {"pattern_id": "atom_ha_set_brightness", "slot_bindings": {"entity": "light.living_room", "level": 30}},
+      {"pattern_id": "atom_spotify_pause", "slot_bindings": {}}
+    ],
+    "output_template": "[SCENE] lights dimmed to 30, music paused — enjoy the movie.",
+    "parse_schema": {},
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Movie night: dim the lights and pause the music. Combines Home Assistant and Spotify.",
+      "example_queries": ["movie night", "let's watch a film", "set up movie time", "cinema mode on"],
+      "estimated_atoms_run": 2,
+      "estimated_llm_calls": 0
+    }
+  },
+  {
+    "id": "composite_focus_mode",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {
+      "domain": "scenes",
+      "action": "focus_mode",
+      "required_tools": ["bash"],
+      "composite_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)\\b(focus mode|deep work|study mode|time to focus|concentration mode|lock in)\\b",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["focus mode", "deep work", "study mode", "time to focus", "lock in"]
+        }
+      }
+    ],
+    "atoms": [
+      {"pattern_id": "atom_ha_set_brightness", "slot_bindings": {"entity": "light.desk", "level": 220}},
+      {"pattern_id": "atom_spotify_play", "slot_bindings": {"query": "Deep Focus"}},
+      {"pattern_id": "atom_spotify_set_volume", "slot_bindings": {"level": 25}}
+    ],
+    "output_template": "[SCENE] desk bright, focus playlist on low — locked in.",
+    "parse_schema": {},
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Focus mode: bright desk light, low-volume focus playlist. Combines Home Assistant and Spotify.",
+      "example_queries": ["focus mode", "time to focus", "deep work session", "study mode on"],
+      "estimated_atoms_run": 3,
+      "estimated_llm_calls": 0
+    }
+  },
+  {
+    "id": "composite_workout_session",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {
+      "domain": "scenes",
+      "action": "workout_session",
+      "required_tools": ["bash"],
+      "composite_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)\\b(workout( mode| time)?|gym mode|lets work out|exercise mode|time to train|pump it up)\\b",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["workout mode", "gym mode", "lets work out", "exercise mode", "time to train", "pump it up"]
+        }
+      }
+    ],
+    "atoms": [
+      {"pattern_id": "atom_ha_turn_on", "slot_bindings": {"entity": "fan.living_room", "domain": "fan"}},
+      {"pattern_id": "atom_spotify_set_volume", "slot_bindings": {"level": 85}},
+      {"pattern_id": "atom_spotify_play", "slot_bindings": {"query": "Beast Mode"}}
+    ],
+    "output_template": "[SCENE] fan on, volume 85, workout playlist blasting.",
+    "parse_schema": {},
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Workout session: turn on the fan, crank the volume, start a workout playlist. Combines Home Assistant and Spotify.",
+      "example_queries": ["workout mode", "time to train", "let's work out", "gym mode on"],
+      "estimated_atoms_run": 3,
+      "estimated_llm_calls": 0
+    }
+  },
+  {
+    "id": "composite_youtube_clip_to_gif",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {
+      "domain": "youtube",
+      "action": "youtube_clip_to_gif",
+      "required_tools": ["bash"],
+      "composite_slots": ["url", "start", "end"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)\\b(youtube .* to a? ?gif|make a gif from (this )?(youtube|yt)|gif from youtube|turn (this )?(youtube|yt) .* into a gif)\\b",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["youtube to gif", "make a gif from youtube", "gif from youtube", "turn youtube into a gif"]
+        }
+      }
+    ],
+    "atoms": [
+      {"pattern_id": "atom_youtube_download_video", "slot_bindings": {"url": "{{url}}"}},
+      {"pattern_id": "atom_ffmpeg_trim", "slot_bindings": {"input": "/tmp/_yt_video.mp4", "start": "{{start}}", "end": "{{end}}", "output": "/tmp/_clip.mp4"}},
+      {"pattern_id": "atom_ffmpeg_transcode", "slot_bindings": {"input": "/tmp/_clip.mp4", "output": "/tmp/_out.gif"}}
+    ],
+    "output_template": "[YT->GIF] downloaded, trimmed, and converted to GIF.",
+    "parse_schema": {},
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Make a GIF from a YouTube clip: download the video, trim a segment, convert to gif. Combines YouTube and ffmpeg.",
+      "example_queries": ["make a gif from this youtube video between 0:10 and 0:13", "turn this yt clip into a gif", "youtube to gif"],
+      "estimated_atoms_run": 3,
+      "estimated_llm_calls": 0
+    }
+  },
+  {
+    "id": "composite_podcast_clip",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {
+      "domain": "youtube",
+      "action": "podcast_clip",
+      "required_tools": ["bash"],
+      "composite_slots": ["url", "start", "end"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)\\b(podcast clip|clip the audio from (this )?(youtube|yt)|audio clip from youtube|grab a clip of the audio|cut the audio from (this )?(youtube|yt))\\b",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["podcast clip", "clip the audio from youtube", "audio clip from youtube", "cut the audio from yt"]
+        }
+      }
+    ],
+    "atoms": [
+      {"pattern_id": "atom_youtube_download_audio", "slot_bindings": {"url": "{{url}}"}},
+      {"pattern_id": "atom_ffmpeg_trim", "slot_bindings": {"input": "/tmp/_yt_audio.mp3", "start": "{{start}}", "end": "{{end}}", "output": "/tmp/_clip.mp3"}}
+    ],
+    "output_template": "[PODCAST] downloaded audio and trimmed to clip.",
+    "parse_schema": {},
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Make an audio clip from a YouTube video: download the audio and trim a segment. Combines YouTube and ffmpeg.",
+      "example_queries": ["make a podcast clip from this youtube video 5:00 to 6:30", "clip the audio from this yt link", "cut the audio from youtube between 1:00 and 2:00"],
+      "estimated_atoms_run": 2,
+      "estimated_llm_calls": 0
+    }
+  }
+]

@@ -1,0 +1,77 @@
+[
+  {
+    "id": "atom_media_play",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "media", "action": "play", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(play|resume|unpause|continue)\\b.*\\b(media|music|playback|track|it|song)\\b|^\\s*(play|resume)\\s*$", "flags": "i",
+       "components": {"intent_verbs": ["play", "resume", "unpause", "continue"], "objects": ["media", "playback", "music"], "skill_terms": ["media", "playback", "player", "resume"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "media play", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Generic OS media control (playerctl). CROSS-SKILL collision with spotify play — media play RESUMES current playback (no query), spotify play takes a --track query. The absence of a track is the discriminator."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Resume the current media playback (generic player, not Spotify-specific).", "example_queries": ["resume playback", "play the media", "unpause"]}
+  },
+  {
+    "id": "atom_media_pause",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "media", "action": "pause", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(pause|stop)\\b.*\\b(media|music|playback|track|it|song|player)\\b|^\\s*pause\\s*$", "flags": "i",
+       "components": {"intent_verbs": ["pause", "stop"], "objects": ["media", "playback", "music"], "skill_terms": ["media", "playback", "player"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "media pause", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Cross-skill sibling of spotify pause."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Pause the current media playback.", "example_queries": ["pause the music", "pause playback", "stop the media player"]}
+  },
+  {
+    "id": "atom_media_next",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "media", "action": "next", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(next|skip|forward)\\b.*\\b(track|song|media|playback)\\b|^\\s*(next|skip)\\s*$", "flags": "i",
+       "components": {"intent_verbs": ["next", "skip", "forward"], "objects": ["track", "song", "media"], "skill_terms": ["media", "track", "playback"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "media next", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Cross-skill sibling of spotify next."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Skip to the next media track.", "example_queries": ["next track", "skip this song", "media forward"]}
+  },
+  {
+    "id": "atom_media_previous",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "media", "action": "previous", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(previous|prev|back|go back)\\b.*\\b(track|song|media|playback)\\b|^\\s*(previous|prev)\\s*$", "flags": "i",
+       "components": {"intent_verbs": ["previous", "prev", "back", "go back"], "objects": ["track", "song", "media"], "skill_terms": ["media", "track", "playback"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "media previous", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Cross-skill sibling of spotify previous."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Go to the previous media track.", "example_queries": ["previous track", "go back a song", "media previous"]}
+  },
+  {
+    "id": "atom_media_volume_set",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "media", "action": "volume_set", "required_tools": ["bash"], "required_slots": ["level"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(set|change|adjust)\\b)(?=.*\\b(player|media|playback)\\b)(?=.*\\b(volume)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["set", "change", "adjust"], "objects": ["volume", "player", "media"], "skill_terms": ["media", "player", "volume", "playback"]}}
+    ],
+    "slots": [{"name": "level", "type": "number", "required": true, "description": "Player volume 0-100"}],
+    "steps": [{"tool": "bash", "args_template": "media volume --level {{level}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["TRIPLE collision: media volume vs sys volume set (system master) vs spotify volume — 'player/media' term discriminates from system master volume."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Set the media player volume to a level (player, not system master).", "example_queries": ["set the player volume to 50", "change the media volume to 30", "adjust playback volume to 70"]}
+  }
+]

@@ -1,0 +1,82 @@
+\chapter{Conclusion and Future Work}
+\label{ch:conclusion}
+
+\section{Summary}
+\label{sec:c-summary}
+
+This thesis asked how much language model reliable on-device action requires, and
+answered it through A.L.F.R.E.D., a two-tier local-first middleware that routes
+each request to a tiny reflexer or a heavier thinker. The five research questions
+are settled by the evaluation.
+
+\emph{On scale versus distillation} (RQ1), a 2B reflexer with a distilled pattern
+matches a 35B free-form thinker on binding (both 100\% balanced), while the same
+2B without a pattern reaches 30\%---the pattern is worth roughly $17\times$ the
+parameters. \emph{On the spectrum} (RQ2), the abstraction is an efficiency win on
+a clean API (a $+65$-point oracle gain at two calls instead of nine) and an
+accuracy win on a realistic one. \emph{On the limit of scale} (RQ3), a 35B thinker
+rescues discovery but not convention, failing device encodings consistently, while
+a distilled pattern supplies exactly that convention. \emph{On teacher quality}
+(RQ4), end-to-end student accuracy tracks the teacher: a cloud teacher's patterns
+score 80\% against a local teacher's 60\% on the same reflexer and tasks. \emph{On
+coverage and routing} (RQ5), the reflexer's territory is the deterministic head
+that on-device assistants target, and the open bottleneck is routing, not binding.
+
+The contribution, stated once more in plain terms: \textbf{on a real device API,
+scale buys discovery but not undiscoverable convention; distillation buys the
+convention; and a small reflexer applies it at a fraction of the cost.} The
+executioner paradigm is validated through the full teacher-to-student loop, and
+its central mechanism---compressing a teacher's device knowledge into an
+inspectable symbolic pattern rather than into student weights---is the thesis's
+main idea.
+
+\section{Future work}
+\label{sec:c-future}
+
+The limitations of Chapter~\ref{ch:discussion} map onto five concrete next steps,
+ordered by leverage.
+
+\paragraph{Session-based device grounding.} Both teachers miss the genuinely
+undiscoverable conventions because cold-start distillation gives them no way to
+check a value against reality. Granting the teacher read-only access to the real
+device---observing actual codes before committing an encoding---would convert those
+guesses into facts and close the remaining convention errors. The integrity rule
+carries over: ground on the device or a development split, never on the evaluation
+gold.
+
+\paragraph{Deterministic value transforms.} The reflexer's residual errors are
+arithmetic and enum-lookup mistakes (percent-to-0--255, label-to-code). Moving
+these transforms out of the model and into a small deterministic function inside
+the pattern removes them for both the teacher and the student, and is a bounded
+engineering change.
+
+\paragraph{The router.} The evaluation localizes the open bottleneck precisely:
+retrieval places the correct candidate in the top-3, but selection picks the wrong
+sibling, and selection does not improve with selector scale. The next investment
+is sibling discrimination---better selection prompting or a learned selector over
+behavioural signals---since the router gates both tiers.
+
+\paragraph{Iterative, grounded distillation.} The cold-start patterns can be run,
+executed on a real device, and re-distilled from the observed failures over two to
+three rounds, lifting a weak local teacher toward cloud quality without a larger
+model. This iteration lives entirely in the offline learning phase; the run-time
+reflex remains a single pass over a frozen pattern, so the simplicity that makes
+the reflexer deployable is preserved by construction, with a minimality check each
+round to stop patterns accreting special cases.
+
+\paragraph{Authoring and personalization at scale.} Longer-term, mining a user's
+own repeated trajectories into candidate patterns would extend coverage beyond
+hand-authored skills, and a privacy-preserving sharing layer would let patterns be
+exchanged without leaking personal data. A parametric alternative---fine-tuning a
+very small model on the pattern conventions---is a path worth measuring against the
+symbolic approach, trading inspectability for a smaller artifact.
+
+\section{Closing}
+\label{sec:c-closing}
+
+The shift toward on-device assistants raises a practical question that this thesis
+takes seriously: not how powerful a model can be, but how little model an action
+actually needs once its knowledge is placed where it belongs. The answer found
+here is that a great deal of on-device action is not a reasoning problem at all. It
+is a knowledge-placement problem---and once the convention is distilled into a
+pattern, a small model executing a frozen reflex is enough.

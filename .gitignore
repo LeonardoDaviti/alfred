@@ -1,0 +1,28 @@
+# runtime state (created on first run)
+data/*
+!data/.gitkeep
+
+# python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+build/
+dist/
+
+# latex aux (keep main.pdf + sources)
+thesis/*.aux
+thesis/*.log
+thesis/*.out
+thesis/*.toc
+thesis/*.lof
+thesis/*.lot
+thesis/*.bbl
+thesis/*.blg
+thesis/chapters/*.aux
+
+# figure previews (regenerated; vector pdf is tracked)
+thesis/figures/*.png
+
+# node (SET runners use tsx)
+node_modules/

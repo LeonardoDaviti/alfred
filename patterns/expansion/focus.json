@@ -1,0 +1,47 @@
+[
+  {
+    "id": "atom_focus_on",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "focus", "action": "focus_on", "required_tools": ["bash"], "required_slots": ["mode"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(enable|turn on|start|activate|enter)\\b)(?=.*\\b(focus|do not disturb|dnd|sleep mode|work mode|concentration)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["enable", "turn on", "start", "activate", "enter"], "objects": ["focus", "mode"], "skill_terms": ["focus", "concentration", "work mode", "sleep mode", "personal"]}}
+    ],
+    "slots": [{"name": "mode", "type": "string", "required": true, "description": "Focus profile: work | sleep | personal"}],
+    "steps": [{"tool": "bash", "args_template": "focus on --mode {{mode}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Focus profile. CROSS-SKILL collision with device_settings dnd — focus on --mode is a named profile; settings dnd --state is the raw toggle."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Turn on a named focus profile (work/sleep/personal).", "example_queries": ["turn on work focus", "enable sleep mode", "activate personal focus"]}
+  },
+  {
+    "id": "atom_focus_off",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "focus", "action": "focus_off", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(disable|turn off|stop|deactivate|end|exit)\\b)(?=.*\\b(focus|do not disturb|dnd|focus mode)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["disable", "turn off", "stop", "deactivate", "end", "exit"], "objects": ["focus", "mode"], "skill_terms": ["focus", "concentration"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "focus off", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Turn focus off — clears any profile."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Turn focus mode off.", "example_queries": ["turn off focus", "exit focus mode", "disable do not disturb focus"]}
+  },
+  {
+    "id": "atom_focus_status",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "focus", "action": "focus_status", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(status|what|is|check|current)\\b)(?=.*\\b(focus|focus mode)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["status", "what", "check", "current"], "objects": ["focus"], "skill_terms": ["focus", "mode"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "focus status", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Read sibling within the focus family."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Report the current focus mode.", "example_queries": ["what focus mode am I in", "check focus status", "is focus on"]}
+  }
+]

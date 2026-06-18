@@ -1,0 +1,12 @@
+[
+  {"id": "p2_clk_now_01", "query": "what time is it", "expected_route": "reflexer", "expected_pattern_id": "atom_clock_now", "gold_command_contains": ["clock", "now"], "domain": "clock"},
+  {"id": "p2_med_pause_01", "query": "pause the music player", "expected_route": "reflexer", "expected_pattern_id": "atom_media_pause", "gold_command_contains": ["media", "pause"], "domain": "media"},
+  {"id": "p2_med_next_01", "query": "next track", "expected_route": "reflexer", "expected_pattern_id": "atom_media_next", "gold_command_contains": ["media", "next"], "domain": "media"},
+  {"id": "p2_foc_on_01", "query": "turn on work focus", "expected_route": "reflexer", "expected_pattern_id": "atom_focus_on", "gold_command_contains": ["focus", "on", "--mode"], "domain": "focus"},
+  {"id": "p2_set_wifi_01", "query": "turn wifi off", "expected_route": "reflexer", "expected_pattern_id": "atom_settings_wifi", "gold_command_contains": ["settings", "wifi", "--state"], "domain": "device_settings"},
+  {"id": "p2_set_dnd_01", "query": "turn on do not disturb", "expected_route": "reflexer", "expected_pattern_id": "atom_settings_dnd", "gold_command_contains": ["settings", "dnd", "--state"], "domain": "device_settings"},
+  {"id": "p2_call_dial_01", "query": "call mom", "expected_route": "reflexer", "expected_pattern_id": "atom_call_dial", "gold_command_contains": ["call", "dial", "--to"], "domain": "call"},
+  {"id": "p2_app_open_01", "query": "open Spotify", "expected_route": "reflexer", "expected_pattern_id": "atom_app_open", "gold_command_contains": ["app", "open", "--name"], "domain": "app"},
+  {"id": "p2_brw_open_01", "query": "open github.com", "expected_route": "reflexer", "expected_pattern_id": "atom_browser_open_url", "gold_command_contains": ["browser", "open", "--url"], "domain": "browser"},
+  {"id": "p2_brw_search_01", "query": "search for python decorators", "expected_route": "reflexer", "expected_pattern_id": "atom_browser_search", "gold_command_contains": ["browser", "search", "--query"], "domain": "browser"}
+]

@@ -1,0 +1,16 @@
+== binding-only (routing assumed correct) ==  model=qwen-3.5-2b
+tasks (atoms w/ gold tokens): 72  from 1 files
+binding accuracy: 72/72 = 100.0%
+
+per domain:
+  app              6/6 = 100.0%
+  browser          16/16 = 100.0%
+  call             8/8 = 100.0%
+  clock            14/14 = 100.0%
+  device_settings  12/12 = 100.0%
+  focus            6/6 = 100.0%
+  media            10/10 = 100.0%
+
+most-missed gold tokens:
+
+binding misses (0):

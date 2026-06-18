@@ -1,0 +1,132 @@
+\chapter{Introduction}
+\label{ch:intro}
+
+\section{Context}
+\label{sec:context}
+
+A growing share of what people ask a phone to do is not a question but an
+\emph{action}: set an alarm, dim the screen, start a timer, turn on Do Not
+Disturb, call a contact. These requests are short, frequent, and repetitive, and
+they share a property that the conversational use of assistants does not---they
+have a single correct outcome. Either the alarm is set for 7:00 or it is not.
+
+How these actions are served is in the middle of an industry shift. The dominant
+pattern routes a request to a large cloud model; the emerging one keeps as much
+as possible \emph{on the device}. Both Google (Gemini Nano through Android
+AICore) and Apple (Apple Intelligence, with Private Cloud Compute for overflow)
+now run a small model locally and escalate only when they must. The motivation is
+threefold: \emph{privacy}, because an action request often contains personal
+context that should never leave the device; \emph{cost and latency}, because a
+local model answers in milliseconds without a network round-trip or a per-call
+bill; and \emph{availability}, because the device should still work offline. The
+open engineering question this shift raises is the subject of this thesis: how
+much language model does reliable on-device \emph{action} actually require?
+
+\section{The problem}
+\label{sec:problem}
+
+The difficulty is a squeeze from both ends. A model small enough to run
+comfortably on a phone is, on its own, an unreliable executor: asked to carry out
+a device action by free-form reasoning, it either fails to act at all or invents
+a command from its pretraining priors instead of the one the device expects
+(Chapter~\ref{ch:eval} measures both failures). A model large enough to reason
+reliably does not fit on the device, answers an order of magnitude more slowly,
+costs money per call, and---as this thesis shows---is \emph{still} wrong on the
+device-specific conventions that no amount of reasoning can recover.
+
+So neither obvious option is satisfactory. Shipping a big model defeats the point
+of going on-device; shipping a small free-form model is unreliable. The
+interesting design space is between them: a tiny model that does not have to be
+clever, paired with something that supplies the knowledge it lacks.
+
+\section{The gap}
+\label{sec:gap}
+
+Two gaps in the existing picture motivate the work. First, the literature treats
+``the model is too small'' as a single problem, when on a realistic device API it
+is really two. One is \emph{discovery}---finding which setting, namespace, or key
+a request maps to---which is a search problem that a larger model solves by
+exploring the API. The other is \emph{convention}---knowing that ``total
+silence'' is encoded as the integer \texttt{2}, or that ``largest font'' is the
+string \texttt{1.30}---which is not discoverable from the API at all, because the
+meaning lives in a device's tribal knowledge rather than in any queryable surface.
+These two difficulties respond to completely different remedies, and conflating
+them hides the most useful result in the thesis (Figure~\ref{fig:discovery}).
+
+Second, the standard tool for compressing a capable model into a deployable one
+is knowledge distillation into a smaller network's weights. That approach yields
+an opaque student that must be retrained to extend. For an on-device system that
+skill authors must extend and users must trust, a different distillation target
+is attractive: compressing the teacher's knowledge into an \emph{inspectable,
+plug-and-play symbolic artifact}. Whether such symbolic distillation is
+sufficient to make a tiny model a reliable executor has not, to our knowledge,
+been measured end-to-end.
+
+\section{Thesis statement and research questions}
+\label{sec:statement}
+
+This thesis advances and defends a single claim:
+
+\begin{quote}
+On the repeatable, deterministic \emph{head} of on-device tasks, \textbf{distillation
+substitutes for scale}: a 2-billion-parameter executor handed a distilled
+symbolic pattern matches a $17\times$ larger free-form agent in binding accuracy,
+at one on-device forward pass, because the bottleneck is not reasoning but device
+knowledge the API does not expose. The remaining open limit is \emph{routing},
+not execution.
+\end{quote}
+
+The claim is decomposed into five research questions, each answered in
+Chapter~\ref{ch:eval}:
+
+\begin{description}[leftmargin=2.2em,style=nextline]
+  \item[RQ1 (scale vs.\ distillation)] How much model does reliable binding
+    (intent $\rightarrow$ correct command) require, and can a distilled pattern
+    close the gap a small model has?
+  \item[RQ2 (the spectrum)] Does the value of the reflexer change with API
+    difficulty---when is it an efficiency win and when an accuracy win?
+  \item[RQ3 (the limit of scale)] Are there task difficulties that model scale
+    cannot solve but a distilled pattern can?
+  \item[RQ4 (teacher quality)] In teacher$\rightarrow$student distillation, how
+    much does the choice of teacher (cloud vs.\ local) propagate to the on-device
+    student?
+  \item[RQ5 (coverage and routing)] What fraction of real on-device use-cases
+    does the approach address, and where is the end-to-end bottleneck?
+\end{description}
+
+\section{Contributions}
+\label{sec:contributions}
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{A two-tier local-first architecture} (A.L.F.R.E.D.) and the
+    \emph{executioner paradigm}: a small reflexer treated as a constrained
+    slot-filler, not a generator, with a heavier thinker reserved for the tail
+    (Chapter~\ref{ch:design}).
+  \item \textbf{Symbolic distillation}: knowledge distillation into a
+    plug-and-play JSON pattern rather than student weights, with the
+    teacher$\rightarrow$student loop measured end-to-end (Sections~\ref{sec:p5}).
+  \item \textbf{The discovery-vs-convention distinction}: two kinds of task
+    difficulty, separated by what model scale can and cannot fix, demonstrated on
+    a realistic device API (Section~\ref{sec:p4}).
+  \item \textbf{Two end-state-oracle benchmarks} (SET-1 clean, SET-2
+    Android-realistic) and a standardized binding-only harness, with an integrity
+    protocol that forbids fabricated numbers and benchmark leakage into distilled
+    artifacts (Chapter~\ref{ch:method}).
+  \item \textbf{A coverage denominator} anchored to real Pixel and Apple
+    on-device use-cases, and an honest localization of the open bottleneck at
+    routing rather than execution (Sections~\ref{sec:coverage}--\ref{sec:routing}).
+\end{enumerate}
+
+\section{Thesis structure}
+\label{sec:structure}
+
+Chapter~\ref{ch:design} presents A.L.F.R.E.D.\ as a system---the two tiers, the
+pattern artifact, the skill model, and the distillation step that connects them.
+Chapter~\ref{ch:method} specifies how the system is evaluated: the binding-only
+methodology, the end-state oracle, the benchmarks, and the integrity rules.
+Chapter~\ref{ch:eval} is the core, establishing the five results above in turn.
+Chapter~\ref{ch:discussion} draws out the implications for design and
+productization and states the threats to validity. Chapter~\ref{ch:conclusion}
+summarizes the contributions and outlines the next steps---device grounding,
+deterministic value transforms, and the routing work that the evaluation
+identifies as the remaining limit.

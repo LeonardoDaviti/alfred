@@ -1,0 +1,68 @@
+########## SET-1 E1 (manual edit) full 20 ##########
+▶ SET-1 e1 — model=qwen-3.5-2b tasks=20 ceiling=20 backstop=120000ms
+  [✗] t01 toggle     turn off wifi                            calls=16 tok=3912 ms=10681  wrong=[{"path":"connectivity.wifi","want":false,"got":true}] collateral=[]
+  [✓] t02 toggle     enable airplane mode                     calls=4 tok=1185 ms=3823
+  [✓] t03 toggle     turn on the hotspot                      calls=4 tok=1152 ms=3411
+  [✓] t04 toggle     switch on dark mode                      calls=6 tok=1588 ms=5116
+  [✗] t05 toggle     disable bluetooth                        calls=20 tok=3497 ms=13366  wrong=[{"path":"connectivity.bluetooth","want":false,"got":true}] collateral=[]
+  [✗] t06 ranged     set the brightness to 8                  calls=16 tok=3664 ms=13560  wrong=[{"path":"display.brightness","want":8,"got":5}] collateral=[]
+  [✓] t07 ranged     increase the brightness by 2             calls=7 tok=1747 ms=8040
+  [✓] t08 ranged     lower the text size to 1                 calls=7 tok=1710 ms=6816
+  [✗] t09 ranged     turn the animation speed down by 3       calls=4 tok=4089 ms=32255  invalid_json (agent corrupted the state file)
+  [✗] t10 ranged     max out the screen timeout               calls=20 tok=3494 ms=17110  wrong=[{"path":"display.screen_timeout","want":10,"got":4}] collateral=[]
+  [✗] t11 free_text  rename my device to Nova                 calls=3 tok=1510 ms=3806  invalid_json (agent corrupted the state file)
+  [✗] t12 free_text  change the ringtone to Beacon            calls=2 tok=908 ms=1655  wrong=[{"path":"device.ringtone","want":"Beacon","got":null}] collateral=[]
+  [✗] t13 free_text  set the wallpaper to Galaxy              calls=20 tok=3098 ms=15612  wrong=[{"path":"device.wallpaper","want":"Galaxy","got":"Aurora"}] collateral=[]
+  [✓] t14 free_text  rename the phone to Pixel-Pro            calls=9 tok=2809 ms=7622
+  [✗] t15 free_text  change my ringtone to Silence            calls=20 tok=3497 ms=15457  wrong=[{"path":"device.ringtone","want":"Silence","got":"Cosmos"}] collateral=[]
+  [✓] t16 nested_app turn off Spotify notifications           calls=6 tok=1917 ms=8746
+  [✗] t17 nested_app set Spotify data usage to 2              calls=3 tok=1033 ms=2481  wrong=[{"path":"apps.spotify.data_usage","want":2,"got":null}] collateral=[]
+  [✗] t18 nested_app disable location access for Maps         calls=16 tok=3567 ms=12546  wrong=[{"path":"apps.maps.location","want":false,"got":true}] collateral=[]
+  [✗] t19 nested_app turn on camera location tagging          calls=20 tok=3254 ms=16661  wrong=[{"path":"apps.camera.location_tag","want":true,"got":false}] collateral=[
+  [✗] t20 nested_app turn off Maps notifications              calls=20 tok=3206 ms=17263  wrong=[{"path":"apps.maps.notifications","want":false,"got":true}] collateral=[]
+
+== SET-1 e1 ==  model=qwen-3.5-2b
+oracle pass: 7/20 = 35.0%
+median calls: 9  median tokens: 3098  median ms: 10681
+per type:
+  free_text   1/5 = 20.0%
+  nested_app  1/5 = 20.0%
+  ranged      2/5 = 40.0%
+  toggle      3/5 = 60.0%
+
+✓ report → /home/normie/Documents/Projects/Thesis/benchmark/reports/set1-e1-qwen-3.5-2b-2026-06-17T16-56-58.json
+
+########## SET-1 E2 (settings script) full 20 ##########
+▶ SET-1 e2 — model=qwen-3.5-2b tasks=20 ceiling=20 backstop=90000ms
+  [✓] t01 toggle     turn off wifi                            calls=2 tok=1132 ms=1387
+  [✓] t02 toggle     enable airplane mode                     calls=2 tok=711 ms=1256
+  [✓] t03 toggle     turn on the hotspot                      calls=2 tok=707 ms=1220
+  [✓] t04 toggle     switch on dark mode                      calls=2 tok=777 ms=1963
+  [✓] t05 toggle     disable bluetooth                        calls=2 tok=766 ms=1855
+  [✓] t06 ranged     set the brightness to 8                  calls=2 tok=769 ms=1852
+  [✓] t07 ranged     increase the brightness by 2             calls=2 tok=769 ms=1885
+  [✓] t08 ranged     lower the text size to 1                 calls=2 tok=757 ms=1738
+  [✓] t09 ranged     turn the animation speed down by 3       calls=2 tok=775 ms=1883
+  [✓] t10 ranged     max out the screen timeout               calls=2 tok=767 ms=1862
+  [✓] t11 free_text  rename my device to Nova                 calls=2 tok=762 ms=1763
+  [✓] t12 free_text  change the ringtone to Beacon            calls=2 tok=777 ms=1866
+  [✓] t13 free_text  set the wallpaper to Galaxy              calls=2 tok=774 ms=1877
+  [✓] t14 free_text  rename the phone to Pixel-Pro            calls=2 tok=767 ms=1792
+  [✓] t15 free_text  change my ringtone to Silence            calls=2 tok=780 ms=1905
+  [✓] t16 nested_app turn off Spotify notifications           calls=2 tok=764 ms=1755
+  [✓] t17 nested_app set Spotify data usage to 2              calls=2 tok=788 ms=1946
+  [✓] t18 nested_app disable location access for Maps         calls=2 tok=805 ms=2197
+  [✓] t19 nested_app turn on camera location tagging          calls=2 tok=776 ms=1861
+  [✓] t20 nested_app turn off Maps notifications              calls=3 tok=888 ms=2633
+
+== SET-1 e2 ==  model=qwen-3.5-2b
+oracle pass: 20/20 = 100.0%
+median calls: 2  median tokens: 774  median ms: 1862
+per type:
+  free_text   5/5 = 100.0%
+  nested_app  5/5 = 100.0%
+  ranged      5/5 = 100.0%
+  toggle      5/5 = 100.0%
+
+✓ report → /home/normie/Documents/Projects/Thesis/benchmark/reports/set1-e2-qwen-3.5-2b-2026-06-17T16-57-36.json
+ALL DONE

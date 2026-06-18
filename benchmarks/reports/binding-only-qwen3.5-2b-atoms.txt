@@ -1,0 +1,16 @@
+== binding-only (routing assumed correct) ==  model=qwen-3.5-2b
+tasks (atoms w/ gold tokens): 409  from 4 files
+binding accuracy: 409/409 = 100.0%
+
+per domain:
+  docker           12/12 = 100.0%
+  ffmpeg           84/84 = 100.0%
+  home_assistant   103/103 = 100.0%
+  service          12/12 = 100.0%
+  spotify          100/100 = 100.0%
+  system           14/14 = 100.0%
+  youtube          84/84 = 100.0%
+
+most-missed gold tokens:
+
+binding misses (0):

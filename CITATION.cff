@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software or its findings, please cite the thesis."
+title: "A.L.F.R.E.D.: A Local-First, Two-Tier Routing Middleware for On-Device Intent Execution"
+authors:
+  - family-names: "Zoidze"
+    given-names: "David"
+type: software
+license: MIT
+year: 2026
+url: "https://github.com/leonardodaviti/alfred"
+abstract: >
+  A local-first two-tier middleware that routes on-device intents between a tiny
+  reflexer (a 2B model that fills a distilled command pattern in one forward pass)
+  and a heavier thinker. Demonstrates that, on the deterministic head of on-device
+  tasks, distillation into a symbolic pattern substitutes for model scale: a 2B
+  reflexer matches a 17x larger free-form agent on binding, and scale buys
+  discovery but not undiscoverable device conventions, which a distilled pattern
+  supplies.

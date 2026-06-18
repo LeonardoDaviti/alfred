@@ -1,0 +1,22 @@
+[project]
+name = "alfred"
+version = "0.1.0"
+description = "A local-first, two-tier routing middleware for on-device intent execution"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "David Zoidze" }]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "matplotlib>=3.7",
+]
+
+[project.optional-dependencies]
+# Router embedding selection (not needed for binding-only reproduction).
+embed = ["sentence-transformers>=2.2"]
+
+[project.urls]
+Repository = "https://github.com/leonardodaviti/alfred"
+
+[tool.setuptools.packages.find]
+include = ["alfred*"]

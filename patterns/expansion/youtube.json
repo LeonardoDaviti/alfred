@@ -1,0 +1,253 @@
+[
+  {
+    "id": "atom_youtube_download_video",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "youtube",
+      "action": "download_video",
+      "required_tools": ["bash"],
+      "required_slots": ["url"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(download|grab|save|fetch|get|rip)\\b)(?=.*\\b(video|youtube|yt|clip|watch)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["download", "grab", "save", "fetch", "get", "rip"],
+          "objects": ["video", "clip"],
+          "skill_terms": ["video", "youtube", "yt", "clip", "watch"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "url", "type": "string", "required": true, "description": "YouTube URL"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "yt-dlp \"{{url}}\"", "retries": 0, "timeout": 120, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "exit_code == 0"}],
+    "notes": ["Mock/binding-only (network) — bare yt-dlp downloads the video."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Download a YouTube video.",
+      "example_queries": ["download this youtube video <url>", "grab the video at youtu.be/abc", "save that yt clip"]
+    }
+  },
+  {
+    "id": "atom_youtube_download_audio",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "youtube",
+      "action": "download_audio_mp3",
+      "required_tools": ["bash"],
+      "required_slots": ["url"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(download|grab|save|extract|get|rip)\\b)(?=.*\\b(audio|mp3|song|music|sound)\\b)(?=.*\\b(youtube|yt|video|url|link)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["download audio", "extract mp3", "rip the song"],
+          "objects": ["audio", "mp3", "song"],
+          "skill_terms": ["audio", "mp3", "song", "music", "youtube", "yt"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "url", "type": "string", "required": true, "description": "YouTube URL"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "yt-dlp -x --audio-format mp3 \"{{url}}\"", "retries": 0, "timeout": 120, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "exit_code == 0"}],
+    "notes": ["Sibling of download_video — discriminator is -x --audio-format mp3."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Download a YouTube video as MP3 audio.",
+      "example_queries": ["download the mp3 of this youtube video", "rip the audio from that yt link", "get just the song from <url>"]
+    }
+  },
+  {
+    "id": "atom_youtube_get_transcript",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "youtube",
+      "action": "fetch_subtitles",
+      "required_tools": ["bash"],
+      "required_slots": ["url"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(transcript|subtitles|captions|subs|text)\\b)(?=.*\\b(youtube|yt|video|url|link)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["get transcript", "subtitles", "captions", "subs"],
+          "objects": ["transcript", "subtitles", "captions"],
+          "skill_terms": ["transcript", "subtitles", "captions", "subs", "youtube", "yt"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "url", "type": "string", "required": true, "description": "YouTube URL"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "yt-dlp --write-auto-sub --skip-download \"{{url}}\"", "retries": 0, "timeout": 60, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "exit_code == 0"}],
+    "notes": ["Discriminator: --write-auto-sub --skip-download."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Fetch the subtitles/transcript of a YouTube video.",
+      "example_queries": ["get the transcript of this youtube video", "download the captions for <url>", "grab the subtitles of that yt clip"]
+    }
+  },
+  {
+    "id": "atom_youtube_get_metadata",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "youtube",
+      "action": "dump_metadata",
+      "required_tools": ["bash"],
+      "required_slots": ["url"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(metadata|info|details|title|description|duration|how long)\\b)(?=.*\\b(youtube|yt|video|url|link)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["get metadata", "info", "details", "title", "duration"],
+          "objects": ["metadata", "info", "title"],
+          "skill_terms": ["metadata", "info", "details", "title", "description", "duration", "youtube", "yt"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "url", "type": "string", "required": true, "description": "YouTube URL"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "yt-dlp --dump-json --skip-download \"{{url}}\"", "retries": 0, "timeout": 60, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}],
+    "notes": ["Read action — discriminator --dump-json --skip-download."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Get the metadata (title, duration, etc.) of a YouTube video.",
+      "example_queries": ["what's the title and duration of this youtube video", "get the metadata for <url>", "how long is that yt video"]
+    }
+  },
+  {
+    "id": "atom_youtube_download_playlist",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "youtube",
+      "action": "download_playlist",
+      "required_tools": ["bash"],
+      "required_slots": ["url"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(download|grab|save|get)\\b)(?=.*\\b(playlist|whole list|all videos|entire)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["download playlist", "grab the whole list", "save all videos"],
+          "objects": ["playlist"],
+          "skill_terms": ["playlist", "whole list", "all videos", "entire"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "url", "type": "string", "required": true, "description": "YouTube playlist URL"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "yt-dlp --yes-playlist \"{{url}}\"", "retries": 0, "timeout": 600, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "exit_code == 0"}],
+    "notes": ["Discriminator: --yes-playlist."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Download an entire YouTube playlist.",
+      "example_queries": ["download this whole youtube playlist", "grab all videos in the playlist <url>", "save the entire yt list"]
+    }
+  },
+  {
+    "id": "atom_youtube_download_thumbnail",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "youtube",
+      "action": "download_thumbnail",
+      "required_tools": ["bash"],
+      "required_slots": ["url"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(thumbnail|cover|poster|preview image)\\b)(?=.*\\b(youtube|yt|video|url|link)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["thumbnail", "cover image", "poster"],
+          "objects": ["thumbnail", "cover"],
+          "skill_terms": ["thumbnail", "cover", "poster", "youtube", "yt"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "url", "type": "string", "required": true, "description": "YouTube URL"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "yt-dlp --write-thumbnail --skip-download \"{{url}}\"", "retries": 0, "timeout": 60, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "exit_code == 0"}],
+    "notes": ["Discriminator: --write-thumbnail."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Download the thumbnail image of a YouTube video.",
+      "example_queries": ["download the thumbnail of this youtube video", "grab the cover image for <url>", "save the yt poster"]
+    }
+  },
+  {
+    "id": "composite_youtube_to_mp3",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {
+      "domain": "youtube",
+      "action": "youtube_to_normalized_mp3",
+      "required_tools": ["bash"],
+      "composite_slots": ["url"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)\\b(youtube to mp3|yt to mp3|rip .* and convert|download .* and make .* mp3|podcast clip from)\\b",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["youtube to mp3", "rip and convert", "download and make mp3"]
+        }
+      }
+    ],
+    "atoms": [
+      {"pattern_id": "atom_youtube_download_audio", "slot_bindings": {"url": "{{url}}"}},
+      {"pattern_id": "atom_ffmpeg_transcode", "slot_bindings": {"input": "/tmp/_yt_audio.mp3", "output": "/tmp/_final.mp3"}}
+    ],
+    "output_template": "[YT->MP3] downloaded audio and normalised to mp3.",
+    "parse_schema": {},
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Download YouTube audio and normalise it to MP3 (yt-dlp then ffmpeg).",
+      "example_queries": ["youtube to mp3 <url>", "rip this video and convert it to a clean mp3", "make a podcast clip from <url>"],
+      "estimated_atoms_run": 2,
+      "estimated_llm_calls": 0
+    }
+  }
+]

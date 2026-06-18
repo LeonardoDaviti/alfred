@@ -1,0 +1,93 @@
+% =====================================================================
+% A.L.F.R.E.D. — Bachelor Thesis
+% David Zoidze · International Black Sea University (IBSU), Tbilisi
+% Supervisor: Giorgi Merabishvili
+% Fresh monograph LaTeX class (NOT the AICT IEEE template).
+% Build:  pdflatex main && bibtex main && pdflatex main && pdflatex main
+% =====================================================================
+\documentclass[12pt,a4paper,oneside]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+
+% lightweight code style for command/JSON listings
+\lstdefinestyle{cmd}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible,
+  frame=single,
+  rulecolor=\color{gray!40},
+  backgroundcolor=\color{gray!5},
+  keepspaces=true,
+}
+\lstset{style=cmd}
+
+\title{A.L.F.R.E.D.: A Local-First, Two-Tier Routing Middleware for
+On-Device Intent Execution}
+\author{David Zoidze}
+\date{2026}
+
+\begin{document}
+
+% ---------------------------------------------------------------- front matter
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+{\Large International Black Sea University\par}
+{\large Faculty of Computer Science / Engineering\par}
+\vfill
+{\huge\bfseries A.L.F.R.E.D.\par}
+\vspace{0.5cm}
+{\Large A Local-First, Two-Tier Routing Middleware\\for On-Device Intent Execution\par}
+\vfill
+{\large Bachelor Thesis\par}
+\vspace{1cm}
+{\large \textbf{Author:} David Zoidze\par}
+{\large \textbf{Supervisor:} Giorgi Merabishvili\par}
+\vfill
+{\large Tbilisi, 2026\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+
+% Abstract (EN) — ~200-250 words. TODO: finalize after Ch.5.
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+\input{chapters/abstract}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\cleardoublepage
+\pagenumbering{arabic}
+
+% ---------------------------------------------------------------- chapters
+\include{chapters/ch1_introduction}         % drafted
+\include{chapters/ch2_background}            % drafted
+\include{chapters/ch3_system_design}        % drafted
+\include{chapters/ch4_methodology}          % drafted
+\include{chapters/ch5_evaluation}           % drafted
+\include{chapters/ch6_discussion}           % drafted
+\include{chapters/ch7_conclusion}           % drafted
+
+% ---------------------------------------------------------------- back matter
+\bibliographystyle{ieeetr}
+\bibliography{references}
+
+\end{document}

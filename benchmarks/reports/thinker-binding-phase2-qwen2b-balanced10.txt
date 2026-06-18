@@ -1,0 +1,45 @@
+▶ thinker binding-only — model=qwen-3.5-2b tasks=10 backstop=45000ms
+(node:22960) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  [✗] clock           what time is it                              tok=1348 ms=947 calls=1
+  [✓] media           pause the music player                       tok=1139 ms=2666 calls=1
+  [✗] media           next track                                   tok=508 ms=325 calls=0
+  [✓] focus           turn on work focus                           tok=1039 ms=2404 calls=2 [capped]
+  [✓] device_settings turn wifi off                                tok=1935 ms=3274 calls=1
+  [✗] device_settings turn on do not disturb                       tok=736 ms=2020 calls=1
+  [✗] call            call mom                                     tok=551 ms=637 calls=0
+  [✗] app             open Spotify                                 tok=619 ms=1154 calls=1
+  [✗] browser         open github.com                              tok=717 ms=1667 calls=1
+  [✗] browser         search for python decorators                 tok=729 ms=1563 calls=2 [capped]
+
+== thinker binding-only ==  model=qwen-3.5-2b
+binding accuracy: 3/10 = 30.0%
+median tokens/task: 736   median ms/task: 1667
+total tokens: 9321
+
+per domain:
+  app              0/1 = 0.0%
+  browser          0/2 = 0.0%
+  call             0/1 = 0.0%
+  clock            0/1 = 0.0%
+  device_settings  1/2 = 50.0%
+  focus            1/1 = 100.0%
+  media            1/2 = 50.0%
+
+binding misses (7):
+  [clock         ] gold=["clock","now"]
+        -> date
+  [media         ] gold=["media","next"]
+        -> —
+  [device_settings] gold=["settings","dnd","--state"]
+        -> echo "Checking current do not disturb status..." && echo "This is a mock response - in a r
+  [call          ] gold=["call","dial","--to"]
+        -> —
+  [app           ] gold=["app","open","--name"]
+        -> spotify &
+  [browser       ] gold=["browser","open","--url"]
+        -> open "https://github.com"
+  [browser       ] gold=["browser","search","--query"]
+        -> find /home/normie/Documents/Projects/Thesis -name "*.md" -o -name "*.txt" | head -20
+
+✓ report → /home/normie/Documents/Projects/Thesis/benchmark/reports/thinker-binding-qwen-3.5-2b-2026-06-17T11-18-03.json

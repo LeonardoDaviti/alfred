@@ -1,0 +1,49 @@
+▶ thinker binding-only — model=qwen-3.5-4b tasks=10 backstop=180000ms
+(node:29368) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  [✗] clock           what time is it                              tok=1344 ms=2354 calls=1
+  [✓] media           pause the music player                       tok=630 ms=2765 calls=2 [capped]
+  [✗] media           next track                                   tok=1355 ms=3366 calls=2 [capped]
+  [✗] focus           turn on work focus                           tok=644 ms=3605 calls=2 [capped]
+  [✗] device_settings turn wifi off                                tok=608 ms=1977 calls=1
+  [✗] device_settings turn on do not disturb                       tok=640 ms=2765 calls=2 [capped]
+  [✗] call            call mom                                     tok=673 ms=3367 calls=2 [capped]
+  [✗] app             open Spotify                                 tok=590 ms=2526 calls=2 [capped]
+  [✗] browser         open github.com                              tok=661 ms=2406 calls=2 [capped]
+  [✗] browser         search for python decorators                 tok=701 ms=3607 calls=2 [capped]
+
+== thinker binding-only ==  model=qwen-3.5-4b
+binding accuracy: 1/10 = 10.0%
+median tokens/task: 661   median ms/task: 2765
+total tokens: 7846
+
+per domain:
+  app              0/1 = 0.0%
+  browser          0/2 = 0.0%
+  call             0/1 = 0.0%
+  clock            0/1 = 0.0%
+  device_settings  0/2 = 0.0%
+  focus            0/1 = 0.0%
+  media            1/2 = 50.0%
+
+binding misses (9):
+  [clock         ] gold=["clock","now"]
+        -> date
+  [media         ] gold=["media","next"]
+        -> playerctl pause && playerctl next
+  [focus         ] gold=["focus","on","--mode"]
+        -> ls -la /home/normie/Documents/Projects/Thesis/agents/skills/focus/
+  [device_settings] gold=["settings","wifi","--state"]
+        -> nmcli radio wifi off
+  [device_settings] gold=["settings","dnd","--state"]
+        -> gsettings set org.gnome.desktop.interface dark-theme true
+  [call          ] gold=["call","dial","--to"]
+        -> find /home/normie/Documents/Projects/Thesis/agents/skills/call -name "*.md" | head -5
+  [app           ] gold=["app","open","--name"]
+        -> xdg-open https://open.spotify.com
+  [browser       ] gold=["browser","open","--url"]
+        -> xdg-open https://github.com
+  [browser       ] gold=["browser","search","--query"]
+        -> curl -s "https://docs.python.org/3/library/functions.html#decorator" | grep -A 50 "decorat
+
+✓ report → /home/normie/Documents/Projects/Thesis/benchmark/reports/thinker-binding-qwen-3.5-4b-2026-06-17T11-46-26.json

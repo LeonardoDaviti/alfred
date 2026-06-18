@@ -1,0 +1,97 @@
+\chapter{Discussion}
+\label{ch:discussion}
+
+\section{What the results mean}
+\label{sec:d-meaning}
+
+The five results of Chapter~\ref{ch:eval} compose into a single claim with a sharp
+boundary. On the repeatable head of on-device tasks, a 2B reflexer with a
+distilled pattern matches a $17\times$ larger free-form thinker, because the
+reflexer does not solve the task---it replays a solution found once. The boundary
+is the distinction the thesis makes precise: model scale buys \emph{discovery},
+the search for which namespace and key a request maps to, but it does not buy
+\emph{convention}, the device-specific meaning of a value. A 35B thinker explores
+the API and finds the right key, then guesses the encoding and is wrong about half
+the time, making the \emph{same} mistake every time it is asked
+(Section~\ref{sec:p4}). A distilled pattern carries that convention, so a small
+model applying it succeeds where the large model reasoning from scratch fails.
+
+This reframes a question usually posed as ``how capable a model do we need'' into
+``where does the required knowledge live.'' For discovery, the knowledge is in the
+API and a capable model can find it. For convention, the knowledge is in neither
+the API nor the model's parameters at any scale tested; it exists only in a
+distilled artifact. Once that is seen, the economics follow directly
+(Section~\ref{sec:economics}): pay a strong teacher once to externalize the
+convention, and a cheap student applies it forever. The teacher-quality result
+sharpens the recipe---because the student faithfully executes whatever convention
+the teacher encoded, a weak teacher bakes in wrong priors, so the one-time
+distillation step should use the strongest available teacher
+(Section~\ref{sec:p5}).
+
+\section{Implications for productization}
+\label{sec:d-product}
+
+The architecture suggests a clear product shape and an equally clear set of
+blockers. The defensible first version is a \emph{deterministic-intent
+accelerator}: the high-frequency, unambiguous head---media and device control,
+smart-home toggles, timers, system actions---served on-device by the reflexer at
+near-100\% binding, with the thinker as a safety net for everything else. This is
+the slice where the value is highest and the risk is lowest, and it coincides with
+the on-device sweet spot that the Pixel and Apple use-case mapping identifies
+(Section~\ref{sec:coverage}).
+
+The blockers are ranked by how much they gate a shippable system. \emph{Routing
+reliability} is first: end-to-end accuracy is the product of routing and binding,
+binding is solved, and routing at 66--85\% is below what users tolerate for an
+assistant (Section~\ref{sec:routing}); a misroute to the wrong action is the
+dangerous failure, worse than a refusal. \emph{Cold-start data and authoring cost}
+is second: each skill needs a pattern set, and patterns must be distilled and,
+ideally, kept current as device APIs change; the distillation pipeline is what
+makes this scale. \emph{Composite slot extraction} is third: multi-step routines
+that need values produced at run time are the high-value automation surface and
+remain the reflexer's weak point. None of these is a flaw in the executioner idea;
+they are the engineering distance between a validated mechanism and a product.
+
+\section{Threats to validity}
+\label{sec:d-threats}
+
+Three caveats must travel with the headline numbers, and the thesis states them
+rather than burying them.
+
+First, the comparison is \emph{conditional on a constrained task}. The reflexer is
+handed the command template and only fills slots, which is strictly easier than
+free-form generation. The claim is therefore not that a 2B is more capable than a
+35B; it is that on the distillable slice a constrained 2B executor reaches the
+same binding accuracy at a fraction of the cost. Read as a capability claim it
+would be wrong; read as a systems claim it is what the numbers support.
+
+Second, \emph{coverage is limited to distilled intents}. The 100\% binding figure
+is a ceiling that applies only when a pattern exists and routing has selected it.
+For intents with no pattern, the system falls back to the thinker, and the
+reflexer contributes nothing. The approach is a head strategy by construction; its
+value depends on the workload actually having a repeatable head, which the
+coverage mapping argues it does.
+
+Third, the strongest results rest on a \emph{small number of comparisons on
+purpose-built benchmarks} with specific models. SET-2 is realistic but is a model
+of the Android settings surface, not the full device; the 35B is one large model,
+not a survey of large models; and two runs of the cold-start reflexer disagreed by
+one task (19 versus 20 of 25), which the thesis reports rather than reconciles. The
+qualitative pattern---scale fixes discovery but not convention, distillation fixes
+both, teacher quality propagates---is robust across the experiments, but the exact
+percentages should be read as evidence for that pattern rather than as universal
+constants.
+
+\section{Limitations}
+\label{sec:d-limits}
+
+Beyond the threats to validity, four limitations bound the work. The router is
+evaluated but not solved; it is named as the open bottleneck rather than fixed.
+Composite slot-filling is identified as weak but not repaired. Both teachers,
+cloud and local, miss the genuinely undiscoverable conventions (the version- or
+OEM-specific values), which no cold-start teacher can recover and which require
+observing the real device. And the reflexer's residual application errors---using
+an enum label instead of its code, or mis-doing brightness arithmetic---point to a
+value-transform step that is currently left to the model. Each of these limitations
+maps onto a concrete next step rather than an open research question, which the
+next chapter sets out.

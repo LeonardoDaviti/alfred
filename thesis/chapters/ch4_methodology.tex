@@ -1,0 +1,188 @@
+\chapter{Methodology}
+\label{ch:method}
+
+This chapter specifies how A.L.F.R.E.D.\ is evaluated, so that every number in
+Chapter~\ref{ch:eval} can be read against a fixed and stated procedure. Two
+methodological commitments do most of the work and are described first: scoring
+only the execution stage in isolation (\emph{binding-only},
+Section~\ref{sec:m-binding}) and scoring success by the resulting device state
+rather than the command string (the \emph{end-state oracle},
+Section~\ref{sec:m-oracle}). The benchmarks, the safeguards against runaway
+agents, and the integrity rules follow.
+
+\section{Models and infrastructure}
+\label{sec:m-models}
+
+Several models appear in the experiments, all run locally. The project began with
+\texttt{ministral-3-3b} as the reflexer and later adopted \texttt{qwen-3.5-2b}
+after the model sweep of Section~\ref{sec:p0}; both are used as command-generating
+reflexers, and \texttt{qwen-3.5-2b} additionally serves as the small-model
+\textbf{thinker} baseline. The large \textbf{thinker} is \texttt{qwen3.6-35b}, a
+mixture-of-experts reasoning model (35B total, 3B active) used as the capability
+ceiling for free-form binding and as a local distillation teacher. The cloud
+distillation teacher is Claude Sonnet~4.6. The Qwen3.5 family at 0.8B and 4B also
+appears in the reflexer sweep.
+
+\paragraph{Serving stack and quantization.} Local models are served with
+\texttt{llama-server} from \texttt{llama.cpp}~\cite{llamacpp} over its
+OpenAI-compatible HTTP endpoint, and the agent loop is driven by
+\texttt{pi}~\cite{pi-agent}. \textbf{All models use 4-bit (Q4) GGUF
+quantization}, so that every reported number reflects a model that fits a
+phone-class memory budget. The two executor models (\texttt{qwen-3.5-2b} and
+\texttt{ministral-3-3b}) are served with \textbf{identical decoding parameters};
+the qwen-3.5-2b invocation is reproduced verbatim in Listing~\ref{lst:serve} and
+ministral-3-3b uses the same flags. The decisive settings are a low sampling
+temperature ($0.2$) for near-deterministic command generation and, crucially,
+\textbf{reasoning disabled} (\texttt{enable\_thinking=false})---the reflexer is an
+executor, not a reasoner, so chain-of-thought is switched off. The 35B is run in
+its native reasoning mode (thinking enabled), since it is evaluated precisely as
+the free-form reasoning ceiling.
+
+\begin{lstlisting}[caption={Reflexer serving configuration (\texttt{qwen-3.5-2b});
+\texttt{ministral-3-3b} uses the same parameters. Q4 quantization, temperature
+$0.2$, reasoning disabled.},label={lst:serve},basicstyle=\ttfamily\scriptsize]
+llama-server Qwen3.5-2B-UD-Q4_K_XL.gguf --alias qwen-3.5-2b
+  --host 0.0.0.0 --port 8005 --ctx-size 4072 --n-gpu-layers 999 --jinja
+  --threads 16 --temp 0.2 --top-p 0.95 --top-k 20 --min-p 0.00
+  --presence_penalty 0.5 --cache-type-k q8_0 --cache-type-v q8_0
+  --metrics --slots --flash-attn on --cache-ram 0
+  --chat-template-kwargs '{"enable_thinking":false}'
+\end{lstlisting}
+
+Runs are executed \emph{sequentially}: concurrent traffic to the same endpoint was
+observed to corrupt token accounting and depress accuracy
+(Section~\ref{sec:m-integrity}). Model identities, ports, and per-run parameters
+are recorded with every report under \texttt{benchmark/reports/}.
+
+\section{Binding-only evaluation}
+\label{sec:m-binding}
+
+End-to-end accuracy is the product of two stages: \emph{routing} (does the system
+pick the right pattern or skill?) and \emph{binding} (given the right target,
+does it emit the right command?). To measure how much model the execution stage
+needs, routing must be removed as a confound. The binding-only protocol does
+this by assuming perfect routing: the reflexer is handed the gold pattern for
+each task, and the thinker is given the documentation for the correct skill.
+Only binding is then under test. This isolation is what licenses the comparisons
+in Sections~\ref{sec:p1}--\ref{sec:p2}; the cost of treating routing separately
+is revisited honestly in Section~\ref{sec:routing}, where it is identified as the
+real end-to-end bottleneck.
+
+For the binding experiments, success is scored by \emph{token coverage}: a task
+carries a set of gold tokens that must appear (case-insensitively) in the union
+of the commands the model emitted. Both tracks read the same task files and use
+the same checker---the reflexer harness
+(\texttt{alfred/eval/binding\_only\_eval.py}) and the thinker harness
+(\texttt{src/run-binding-compare.ts}) implement identical coverage semantics---so
+that the only difference between conditions is the model and whether it received
+the pattern. Standardizing the checker across both tracks was a deliberate change
+to make the headline comparison fair: the reflexer is not scored by an easier
+rule than the thinker.
+
+\section{The end-state oracle}
+\label{sec:m-oracle}
+
+Token coverage is adequate for binding, where commands are short and singular,
+but it is the wrong instrument for the settings benchmarks, where a request can
+be satisfied by more than one command and a syntactically valid command can still
+produce the wrong outcome. The settings benchmarks (SET-1 and SET-2) therefore
+use a different, stricter criterion: an \textbf{end-state oracle}. Each task runs
+against a mutable state backend; after the agent finishes, the oracle compares
+the final state to a gold end-state and passes the task only if two conditions
+hold: the requested keys reached their target values, \emph{and} no other key was
+changed (no collateral edits).
+
+This two-part definition catches two failures that command matching misses. The
+first is ``right command, wrong outcome''---a command that looks correct but
+leaves the device in the wrong state. The second is over-action---an agent that
+achieves the goal but also changes settings it was never asked to touch, which a
+command-matching scorer would happily pass. The no-collateral clause is not
+hypothetical: in the distillation experiments an over-verbose pattern caused the
+student to toggle extra radios, and only the end-state oracle detected it
+(Section~\ref{sec:p5}). The oracle is implemented once per benchmark
+(\texttt{SET-1/oracle.py}, \texttt{SET-2/oracle.py}) as the single source of
+truth for success, following the contract-first principle of
+Section~\ref{sec:principles}: the oracle and the task contract were written
+before the runner.
+
+\section{Sandbox isolation and the kill policy}
+\label{sec:m-sandbox}
+
+Every settings task runs in a fresh sandbox. The backend state is materialized
+into a temporary file seeded with the task's initial state, the agent acts only
+on that copy, and the sandbox is destroyed afterward. No task can see another
+task's changes, and no run touches real device state, the network, or any
+persistent user data. If an agent corrupts the state file (for example by writing
+malformed JSON), the oracle reports the corruption rather than crashing, so the
+failure is recorded as a failure rather than lost.
+
+Agents that reason in a loop must be prevented from running forever. Two
+mechanisms bound every run. A \emph{step ceiling} caps the number of commands an
+agent may issue: for atom binding the ceiling is twice the expected number of
+moves (an atom should need one command, so the cap is two), and for the
+exploratory settings runs the ceiling is larger to permit genuine discovery. A
+\emph{wall-clock backstop} aborts a run that exceeds a time budget regardless of
+step count, which matters for the slow 35B agent. When a ceiling is hit the agent
+is aborted and scored on whatever state it has produced, so a non-terminating
+agent counts as a (possibly partial) failure rather than stalling the benchmark.
+Both bounds, and the commands each agent actually issued, are recorded in the run
+report for inspection.
+
+\section{Benchmarks}
+\label{sec:m-benchmarks}
+
+Three benchmarks are used, chosen to bracket the difficulty of on-device action.
+
+\paragraph{Expansion skills (binding).} Seven execution skills---clock, media,
+focus, device settings, call, app, and browser---with thirty-six atoms and a set
+of cross-skill composites, each backed by a mock CLI that emits a structured
+result. The task set provides one to two queries per skill (the
+\emph{balanced-10}) and a larger per-skill set (seventy-two atom tasks), with gold
+tokens for coverage scoring. This benchmark isolates binding across a realistic
+skill surface and is the basis for Sections~\ref{sec:p1}--\ref{sec:p2}.
+
+\paragraph{SET-1 (clean settings API).} A friendly settings interface
+(\texttt{settings set connectivity.wifi off}) with transparent intent-to-path
+mapping and validation that rejects bad values. Twenty canonical tasks plus ten
+harder multi-step tasks, scored by the end-state oracle. SET-1 isolates the value
+of a deep tool on an easy surface.
+
+\paragraph{SET-2 (realistic Android API).} An \texttt{adb}-style interface
+(\texttt{settings put <ns> <key> <value>}) over thirty-two settings in three
+namespaces (\texttt{system}, \texttt{secure}, \texttt{global}), with non-obvious
+encodings---brightness on 0--255, timeouts in milliseconds, integer enums for Do
+Not Disturb, ringer, and location, and a string-float font scale---and a
+permissive \texttt{put} that silently accepts wrong inputs, exactly as the real
+Android tool behaves. Forty-eight tasks, scored by the end-state oracle. SET-2 is
+the realistic stressor and the setting for the limit-of-scale and distillation
+results (Sections~\ref{sec:p4}--\ref{sec:p5}).
+
+\section{Integrity protocol}
+\label{sec:m-integrity}
+
+Because the central claims rest on a handful of comparisons, the evaluation
+follows explicit integrity rules, stated here so they can be checked.
+
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{No fabricated numbers.} Every figure and table cites a saved run
+    under \texttt{benchmark/reports/}; no result is estimated, rounded for
+    effect, or hand-edited. Where two runs of the same condition disagree, both
+    are reported rather than reconciled silently.
+  \item \textbf{No benchmark leakage into distilled artifacts.} In the
+    distillation experiments the teacher is given only the skill documentation
+    and the API schema, never any task or its gold outcome. A pattern, once
+    minted, is \emph{frozen}: it is never edited after observing which tasks it
+    failed, because editing it would leak the benchmark into the artifact under
+    test. The frozen local-teacher patterns are committed as evidence
+    (\texttt{SET-2/patterns\_distilled\_pi.json}).
+  \item \textbf{Isolation.} Runs never touch real user state, never call the
+    device's execution-logging path, and never use the network; each settings
+    task runs in a destroyed-after-use sandbox (Section~\ref{sec:m-sandbox}).
+  \item \textbf{Sequential execution.} Concurrent runs against the same model
+    endpoint were found to corrupt token accounting and depress accuracy, so the
+    reported runs are executed one at a time.
+\end{enumerate}
+
+These rules are the methodological backbone of the thesis: they are what allow a
+small number of comparisons to carry a strong claim. The next chapter applies the
+procedure defined here and reports what it found.

@@ -1,0 +1,29 @@
+▶ thinker binding-only — model=qwen3.6-35b tasks=10 backstop=240000ms
+(node:22319) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  [✓] clock           what time is it                              tok=1288 ms=5170 calls=2 [capped]
+  [✓] media           pause the music player                       tok=1808 ms=7701 calls=1
+  [✓] media           next track                                   tok=1119 ms=6432 calls=1
+  [✓] focus           turn on work focus                           tok=975 ms=4688 calls=2 [capped]
+  [✓] device_settings turn wifi off                                tok=1811 ms=6970 calls=1
+  [✓] device_settings turn on do not disturb                       tok=1120 ms=5217 calls=1
+  [✓] call            call mom                                     tok=1024 ms=5133 calls=1
+  [✓] app             open Spotify                                 tok=1044 ms=5629 calls=1
+  [✓] browser         open github.com                              tok=1409 ms=7702 calls=1
+  [✓] browser         search for python decorators                 tok=1829 ms=16936 calls=1
+
+== thinker binding-only ==  model=qwen3.6-35b
+binding accuracy: 10/10 = 100.0%
+median tokens/task: 1288   median ms/task: 6432
+total tokens: 13427
+
+per domain:
+  app              1/1 = 100.0%
+  browser          2/2 = 100.0%
+  call             1/1 = 100.0%
+  clock            1/1 = 100.0%
+  device_settings  2/2 = 100.0%
+  focus            1/1 = 100.0%
+  media            2/2 = 100.0%
+
+✓ report → /home/normie/Documents/Projects/Thesis/benchmark/reports/thinker-binding-qwen3.6-35b-2026-06-17T11-16-15.json

@@ -1,0 +1,218 @@
+[
+  {
+    "id": "atom_svc_start",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "service",
+      "action": "start_unit",
+      "required_tools": ["bash"],
+      "required_slots": ["unit"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(start|launch|bring up|spin up|fire up)\\b)(?=.*\\b(service|unit|daemon|systemd|nginx|docker|postgres|service\\.service)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["start", "launch", "bring up", "spin up", "fire up"],
+          "objects": ["service", "unit", "daemon"],
+          "skill_terms": ["service", "unit", "daemon", "systemd", "nginx", "docker", "postgres"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "unit", "type": "string", "required": true, "description": "Systemd unit name, e.g. nginx.service"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "svc start --unit \"{{unit}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Mock skill — binding-only (command correctness). Sibling of stop/restart/status/enable/disable — the subcommand word is the discriminator."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Start a systemd service unit.",
+      "example_queries": ["start the nginx service", "launch the docker daemon", "bring up the postgres unit"]
+    }
+  },
+  {
+    "id": "atom_svc_stop",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "service",
+      "action": "stop_unit",
+      "required_tools": ["bash"],
+      "required_slots": ["unit"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(stop|shut down|bring down|kill|halt|take down)\\b)(?=.*\\b(service|unit|daemon|systemd|nginx|docker|postgres)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["stop", "shut down", "bring down", "kill", "halt", "take down"],
+          "objects": ["service", "unit", "daemon"],
+          "skill_terms": ["service", "unit", "daemon", "systemd", "nginx", "docker", "postgres"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "unit", "type": "string", "required": true, "description": "Systemd unit name"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "svc stop --unit \"{{unit}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of start — opposite action, same domain. Subcommand discriminates."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Stop a systemd service unit.",
+      "example_queries": ["stop the nginx service", "shut down the docker daemon", "kill the postgres unit"]
+    }
+  },
+  {
+    "id": "atom_svc_restart",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "service",
+      "action": "restart_unit",
+      "required_tools": ["bash"],
+      "required_slots": ["unit"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(restart|reboot|bounce|reload|cycle)\\b)(?=.*\\b(service|unit|daemon|systemd|nginx|docker|postgres)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["restart", "reboot", "bounce", "reload", "cycle"],
+          "objects": ["service", "unit", "daemon"],
+          "skill_terms": ["service", "unit", "daemon", "systemd", "nginx", "docker", "postgres"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "unit", "type": "string", "required": true, "description": "Systemd unit name"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "svc restart --unit \"{{unit}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Third sibling in the start/stop/restart family — bounce/reload map here."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Restart a systemd service unit.",
+      "example_queries": ["restart the nginx service", "bounce the docker daemon", "reboot the postgres unit"]
+    }
+  },
+  {
+    "id": "atom_svc_status",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "service",
+      "action": "status_unit",
+      "required_tools": ["bash"],
+      "required_slots": ["unit"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(status|is|check|state|running|active|health)\\b)(?=.*\\b(service|unit|daemon|systemd|nginx|docker|postgres)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["status", "check", "state", "running", "active", "health"],
+          "objects": ["service", "unit", "daemon"],
+          "skill_terms": ["service", "unit", "daemon", "systemd", "nginx", "docker", "postgres"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "unit", "type": "string", "required": true, "description": "Systemd unit name"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "svc status --unit \"{{unit}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Read action — distinct from the start/stop/restart writes. Subcommand discriminates."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Check the status of a systemd service unit.",
+      "example_queries": ["is the nginx service running", "check the status of the docker daemon", "what's the state of the postgres unit"]
+    }
+  },
+  {
+    "id": "atom_svc_enable",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "service",
+      "action": "enable_unit",
+      "required_tools": ["bash"],
+      "required_slots": ["unit"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(enable|auto[- ]?start|start on boot|start at boot|persist)\\b)(?=.*\\b(service|unit|daemon|systemd|nginx|docker|postgres|boot)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["enable", "auto-start", "start on boot", "persist"],
+          "objects": ["service", "unit", "daemon"],
+          "skill_terms": ["service", "unit", "daemon", "systemd", "nginx", "docker", "postgres", "boot"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "unit", "type": "string", "required": true, "description": "Systemd unit name"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "svc enable --unit \"{{unit}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Boot-persistence write — sibling of disable. Subcommand discriminates from start."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Enable a systemd service unit to start on boot.",
+      "example_queries": ["enable the nginx service on boot", "make the docker daemon auto-start", "start postgres at boot"]
+    }
+  },
+  {
+    "id": "atom_svc_disable",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "service",
+      "action": "disable_unit",
+      "required_tools": ["bash"],
+      "required_slots": ["unit"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(disable|don'?t start on boot|stop auto[- ]?start|unpersist|remove from boot)\\b)(?=.*\\b(service|unit|daemon|systemd|nginx|docker|postgres|boot)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["disable", "stop auto-start", "remove from boot", "unpersist"],
+          "objects": ["service", "unit", "daemon"],
+          "skill_terms": ["service", "unit", "daemon", "systemd", "nginx", "docker", "postgres", "boot"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "unit", "type": "string", "required": true, "description": "Systemd unit name"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "svc disable --unit \"{{unit}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of enable — boot-persistence removal. Subcommand discriminates."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Disable a systemd service unit from starting on boot.",
+      "example_queries": ["disable the nginx service on boot", "stop the docker daemon from auto-starting", "remove postgres from boot"]
+    }
+  }
+]

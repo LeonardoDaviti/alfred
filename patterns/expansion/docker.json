@@ -1,0 +1,216 @@
+[
+  {
+    "id": "atom_dock_start",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "docker",
+      "action": "start_container",
+      "required_tools": ["bash"],
+      "required_slots": ["container"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(start|launch|run|bring up|spin up|fire up)\\b)(?=.*\\b(container|docker|image|box)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["start", "launch", "run", "bring up", "spin up", "fire up"],
+          "objects": ["container", "image"],
+          "skill_terms": ["container", "docker", "image", "box"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "container", "type": "string", "required": true, "description": "Container name or id"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "dock start --container \"{{container}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Mock skill — binding-only (command correctness). Sibling of stop/restart/remove/logs/ps — the subcommand word is the discriminator."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Start a Docker container.",
+      "example_queries": ["start the redis container", "launch the nginx docker container", "bring up the postgres box"]
+    }
+  },
+  {
+    "id": "atom_dock_stop",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "docker",
+      "action": "stop_container",
+      "required_tools": ["bash"],
+      "required_slots": ["container"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(stop|shut down|bring down|kill|halt|take down)\\b)(?=.*\\b(container|docker|image|box)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["stop", "shut down", "bring down", "kill", "halt", "take down"],
+          "objects": ["container", "image"],
+          "skill_terms": ["container", "docker", "image", "box"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "container", "type": "string", "required": true, "description": "Container name or id"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "dock stop --container \"{{container}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Sibling of start — opposite action. Subcommand discriminates."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Stop a running Docker container.",
+      "example_queries": ["stop the redis container", "shut down the nginx docker container", "kill the postgres box"]
+    }
+  },
+  {
+    "id": "atom_dock_restart",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "docker",
+      "action": "restart_container",
+      "required_tools": ["bash"],
+      "required_slots": ["container"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(restart|reboot|bounce|recreate|cycle)\\b)(?=.*\\b(container|docker|image|box)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["restart", "reboot", "bounce", "recreate", "cycle"],
+          "objects": ["container", "image"],
+          "skill_terms": ["container", "docker", "image", "box"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "container", "type": "string", "required": true, "description": "Container name or id"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "dock restart --container \"{{container}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Third sibling in the start/stop/restart family. Subcommand discriminates."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Restart a Docker container.",
+      "example_queries": ["restart the redis container", "bounce the nginx docker container", "reboot the postgres box"]
+    }
+  },
+  {
+    "id": "atom_dock_remove",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "docker",
+      "action": "remove_container",
+      "required_tools": ["bash"],
+      "required_slots": ["container"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(remove|delete|rm|destroy|prune|tear down)\\b)(?=.*\\b(container|docker|image|box)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["remove", "delete", "rm", "destroy", "prune", "tear down"],
+          "objects": ["container", "image"],
+          "skill_terms": ["container", "docker", "image", "box"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "container", "type": "string", "required": true, "description": "Container name or id"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "dock remove --container \"{{container}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Destructive write — sibling of stop but distinct (delete vs stop). Subcommand discriminates."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Remove (delete) a Docker container.",
+      "example_queries": ["remove the redis container", "delete the nginx docker container", "destroy the postgres box"]
+    }
+  },
+  {
+    "id": "atom_dock_logs",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "docker",
+      "action": "container_logs",
+      "required_tools": ["bash"],
+      "required_slots": ["container"]
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(logs|log|output|tail|stdout|console)\\b)(?=.*\\b(container|docker|image|box)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["logs", "tail", "show logs", "output"],
+          "objects": ["container", "image"],
+          "skill_terms": ["container", "docker", "image", "box", "logs"]
+        }
+      }
+    ],
+    "slots": [
+      {"name": "container", "type": "string", "required": true, "description": "Container name or id"}
+    ],
+    "steps": [
+      {"tool": "bash", "args_template": "dock logs --container \"{{container}}\"", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Read action — distinct from the lifecycle writes. Subcommand discriminates."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "Show the logs of a Docker container.",
+      "example_queries": ["show the logs for the redis container", "tail the nginx docker logs", "what's the output of the postgres box"]
+    }
+  },
+  {
+    "id": "atom_dock_ps",
+    "version": 1,
+    "status": "active",
+    "signature": {
+      "domain": "docker",
+      "action": "list_containers",
+      "required_tools": ["bash"],
+      "required_slots": []
+    },
+    "triggers": [
+      {
+        "type": "regex",
+        "value": "(?i)(?=.*\\b(list|show|ps|running|what.*running|ls)\\b)(?=.*\\b(containers|docker|images)\\b)",
+        "flags": "i",
+        "components": {
+          "intent_verbs": ["list", "show", "ps", "ls"],
+          "objects": ["containers", "images"],
+          "skill_terms": ["containers", "docker", "images", "running"]
+        }
+      }
+    ],
+    "slots": [],
+    "steps": [
+      {"tool": "bash", "args_template": "dock ps", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}
+    ],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["No-slot read — list running containers. Subcommand discriminates from logs (single-container read)."],
+    "metadata": {
+      "source": "manual_expansion",
+      "natural_language_intent": "List the running Docker containers.",
+      "example_queries": ["list the docker containers", "show running containers", "what containers are running"]
+    }
+  }
+]

@@ -1,0 +1,308 @@
+{
+  "atoms": {
+    "set_brightness": {
+      "intent": "Set screen brightness to a given percentage (0-100%)",
+      "command": "python3 SET-2/settings.py put system screen_brightness <VALUE>",
+      "encoding": "Integer 0-255. Formula: int(percent * 255 / 100). So 0%=0, 25%=64, 50%=128, 75%=192, 100%=255."
+    },
+    "set_auto_brightness": {
+      "intent": "Enable or disable automatic brightness adjustment",
+      "command": "python3 SET-2/settings.py put system screen_brightness_mode <VALUE>",
+      "encoding": "Boolean: 0=off (manual brightness), 1=on (auto-adjusts)."
+    },
+    "set_screen_timeout": {
+      "intent": "Set how long the screen stays on before turning off (in seconds or ms)",
+      "command": "python3 SET-2/settings.py put system screen_off_timeout <VALUE>",
+      "encoding": "Integer in MILLISECONDS. Common values: 10000 (10s), 15000 (15s), 30000 (30s), 60000 (1min), 120000 (2min), 300000 (5min), 600000 (10min). To convert seconds: seconds * 1000."
+    },
+    "set_font_size": {
+      "intent": "Set the font scaling factor",
+      "command": "python3 SET-2/settings.py put system font_scale <VALUE>",
+      "encoding": "String float. Default \"1.0\". Common values: \"0.85\" (smaller), \"0.9\" (slightly smaller), \"1.0\" (default/normal), \"1.15\" (slightly larger), \"1.25\" (large), \"1.3\" (extra large), \"1.4\" (largest). Quotes required in the command."
+    },
+    "set_rotation": {
+      "intent": "Enable or disable automatic screen rotation",
+      "command": "python3 SET-2/settings.py put system accelerometer_rotation <VALUE>",
+      "encoding": "Boolean: 0=locked (portrait only), 1=auto-rotate."
+    },
+    "set_ringer_mode": {
+      "intent": "Set the ringer/sound mode",
+      "command": "python3 SET-2/settings.py put system ringer_mode <VALUE>",
+      "encoding": "ENUM: 0=silent (vibrate only, no ringtone), 1=vibrate (vibrates but no ringtone sound), 2=normal (full ringtone + media sounds)."
+    },
+    "set_haptic_feedback": {
+      "intent": "Enable or disable haptic vibration feedback on taps",
+      "command": "python3 SET-2/settings.py put system haptic_feedback_enabled <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "set_sound_effects": {
+      "intent": "Enable or disable system sound effects (tap sounds, lock/unlock sounds)",
+      "command": "python3 SET-2/settings.py put system sound_effects_enabled <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "set_vibrate_ringing": {
+      "intent": "Enable or disable vibration during incoming calls",
+      "command": "python3 SET-2/settings.py put system vibrate_when_ringing <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "set_notification_light": {
+      "intent": "Enable or disable notification LED pulsing",
+      "command": "python3 SET-2/settings.py put system notification_light_pulse <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "toggle_wifi": {
+      "intent": "Turn Wi-Fi on or off",
+      "command": "python3 SET-2/settings.py put global wifi_on <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "toggle_bluetooth": {
+      "intent": "Turn Bluetooth on or off",
+      "command": "python3 SET-2/settings.py put global bluetooth_on <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "toggle_mobile_data": {
+      "intent": "Turn mobile/cellular data on or off",
+      "command": "python3 SET-2/settings.py put global mobile_data <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "toggle_nfc": {
+      "intent": "Turn NFC on or off",
+      "command": "python3 SET-2/settings.py put global nfc_on <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "toggle_airplane_mode": {
+      "intent": "Enable or disable airplane mode (kills all radios)",
+      "command": "python3 SET-2/settings.py put global airplane_mode_on <VALUE>",
+      "encoding": "Boolean: 0=off (radios on), 1=on (all radio disabled — Wi-Fi, Bluetooth, cellular). Note: enabling airplane mode may also disable Wi-Fi separately; re-enable wifi_on after if needed."
+    },
+    "set_data_roaming": {
+      "intent": "Enable or disable mobile data roaming",
+      "command": "python3 SET-2/settings.py put global data_roaming <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "set_wifi_sleep_policy": {
+      "intent": "Set when Wi-Fi disconnects during sleep",
+      "command": "python3 SET-2/settings.py put global wifi_sleep_policy <VALUE>",
+      "encoding": "ENUM: 0=never (Wi-Fi stays connected while screen is off), 1=only when plugged in (disconnect on battery, stay on charger), 2=always disconnect (Wi-Fi turns off as soon as screen sleeps)."
+    },
+    "toggle_low_power": {
+      "intent": "Enable or disable battery saver / low power mode",
+      "command": "python3 SET-2/settings.py put global low_power <VALUE>",
+      "encoding": "Boolean: 0=off (normal power), 1=on (battery saver — limits CPU, background sync, location)."
+    },
+    "set_zen_mode": {
+      "intent": "Set Do Not Disturb / Zen mode",
+      "command": "python3 SET-2/settings.py put global zen_mode <VALUE>",
+      "encoding": "ENUM: 0=off (all sounds and notifications allowed), 1=total_silence (no sounds or vibrations at all — alarms also silenced on some devices), 2=priority_only (only alarms, calls from favorites/starred contacts, and repeated-caller bypass come through)."
+    },
+    "set_heads_up": {
+      "intent": "Enable or disable heads-up (floating) notifications",
+      "command": "python3 SET-2/settings.py put global heads_up_notifications_enabled <VALUE>",
+      "encoding": "Boolean: 0=off (notifications only in shade), 1=on (notifications appear as floating banners)."
+    },
+    "set_auto_time": {
+      "intent": "Enable or disable automatic date/time from network",
+      "command": "python3 SET-2/settings.py put global auto_time <VALUE>",
+      "encoding": "Boolean: 0=off (manual time), 1=on (network-synchronized)."
+    },
+    "set_auto_time_zone": {
+      "intent": "Enable or disable automatic time zone from network",
+      "command": "python3 SET-2/settings.py put global auto_time_zone <VALUE>",
+      "encoding": "Boolean: 0=off (manual timezone), 1=on (auto-detect)."
+    },
+    "set_device_name": {
+      "intent": "Set the device's local network name",
+      "command": "python3 SET-2/settings.py put global device_name <VALUE>",
+      "encoding": "String. Freeform device name, e.g. \"Pixel-8\". Max ~31 chars. Quotes required in the command."
+    },
+    "toggle_adb": {
+      "intent": "Enable or disable ADB (Android Debug Bridge) debugging",
+      "command": "python3 SET-2/settings.py put secure adb_enabled <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "toggle_sideload": {
+      "intent": "Enable or disable installation from unknown sources",
+      "command": "python3 SET-2/settings.py put secure install_non_market_apps <VALUE>",
+      "encoding": "Boolean: 0=off (Play Store only), 1=on (allow sideloaded APKs)."
+    },
+    "toggle_dev_settings": {
+      "intent": "Enable or disable developer settings",
+      "command": "python3 SET-2/settings.py put global development_settings_enabled <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "set_location_mode": {
+      "intent": "Set the location/GPS mode",
+      "command": "python3 SET-2/settings.py put secure location_mode <VALUE>",
+      "encoding": "ENUM: 0=off (location disabled), 1=battery_saving (Wi-Fi and mobile network triangulation only, no GPS), 2=high_accuracy (GPS + Wi-Fi + mobile network — maximum accuracy)."
+    },
+    "toggle_accessibility": {
+      "intent": "Enable or disable accessibility services",
+      "command": "python3 SET-2/settings.py put secure accessibility_enabled <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "toggle_high_contrast_text": {
+      "intent": "Enable or disable high-contrast text for accessibility",
+      "command": "python3 SET-2/settings.py put secure high_text_contrast_enabled <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "toggle_screensaver": {
+      "intent": "Enable or disable the screensaver (ambient display while charging)",
+      "command": "python3 SET-2/settings.py put secure screensaver_enabled <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on."
+    },
+    "toggle_doze_always_on": {
+      "intent": "Enable or disable Doze always-on (ambient display when docked and charging)",
+      "command": "python3 SET-2/settings.py put secure doze_always_on <VALUE>",
+      "encoding": "Boolean: 0=off, 1=on. Requires Doze to be active and charger connected."
+    },
+    "set_input_method": {
+      "intent": "Set the default keyboard / input method",
+      "command": "python3 SET-2/settings.py put secure default_input_method <VALUE>",
+      "encoding": "String. Package name of the input method, e.g. \"com.google.android.inputmethod.latin/.LatinIME\" or short alias like \"gboard\". Quotes required in the command."
+    }
+  },
+  "composites": {
+    "bedtime": {
+      "intent": "Prepare device for sleep: dim screen, silence notifications, enable deep sleep modes",
+      "steps": [
+        "set_brightness (10% → 25)",
+        "set_screen_timeout (30000 ms / 30s)",
+        "set_zen_mode (1 — total_silence)",
+        "toggle_wifi (0 — off to save battery overnight)",
+        "toggle_screensaver (1 — enable screensaver for docked charging)",
+        "toggle_doze_always_on (1 — ambient display while charging)"
+      ],
+      "note": "Dim screen to ~10%, 30s timeout, full silence, Wi-Fi off, always-on display on."
+    },
+    "battery_saver": {
+      "intent": "Maximize battery life by reducing power consumption",
+      "steps": [
+        "toggle_low_power (1 — enable battery saver)",
+        "set_brightness (25% → 64)",
+        "set_screen_timeout (15000 ms / 15s)",
+        "set_wifi_sleep_policy (2 — disconnect Wi-Fi when screen sleeps)",
+        "toggle_wifi (0 — turn off Wi-Fi)",
+        "toggle_bluetooth (0 — turn off Bluetooth)",
+        "toggle_mobile_data (0 — turn off mobile data)"
+      ],
+      "note": "All major power drains disabled: low-power mode, dim screen, short timeout, Wi-Fi sleep disconnect, and radios off."
+    },
+    "driving": {
+      "intent": "Optimize for driving: hands-free connectivity, audible notifications, auto-brightness",
+      "steps": [
+        "toggle_bluetooth (1 — on for car connectivity)",
+        "set_zen_mode (2 — priority_only, allow call alerts)",
+        "set_ringer_mode (2 — normal ringtone)",
+        "set_vibrate_ringing (1 — vibrate on calls)",
+        "set_auto_brightness (1 — auto-adjust for tunnel/light changes)",
+        "set_heads_up (1 — floating call notifications)",
+        "set_screen_timeout (60000 ms / 1min)"
+      ],
+      "note": "Bluetooth and audible notifications enabled, auto-brightness for varying light, priority DND to allow calls."
+    },
+    "flight_mode": {
+      "intent": "Full airplane mode: disable all wireless radios for flight or EMF-free zone",
+      "steps": [
+        "toggle_airplane_mode (1 — kill all radios)",
+        "toggle_wifi (0 — ensure Wi-Fi off)",
+        "toggle_bluetooth (0 — ensure Bluetooth off)",
+        "toggle_mobile_data (0 — ensure mobile data off)",
+        "toggle_nfc (0 — disable NFC)"
+      ],
+      "note": "Airplane mode is the master switch; re-enabling individual radios after disabling airplane mode may require explicit re-toggle."
+    },
+    "focus_dnd": {
+      "intent": "Maximum focus / Do Not Disturb: silence everything except alarms",
+      "steps": [
+        "set_zen_mode (1 — total_silence)",
+        "set_ringer_mode (0 — silent)",
+        "set_heads_up (0 — no floating notifications)",
+        "set_haptic_feedback (0 — no vibration feedback)",
+        "set_sound_effects (0 — no tap sounds)",
+        "set_notification_light (0 — no LED pulses)"
+      ],
+      "note": "All sensory distractions stripped: no sound, no vibration, no visual LEDs. Only alarms will still fire."
+    },
+    "gaming": {
+      "intent": "Uninterrupted gaming: block all calls/notifications, maximize screen responsiveness",
+      "steps": [
+        "toggle_airplane_mode (1 — block all calls and network)",
+        "set_zen_mode (1 — total_silence as backup)",
+        "set_brightness (75% → 192 — bright for visibility)",
+        "set_screen_timeout (300000 ms / 5min — prevent sleep during games)",
+        "set_haptic_feedback (0 — reduce distraction)",
+        "set_heads_up (0 — no notification banners)"
+      ],
+      "note": "Airplane mode blocks calls; 5-min timeout prevents screen from dying mid-game; high brightness for visibility."
+    },
+    "accessibility_mode": {
+      "intent": "Turn on accessibility features: larger text, high contrast, accessibility services",
+      "steps": [
+        "set_font_size (\"1.3\" — extra large text)",
+        "toggle_high_contrast_text (1 — high-contrast rendering)",
+        "toggle_accessibility (1 — enable accessibility services)",
+        "set_haptic_feedback (1 — enable tactile feedback for visually impaired)"
+      ],
+      "note": "Font scale \"1.3\" is large but readable; high contrast and haptics assist users with visual or motor impairments."
+    },
+    "privacy_hardened": {
+      "intent": "Maximize privacy: disable location tracking, sideloading, and developer access",
+      "steps": [
+        "set_location_mode (0 — location disabled)",
+        "toggle_sideload (0 — block sideloaded apps)",
+        "toggle_adb (0 — block ADB debugging)",
+        "toggle_dev_settings (0 — hide developer settings)",
+        "set_zen_mode (0 — restore normal notifications)",
+        "toggle_low_power (0 — restore normal performance)"
+      ],
+      "note": "Removes location tracking surface, blocks app sideloading, disables ADB. Restores zen_mode and low_power to defaults."
+    },
+    "auto_rotation_on": {
+      "intent": "Enable automatic screen rotation and adaptive brightness",
+      "steps": [
+        "set_rotation (1 — auto-rotate enabled)",
+        "set_auto_brightness (1 — auto-adjust brightness)"
+      ],
+      "note": "Standard day-to-day UX: screen rotates with device and brightness adapts to ambient light."
+    },
+    "kiosk_mode": {
+      "intent": "Lock device into a single-purpose mode: no navigation, long screen-on, dim",
+      "steps": [
+        "set_brightness (10% → 25)",
+        "set_screen_timeout (600000 ms / 10min — stay on)",
+        "toggle_airplane_mode (1 — block network)",
+        "set_zen_mode (1 — total_silence)",
+        "toggle_sideload (0 — block app installs)",
+        "toggle_dev_settings (0 — block developer options)"
+      ],
+      "note": "Low brightness, long timeout, no network, no interruptions. Suitable for a dedicated display or kiosk."
+    },
+    "morning_ready": {
+      "intent": "Wake-up setup: restore normal connectivity and notifications",
+      "steps": [
+        "toggle_airplane_mode (0 — restore radios)",
+        "toggle_wifi (1 — on)",
+        "toggle_bluetooth (1 — on)",
+        "toggle_mobile_data (1 — on)",
+        "set_zen_mode (0 — all notifications allowed)",
+        "set_ringer_mode (2 — normal ringtone)",
+        "set_heads_up (1 — floating notifications)",
+        "set_auto_time (1 — sync time)",
+        "set_auto_time_zone (1 — auto timezone)"
+      ],
+      "note": "Full restoration of connectivity and notification flow. Resets all modes to day-time defaults."
+    },
+    "presentation_mode": {
+      "intent": "Prepare for screen sharing / presentation: keep screen on, silence notifications",
+      "steps": [
+        "set_brightness (100% → 255 — max brightness for projector visibility)",
+        "set_screen_timeout (600000 ms / 10min — prevent sleep)",
+        "set_zen_mode (1 — total_silence during presentation)",
+        "set_heads_up (0 — no banners during talk)",
+        "set_rotation (0 — lock portrait/landscape to match projector)",
+        "toggle_airplane_mode (0 — keep network for screen mirroring)"
+      ],
+      "note": "Max brightness for projector, no interruptions, fixed rotation. Network stays on for casting/mirroring."
+    }
+  }
+}

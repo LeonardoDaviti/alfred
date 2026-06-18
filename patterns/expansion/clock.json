@@ -1,0 +1,107 @@
+[
+  {
+    "id": "atom_clock_timer_start",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "clock", "action": "timer_start", "required_tools": ["bash"], "required_slots": ["duration"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(set|start|create|put on|run)\\b)(?=.*\\b(timer|countdown)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["set", "start", "create", "put on", "run"], "objects": ["timer", "countdown"], "skill_terms": ["timer", "countdown", "minutes", "seconds"]}}
+    ],
+    "slots": [{"name": "duration", "type": "string", "required": true, "description": "Duration like '10m', '90s', '1h30m'"}],
+    "steps": [{"tool": "bash", "args_template": "clock timer start --duration {{duration}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Unified clock skill — timer family. Real backend fires via systemd-run --user --on-active; mock here for binding-only. Sibling of alarm set (timer=relative duration vs alarm=absolute time)."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Start a countdown timer for a relative duration.", "example_queries": ["set a timer for 10 minutes", "start a 90 second countdown", "put on a timer for an hour and a half"]}
+  },
+  {
+    "id": "atom_clock_timer_cancel",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "clock", "action": "timer_cancel", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(cancel|stop|kill|clear|remove)\\b)(?=.*\\b(timer|countdown)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["cancel", "stop", "kill", "clear", "remove"], "objects": ["timer", "countdown"], "skill_terms": ["timer", "countdown"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "clock timer cancel", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Hard sibling of alarm cancel — same verb (cancel/stop), the timer/alarm noun discriminates."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Cancel the running timer.", "example_queries": ["cancel the timer", "stop the countdown", "clear my timer"]}
+  },
+  {
+    "id": "atom_clock_timer_list",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "clock", "action": "timer_list", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(list|show|what|how much|remaining|left)\\b)(?=.*\\b(timer|countdown|timers)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["list", "show", "what", "how much", "remaining"], "objects": ["timer", "timers"], "skill_terms": ["timer", "timers", "countdown"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "clock timer list", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Read sibling within the timer family."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "List the active timers and time remaining.", "example_queries": ["how much time is left on my timer", "show my timers", "list active countdowns"]}
+  },
+  {
+    "id": "atom_clock_alarm_set",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "clock", "action": "alarm_set", "required_tools": ["bash"], "required_slots": ["time"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(set|create|wake me|add|put)\\b)(?=.*\\b(alarm|wake|wake-up)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["set", "create", "wake me", "add", "put"], "objects": ["alarm", "wake up"], "skill_terms": ["alarm", "wake", "am", "pm", "oclock"]}}
+    ],
+    "slots": [{"name": "time", "type": "string", "required": true, "description": "Absolute clock time like '07:00', '6:30am', '14:15'"}],
+    "steps": [{"tool": "bash", "args_template": "clock alarm set --time {{time}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Alarm family — absolute time. Real backend fires via systemd-run --user --on-calendar. Hard sibling of timer start (absolute time vs relative duration)."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Set an alarm for an absolute clock time.", "example_queries": ["set an alarm for 7am", "wake me at 6:30", "create an alarm at 14:15"]}
+  },
+  {
+    "id": "atom_clock_alarm_cancel",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "clock", "action": "alarm_cancel", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(cancel|stop|delete|clear|remove|turn off)\\b)(?=.*\\b(alarm)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["cancel", "stop", "delete", "clear", "remove", "turn off"], "objects": ["alarm"], "skill_terms": ["alarm"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "clock alarm cancel", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Hard sibling of timer cancel — the alarm noun discriminates."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Cancel the alarm.", "example_queries": ["cancel my alarm", "turn off the alarm", "delete the 7am alarm"]}
+  },
+  {
+    "id": "atom_clock_alarm_list",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "clock", "action": "alarm_list", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)(?=.*\\b(list|show|what|which)\\b)(?=.*\\b(alarm|alarms)\\b)", "flags": "i",
+       "components": {"intent_verbs": ["list", "show", "what", "which"], "objects": ["alarm", "alarms"], "skill_terms": ["alarm", "alarms"]}}
+    ],
+    "slots": [],
+    "steps": [{"tool": "bash", "args_template": "clock alarm list", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["Read sibling within the alarm family."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "List the configured alarms.", "example_queries": ["show my alarms", "what alarms do I have", "list all alarms"]}
+  },
+  {
+    "id": "atom_clock_now",
+    "version": 1,
+    "status": "active",
+    "signature": {"domain": "clock", "action": "time_now", "required_tools": ["bash"], "required_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(what('s| is) the time|what time is it|current time|time right now|time in)\\b", "flags": "i",
+       "components": {"intent_verbs": ["what time is it", "current time", "time now", "time in"], "objects": ["time"], "skill_terms": ["time", "clock", "now"]}}
+    ],
+    "slots": [{"name": "city", "type": "string", "required": false, "description": "Optional city for world time"}],
+    "steps": [{"tool": "bash", "args_template": "clock now{{?city: --city \"{{city}}\"}}", "retries": 0, "timeout": 10, "on_failure": "escalate_to_thinker"}],
+    "validators": [{"assert": "stdout_parses_as_json"}, {"assert": "ok == true"}],
+    "notes": ["World-clock read. Optional city slot — pruning --city when no city is mentioned is correct."],
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Report the current time, optionally for a city.", "example_queries": ["what time is it", "what's the time in Tokyo", "current time right now"]}
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "system": {
+    "screen_brightness": 128,
+    "screen_brightness_mode": 0,
+    "screen_off_timeout": 30000,
+    "accelerometer_rotation": 1,
+    "haptic_feedback_enabled": 1,
+    "vibrate_when_ringing": 1,
+    "font_scale": "1.0",
+    "sound_effects_enabled": 1,
+    "ringer_mode": 2,
+    "notification_light_pulse": 1
+  },
+  "secure": {
+    "location_mode": 1,
+    "adb_enabled": 0,
+    "install_non_market_apps": 0,
+    "accessibility_enabled": 0,
+    "screensaver_enabled": 1,
+    "doze_always_on": 0,
+    "default_input_method": "gboard",
+    "high_text_contrast_enabled": 0
+  },
+  "global": {
+    "airplane_mode_on": 0,
+    "wifi_on": 1,
+    "bluetooth_on": 1,
+    "mobile_data": 1,
+    "data_roaming": 0,
+    "nfc_on": 1,
+    "auto_time": 1,
+    "auto_time_zone": 1,
+    "device_name": "Pixel-8",
+    "zen_mode": 0,
+    "low_power": 0,
+    "heads_up_notifications_enabled": 1,
+    "development_settings_enabled": 0,
+    "wifi_sleep_policy": 2
+  }
+}

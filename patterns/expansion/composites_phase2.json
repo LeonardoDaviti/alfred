@@ -1,0 +1,116 @@
+[
+  {
+    "id": "composite_focus_session",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {"domain": "scenes", "action": "focus_session", "required_tools": ["bash"], "composite_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(focus session|pomodoro|25 minute focus|start a focus sprint|deep work session)\\b", "flags": "i",
+       "components": {"intent_verbs": ["focus session", "pomodoro", "deep work session", "focus sprint"]}}
+    ],
+    "atoms": [
+      {"pattern_id": "atom_focus_on", "slot_bindings": {"mode": "work"}},
+      {"pattern_id": "atom_clock_timer_start", "slot_bindings": {"duration": "25m"}},
+      {"pattern_id": "atom_media_play", "slot_bindings": {}},
+      {"pattern_id": "atom_settings_dnd", "slot_bindings": {"state": "on"}}
+    ],
+    "output_template": "[SCENE] work focus on, 25m timer started, music playing, DND on — pomodoro running.",
+    "parse_schema": {},
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Focus session (Pomodoro): work focus profile, 25-minute timer, resume music, do-not-disturb on. Combines focus + clock + media + device_settings.", "example_queries": ["start a focus session", "pomodoro time", "begin a 25 minute deep work session"], "estimated_atoms_run": 4, "estimated_llm_calls": 0}
+  },
+  {
+    "id": "composite_morning_alarm",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {"domain": "scenes", "action": "morning_alarm", "required_tools": ["bash"], "composite_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(set up my morning|morning alarm routine|wake me and clear focus|morning routine)\\b", "flags": "i",
+       "components": {"intent_verbs": ["morning alarm routine", "morning routine", "set up my morning"]}}
+    ],
+    "atoms": [
+      {"pattern_id": "atom_clock_alarm_set", "slot_bindings": {"time": "07:00"}},
+      {"pattern_id": "atom_focus_off", "slot_bindings": {}},
+      {"pattern_id": "atom_media_pause", "slot_bindings": {}}
+    ],
+    "output_template": "[SCENE] 7am alarm set, focus cleared, media paused — good night.",
+    "parse_schema": {},
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Morning alarm routine: set a 7am alarm, clear focus, pause media. Combines clock + focus + media.", "example_queries": ["set up my morning alarm routine", "morning routine", "wake me at 7 and clear focus"], "estimated_atoms_run": 3, "estimated_llm_calls": 0}
+  },
+  {
+    "id": "composite_goodnight_v2",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {"domain": "scenes", "action": "goodnight_v2", "required_tools": ["bash"], "composite_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(good ?night|bedtime|going to bed|time for bed|i'?m going to sleep)\\b", "flags": "i",
+       "components": {"intent_verbs": ["goodnight", "bedtime", "going to bed", "time for bed"]}}
+    ],
+    "atoms": [
+      {"pattern_id": "atom_ha_turn_off", "slot_bindings": {"entity": "light.bedroom", "domain": "light"}},
+      {"pattern_id": "atom_clock_alarm_set", "slot_bindings": {"time": "07:00"}},
+      {"pattern_id": "atom_focus_on", "slot_bindings": {"mode": "sleep"}},
+      {"pattern_id": "atom_media_pause", "slot_bindings": {}}
+    ],
+    "output_template": "[SCENE] lights off, 7am alarm set, sleep focus on, media paused — sleep well.",
+    "parse_schema": {},
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Goodnight: turn off the bedroom lights, set a 7am alarm, enable sleep focus, pause media. Combines home_assistant + clock + focus + media.", "example_queries": ["goodnight", "I'm going to bed", "bedtime"], "estimated_atoms_run": 4, "estimated_llm_calls": 0}
+  },
+  {
+    "id": "composite_call_contact",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {"domain": "call", "action": "call_contact", "required_tools": ["bash"], "composite_slots": ["name"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(look up .* and call|find .* in contacts and (call|phone|dial)|call my contact)\\b", "flags": "i",
+       "components": {"intent_verbs": ["look up and call", "find in contacts and call", "call my contact"]}}
+    ],
+    "atoms": [
+      {"pattern_id": "atom_contacts_search", "slot_bindings": {"query": "{{name}}"}},
+      {"pattern_id": "atom_call_dial", "slot_bindings": {"contact": "{{name}}"}}
+    ],
+    "output_template": "[CALL] resolved contact and dialed.",
+    "parse_schema": {},
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Look up a contact by name then place the call. Combines contacts + call (name -> number -> dial).", "example_queries": ["look up John in contacts and call him", "find Mom in my contacts and dial her", "call my contact Alice"], "estimated_atoms_run": 2, "estimated_llm_calls": 1}
+  },
+  {
+    "id": "composite_leave_home",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {"domain": "scenes", "action": "leave_home", "required_tools": ["bash"], "composite_slots": []},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(i'?m leaving( home)?|leaving the house|heading out|leave home mode|going out)\\b", "flags": "i",
+       "components": {"intent_verbs": ["leaving home", "heading out", "going out", "leave home mode"]}}
+    ],
+    "atoms": [
+      {"pattern_id": "atom_ha_turn_off", "slot_bindings": {"entity": "light.all", "domain": "light"}},
+      {"pattern_id": "atom_settings_bluetooth", "slot_bindings": {"state": "off"}},
+      {"pattern_id": "atom_media_pause", "slot_bindings": {}}
+    ],
+    "output_template": "[SCENE] lights off, bluetooth off, media paused — see you later.",
+    "parse_schema": {},
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Leave-home: turn off lights, disable bluetooth, pause media. Combines home_assistant + device_settings + media.", "example_queries": ["I'm leaving home", "heading out", "going out, leave home mode"], "estimated_atoms_run": 3, "estimated_llm_calls": 0}
+  },
+  {
+    "id": "composite_download_and_play",
+    "version": 1,
+    "status": "active",
+    "type": "composite",
+    "signature": {"domain": "media", "action": "download_and_play", "required_tools": ["bash"], "composite_slots": ["url"]},
+    "triggers": [
+      {"type": "regex", "value": "(?i)\\b(download .* and play|grab the audio .* and play it|download this (song|track|video) and play)\\b", "flags": "i",
+       "components": {"intent_verbs": ["download and play", "grab the audio and play it", "download and play"]}}
+    ],
+    "atoms": [
+      {"pattern_id": "atom_youtube_download_audio", "slot_bindings": {"url": "{{url}}"}},
+      {"pattern_id": "atom_media_play", "slot_bindings": {}}
+    ],
+    "output_template": "[MEDIA] downloaded audio and started playback.",
+    "parse_schema": {},
+    "metadata": {"source": "manual_expansion", "natural_language_intent": "Download the audio from a YouTube URL then start media playback. Combines youtube + media.", "example_queries": ["download the audio from this and play it https://youtu.be/abc123", "grab this track and play it https://youtu.be/abc123", "download this song and play https://youtu.be/abc123"], "estimated_atoms_run": 2, "estimated_llm_calls": 0}
+  }
+]

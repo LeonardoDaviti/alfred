@@ -1,0 +1,27 @@
+On-device assistants must act on a user's behalf---set an alarm, toggle a
+setting, place a call---without sending the request to the cloud. This thesis
+asks how much language model such \emph{action} actually requires. We present
+A.L.F.R.E.D., a local-first middleware that splits every request between a tiny
+on-device \emph{reflexer} (a 2B model that fills a distilled command pattern in a
+single forward pass) and a heavier \emph{thinker} (an agent loop) reserved for the
+long tail. Across purpose-built benchmarks scored by an end-state oracle, four
+results establish the central claim. First, on binding the 2B reflexer with a
+distilled pattern matches a $17\times$ larger free-form thinker (both 100\%),
+while the same 2B without the pattern reaches only 30\%---distillation, not scale,
+produces reliable execution. Second, the abstraction's benefit shifts with the
+interface: on a clean settings API it is an efficiency win ($+65$ points at two
+commands instead of nine), and on a realistic Android API it becomes an accuracy
+win. Third, and most importantly, even a 35B reasoning model fails the device's
+undiscoverable encoding conventions; model scale buys \emph{discovery} (which key)
+but not \emph{convention} (what the value means), which only a distilled pattern
+supplies. Fourth, that pattern can be minted automatically by a teacher that never
+sees the tasks, lifting the 2B reflexer from 25\% to 76--80\%---and the choice of
+teacher propagates directly to the student (a cloud teacher's patterns score 80\%
+versus a local teacher's 60\%). The remaining open limit is shown to be routing,
+not execution. The thesis frames these findings as the \emph{executioner
+paradigm}: distill device conventions once with a strong teacher, and apply them
+cheaply forever with a small on-device reflexer.
+
+\vspace{0.6em}
+\noindent\textbf{Keywords:} on-device language models, knowledge distillation,
+agent routing, tool use, intent execution, privacy.

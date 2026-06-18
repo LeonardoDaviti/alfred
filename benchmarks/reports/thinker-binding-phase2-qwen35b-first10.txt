@@ -1,0 +1,39 @@
+▶ thinker binding-only — model=qwen3.6-35b tasks=10 backstop=240000ms
+(node:21776) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  [✓] clock           set a timer for 10 minutes                   tok=2086 ms=7168 calls=1
+  [✓] clock           start a 90 second countdown                  tok=1444 ms=7811 calls=2 [capped]
+  [✗] clock           cancel the timer                             tok=648 ms=4210 calls=2 [capped]
+  [✗] clock           stop my countdown                            tok=1464 ms=5629 calls=1
+  [✗] clock           how much time is left on my timer            tok=743 ms=4600 calls=1
+  [✗] clock           show my active timers                        tok=713 ms=4326 calls=2 [capped]
+  [✓] clock           set an alarm for 7am                         tok=2047 ms=7688 calls=2 [capped]
+  [✗] clock           wake me at 6:30                              tok=2073 ms=8650 calls=2 [capped]
+  [✗] clock           cancel my alarm                              tok=1637 ms=10481 calls=1
+  [✗] clock           turn off the 7am alarm                       tok=669 ms=4061 calls=0
+
+== thinker binding-only ==  model=qwen3.6-35b
+binding accuracy: 3/10 = 30.0%
+median tokens/task: 1464   median ms/task: 7168
+total tokens: 13524
+
+per domain:
+  clock            3/10 = 30.0%
+
+binding misses (7):
+  [clock         ] gold=["clock","timer","cancel"]
+        -> systemctl --user list-timers --all 2>/dev/null || echo "systemctl not available or no syst
+  [clock         ] gold=["clock","timer","cancel"]
+        -> systemctl --user list-timers 2>/dev/null; pgrep -a alarm 2>/dev/null; pgrep -a countdown 2
+  [clock         ] gold=["clock","timer","list"]
+        -> systemctl --user list-timers --all 2>/dev/null; echo "---"; ps aux | grep -i timer | grep 
+  [clock         ] gold=["clock","timer","list"]
+        -> systemctl --user list-timers --all 2>/dev/null || echo "systemd user timers not available"
+  [clock         ] gold=["clock","alarm","set","--time"]
+        -> date '+%H:%M'
+  [clock         ] gold=["clock","alarm","cancel"]
+        -> systemctl --user list-timers --all 2>/dev/null | grep -i alarm || echo "No systemd timer-b
+  [clock         ] gold=["clock","alarm","cancel"]
+        -> —
+
+✓ report → /home/normie/Documents/Projects/Thesis/benchmark/reports/thinker-binding-qwen3.6-35b-2026-06-17T11-13-34.json

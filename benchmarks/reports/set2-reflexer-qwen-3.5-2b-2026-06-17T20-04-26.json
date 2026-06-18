@@ -1,0 +1,352 @@
+{
+  "mode": "reflexer",
+  "model": "qwen-3.5-2b",
+  "ceiling": 4,
+  "backstopMs": 60000,
+  "total": 25,
+  "ok": 15,
+  "rows": [
+    {
+      "id": "s01",
+      "pattern": "set_brightness",
+      "query": "set the brightness to 75%",
+      "pass": false,
+      "calls": 1,
+      "tokens": 615,
+      "ms": 855,
+      "detail": "wrong=[{\"path\":\"system.screen_brightness\",\"want\":191,\"got\":192}]",
+      "commands": [
+        "bash: python3 SET-2/settings.py put system screen_brightness 192"
+      ]
+    },
+    {
+      "id": "s02",
+      "pattern": "set_brightness",
+      "query": "set brightness to 25%",
+      "pass": false,
+      "calls": 1,
+      "tokens": 601,
+      "ms": 676,
+      "detail": "wrong=[{\"path\":\"system.screen_brightness\",\"want\":64,\"got\":25}]",
+      "commands": [
+        "bash: python3 SET-2/settings.py put system screen_brightness 25"
+      ]
+    },
+    {
+      "id": "s03",
+      "pattern": "set_brightness",
+      "query": "set the brightness to 100%",
+      "pass": true,
+      "calls": 1,
+      "tokens": 606,
+      "ms": 743,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py put system screen_brightness 255"
+      ]
+    },
+    {
+      "id": "s04",
+      "pattern": "set_auto_brightness",
+      "query": "turn on auto-brightness",
+      "pass": true,
+      "calls": 1,
+      "tokens": 558,
+      "ms": 742,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py put system screen_brightness_mode 1"
+      ]
+    },
+    {
+      "id": "s05",
+      "pattern": "set_screen_timeout",
+      "query": "set the screen timeout to 1 minute",
+      "pass": true,
+      "calls": 2,
+      "tokens": 1620,
+      "ms": 1567,
+      "detail": "",
+      "commands": [
+        "read: SET-2/settings.py",
+        "bash: python3 SET-2/settings.py put system screen_off_timeout 60000"
+      ]
+    },
+    {
+      "id": "s06",
+      "pattern": "set_screen_timeout",
+      "query": "set screen timeout to 5 minutes",
+      "pass": true,
+      "calls": 2,
+      "tokens": 1622,
+      "ms": 1590,
+      "detail": "",
+      "commands": [
+        "read: SET-2/settings.py",
+        "bash: python3 SET-2/settings.py put system screen_off_timeout 300000"
+      ]
+    },
+    {
+      "id": "s07",
+      "pattern": "set_screen_timeout",
+      "query": "make the screen turn off after 15 seconds",
+      "pass": true,
+      "calls": 2,
+      "tokens": 1624,
+      "ms": 1591,
+      "detail": "",
+      "commands": [
+        "read: SET-2/settings.py",
+        "bash: python3 SET-2/settings.py put system screen_off_timeout 15000"
+      ]
+    },
+    {
+      "id": "s08",
+      "pattern": "set_font_size",
+      "query": "make the font size large",
+      "pass": false,
+      "calls": 1,
+      "tokens": 675,
+      "ms": 866,
+      "detail": "wrong=[{\"path\":\"system.font_scale\",\"want\":\"1.15\",\"got\":\"1.3\"}]",
+      "commands": [
+        "bash: python3 SET-2/settings.py put system font_scale 1.3"
+      ]
+    },
+    {
+      "id": "s09",
+      "pattern": "set_font_size",
+      "query": "set the font to the largest size",
+      "pass": false,
+      "calls": 1,
+      "tokens": 679,
+      "ms": 908,
+      "detail": "wrong=[{\"path\":\"system.font_scale\",\"want\":\"1.30\",\"got\":\"1.4\"}]",
+      "commands": [
+        "bash: python3 SET-2/settings.py put system font_scale 1.4"
+      ]
+    },
+    {
+      "id": "s10",
+      "pattern": "set_ringer_mode",
+      "query": "put my phone on silent",
+      "pass": true,
+      "calls": 1,
+      "tokens": 579,
+      "ms": 754,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py put system ringer_mode 0"
+      ]
+    },
+    {
+      "id": "s11",
+      "pattern": "set_ringer_mode",
+      "query": "set the ringer to vibrate",
+      "pass": true,
+      "calls": 1,
+      "tokens": 589,
+      "ms": 844,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py put system ringer_mode 1"
+      ]
+    },
+    {
+      "id": "s12",
+      "pattern": "set_location_mode",
+      "query": "set location to high accuracy",
+      "pass": false,
+      "calls": 1,
+      "tokens": 591,
+      "ms": 844,
+      "detail": "wrong=[{\"path\":\"secure.location_mode\",\"want\":3,\"got\":2}]",
+      "commands": [
+        "bash: python3 SET-2/settings.py put secure location_mode 2"
+      ]
+    },
+    {
+      "id": "s13",
+      "pattern": "set_location_mode",
+      "query": "turn off location",
+      "pass": true,
+      "calls": 1,
+      "tokens": 579,
+      "ms": 732,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py put secure location_mode 0"
+      ]
+    },
+    {
+      "id": "s14",
+      "pattern": "set_zen_mode",
+      "query": "turn on do not disturb with total silence",
+      "pass": false,
+      "calls": 2,
+      "tokens": 729,
+      "ms": 1556,
+      "detail": "wrong=[{\"path\":\"global.zen_mode\",\"want\":2,\"got\":0}]",
+      "commands": [
+        "bash: python3 SET-2/settings.py put global do_not_disturb 1",
+        "bash: python3 SET-2/settings.py put global total_silence 1"
+      ]
+    },
+    {
+      "id": "s15",
+      "pattern": "set_wifi_sleep_policy",
+      "query": "set wifi to never sleep",
+      "pass": false,
+      "calls": 1,
+      "tokens": 596,
+      "ms": 842,
+      "detail": "wrong=[{\"path\":\"global.wifi_sleep_policy\",\"want\":2,\"got\":0}]",
+      "commands": [
+        "bash: python3 SET-2/settings.py put global wifi_sleep_policy 0"
+      ]
+    },
+    {
+      "id": "s16",
+      "pattern": "toggle_airplane_mode",
+      "query": "enable airplane mode",
+      "pass": false,
+      "calls": 4,
+      "tokens": 1677,
+      "ms": 2256,
+      "detail": "wrong=[]",
+      "commands": [
+        "read: SET-2/settings.py",
+        "bash: python3 SET-2/settings.py put global airplane_mode_on 1",
+        "bash: python3 SET-2/settings.py put global wifi_on 0",
+        "bash: python3 SET-2/settings.py put global airplane_mode_on 1"
+      ]
+    },
+    {
+      "id": "s17",
+      "pattern": "toggle_wifi",
+      "query": "turn off wifi",
+      "pass": true,
+      "calls": 1,
+      "tokens": 546,
+      "ms": 738,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py put global wifi_on 0"
+      ]
+    },
+    {
+      "id": "s18",
+      "pattern": "toggle_mobile_data",
+      "query": "turn off mobile data",
+      "pass": true,
+      "calls": 1,
+      "tokens": 547,
+      "ms": 733,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py put global mobile_data 0"
+      ]
+    },
+    {
+      "id": "s19",
+      "pattern": "toggle_bluetooth",
+      "query": "turn off bluetooth",
+      "pass": true,
+      "calls": 4,
+      "tokens": 777,
+      "ms": 2103,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py put global bluetooth_on 0",
+        "bash: python3 SET-2/settings.py put global bluetooth_on 0",
+        "bash: python3 SET-2/settings.py put global bluetooth_on 0",
+        "bash: python3 SET-2/settings.py put global bluetooth_on 0"
+      ]
+    },
+    {
+      "id": "s20",
+      "pattern": "set_data_roaming",
+      "query": "enable data roaming",
+      "pass": true,
+      "calls": 1,
+      "tokens": 548,
+      "ms": 748,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py put global data_roaming 1"
+      ]
+    },
+    {
+      "id": "s21",
+      "pattern": "toggle_nfc",
+      "query": "turn off nfc",
+      "pass": true,
+      "calls": 1,
+      "tokens": 550,
+      "ms": 751,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py put global nfc_on 0"
+      ]
+    },
+    {
+      "id": "s22",
+      "pattern": "set_rotation",
+      "query": "turn off auto-rotate",
+      "pass": true,
+      "calls": 1,
+      "tokens": 556,
+      "ms": 747,
+      "detail": "",
+      "commands": [
+        "bash: python3 SET-2/settings.py put system accelerometer_rotation 0"
+      ]
+    },
+    {
+      "id": "s23",
+      "pattern": "set_haptic_feedback",
+      "query": "disable haptic feedback",
+      "pass": true,
+      "calls": 4,
+      "tokens": 1650,
+      "ms": 2406,
+      "detail": "",
+      "commands": [
+        "read: SET-2/settings.py",
+        "bash: python3 SET-2/settings.py put system haptic_feedback_enabled 0",
+        "bash: python3 SET-2/settings.py put system haptic_feedback_enabled 1",
+        "bash: python3 SET-2/settings.py put system haptic_feedback_enabled 0"
+      ]
+    },
+    {
+      "id": "s24",
+      "pattern": "toggle_adb",
+      "query": "turn on usb debugging",
+      "pass": false,
+      "calls": 4,
+      "tokens": 736,
+      "ms": 2102,
+      "detail": "wrong=[{\"path\":\"secure.adb_enabled\",\"want\":1,\"got\":0}]",
+      "commands": [
+        "bash: python3 SET-2/settings.py put usb_debugging 1",
+        "bash: python3 SET-2/settings.py put usb_debugging 1",
+        "bash: python3 SET-2/settings.py put usb_debugging 1",
+        "bash: python3 SET-2/settings.py put usb_debugging 1"
+      ]
+    },
+    {
+      "id": "s25",
+      "pattern": "toggle_low_power",
+      "query": "turn on battery saver",
+      "pass": false,
+      "calls": 2,
+      "tokens": 1524,
+      "ms": 1380,
+      "detail": "wrong=[{\"path\":\"global.low_power\",\"want\":1,\"got\":0}]",
+      "commands": [
+        "read: SET-2/settings.py",
+        "bash: python3 SET-2/settings.py put global battery_saver 1"
+      ]
+    }
+  ]
+}

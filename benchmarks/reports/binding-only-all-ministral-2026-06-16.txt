@@ -1,0 +1,81 @@
+== binding-only (routing assumed correct) ==  model=ministral-3-3b
+tasks (atoms w/ gold tokens): 627  from 5 files
+binding accuracy: 601/627 = 95.9%
+
+per domain:
+                   168/175 = 96.0%
+  caldav           5/5 = 100.0%
+  contacts         5/5 = 100.0%
+  docker           12/12 = 100.0%
+  email            6/6 = 100.0%
+  ffmpeg           84/84 = 100.0%
+  flights          4/4 = 100.0%
+  home_assistant   103/103 = 100.0%
+  maps             7/7 = 100.0%
+  reminders        5/6 = 83.3%
+  service          12/12 = 100.0%
+  spotify          98/100 = 98.0%
+  system           14/14 = 100.0%
+  telegram         5/5 = 100.0%
+  weather          5/5 = 100.0%
+  youtube          68/84 = 81.0%
+
+most-missed gold tokens:
+   16x  '--skip-download'
+    7x  'remindme due'
+    2x  'spotify next'
+    1x  '--to'
+
+binding misses (26):
+  [              ] what's on my calendar today?                   MISSING ['--to']
+                   -> caldav list --from "2026-06-16"
+  [              ] is any reminder ready to trigger?              MISSING ['remindme due']
+                   -> remindme --peek
+  [              ] reminders due                                  MISSING ['remindme due']
+                   -> remindme
+  [              ] anything I need to be reminded of right now    MISSING ['remindme due']
+                   -> remindme --now "2026-06-16 00:00"
+  [              ] has any reminder fired yet                     MISSING ['remindme due']
+                   -> remindme --peek
+  [              ] what's come due on my reminders this moment    MISSING ['remindme due']
+                   -> remindme --peek
+  [              ] check if a reminder is owed at this time       MISSING ['remindme due']
+                   -> remindme
+  [reminders     ] is any reminder ready to trigger?              MISSING ['remindme due']
+                   -> remindme --peek
+  [spotify       ] skip this track                                MISSING ['spotify next']
+                   -> spotify skip
+  [spotify       ] skip this track                                MISSING ['spotify next']
+                   -> spotify skip
+  [youtube       ] get the transcript of this youtube video htt   MISSING ['--skip-download']
+                   -> yt-dlp --write-auto-sub "https://youtu.be/a1"
+  [youtube       ] download the captions for youtu.be/b2          MISSING ['--skip-download']
+                   -> yt-dlp --write-auto-sub "https://youtu.be/b2"
+  [youtube       ] grab the subtitles of that yt clip https://y   MISSING ['--skip-download']
+                   -> yt-dlp --write-auto-sub "https://youtu.be/c3"
+  [youtube       ] i need the subs for this video youtu.be/d4     MISSING ['--skip-download']
+                   -> yt-dlp --write-auto-sub "https://youtu.be/d4"
+  [youtube       ] pull the captions text from https://youtu.be   MISSING ['--skip-download']
+                   -> yt-dlp --write-auto-sub "https://youtu.be/e5"
+  [youtube       ] can i get the text transcript of youtu.be/f6   MISSING ['--skip-download']
+                   -> yt-dlp --write-auto-sub "https://youtu.be/f6"
+  [youtube       ] fetch subtitles only for this yt link youtu.   MISSING ['--skip-download']
+                   -> yt-dlp --write-auto-sub "https://youtu.be/g7"
+  [youtube       ] what was said in this video, get me the capt   MISSING ['--skip-download']
+                   -> yt-dlp --write-auto-sub "https://youtu.be/h8"
+  [youtube       ] download the auto subtitles from youtu.be/i9   MISSING ['--skip-download']
+                   -> yt-dlp --write-auto-sub "https://youtu.be/i9"
+  [youtube       ] grab the cc track for this youtube clip http   MISSING ['--skip-download']
+                   -> yt-dlp --write-auto-sub "https://youtu.be/j0"
+  [youtube       ] transcript please youtu.be/k1                  MISSING ['--skip-download']
+                   -> yt-dlp --write-auto-sub "https://youtu.be/k1"
+  [youtube       ] get me the words from this talk https://yout   MISSING ['--skip-download']
+                   -> yt-dlp --write-auto-sub "https://youtu.be/l2"
+  [youtube       ] what's the title and duration of this youtub   MISSING ['--skip-download']
+                   -> yt-dlp --dump-json "https://youtu.be/a1"
+  [youtube       ] how many views and how long is this video ht   MISSING ['--skip-download']
+                   -> yt-dlp --dump-json "https://youtu.be/i9"
+  [youtube       ] tell me about this yt video without download   MISSING ['--skip-download']
+                   -> yt-dlp --dump-json "https://youtu.be/j0"
+  [youtube       ] what's the upload date and title for youtu.b   MISSING ['--skip-download']
+                   -> yt-dlp --dump-json "https://www.youtube.com/watch?v=l2"
