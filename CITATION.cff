@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software or its findings, please cite the thesis."
-title: "A.L.F.R.E.D.: A Local-First, Two-Tier Routing Middleware for On-Device Intent Execution"
+title: "A.L.F.R.E.D.: Adaptive Local-First Routing and Execution Distillation for Small Language Models"
 authors:
   - family-names: "Zoidze"
     given-names: "David"

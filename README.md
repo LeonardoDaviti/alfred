@@ -1,5 +1,7 @@
 # A.L.F.R.E.D.
 
+### Adaptive Local-First Routing and Execution Distillation for Small Language Models
+
 **A local-first, two-tier router for on-device intent execution.** Most things you
 ask a phone to *do* — set an alarm, dim the screen, toggle Wi-Fi, place a call —
 don't need a model to *reason*; they need a model to *fill in a blank*. A.L.F.R.E.D.
