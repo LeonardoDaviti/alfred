@@ -8,23 +8,23 @@ reviews each in turn and ends by stating precisely what gap the thesis fills. A
 conceptual thread runs underneath the whole design and is worth naming first. The
 two-tier split---a fast, automatic path and a slow, deliberate one---is the
 computational analogue of two old ideas: the reflex arc, a stimulus-driven motor
-response routed without higher deliberation~\cite{sherrington1906}, and the
+response routed without higher deliberation~\citep{sherrington1906}, and the
 dual-process account of cognition, in which a fast automatic system handles the
-routine and a slow effortful system handles the novel~\cite{kahneman2011}. The
+routine and a slow effortful system handles the novel~\citep{kahneman2011}. The
 reflexer is the fast path; the thinker is the slow one.
 
 \section{Small on-device language models}
 \label{sec:bg-slm}
 
 The premise that a small model is sufficient for most agentic work is now argued
-directly. Belcak et al.~\cite{belcak2025slm} contend that small language models,
+directly. \citet{belcak2025slm} contend that small language models,
 not frontier models, are the right substrate for agentic systems, because agent
 workloads are dominated by narrow, repetitive sub-tasks that a small specialized
 model can serve at a fraction of the cost. A.L.F.R.E.D.\ is a concrete
 instantiation of that thesis for the on-device action setting, and supplies the
 mechanism---distilled patterns---that the position paper leaves open.
 
-On the systems side, TinyAgent~\cite{erdogan2024tinyagent} demonstrates reliable
+On the systems side, TinyAgent~\citep{erdogan2024tinyagent} demonstrates reliable
 function calling at the edge with small models, using fine-tuning and a
 constrained decoder to keep a small model on the rails of a fixed tool schema.
 A.L.F.R.E.D.\ shares the goal of reliable small-model tool use on-device but takes
@@ -40,11 +40,11 @@ that pattern whose tiers can be measured in isolation.
 \label{sec:bg-agents}
 
 The thinker tier implements the now-standard reasoning-and-acting loop introduced
-by ReAct~\cite{yao2022react}, in which a model interleaves reasoning steps with
+by ReAct~\citep{yao2022react}, in which a model interleaves reasoning steps with
 tool calls and observations until a task is complete. The broader line on teaching
-models to use tools includes Toolformer~\cite{schick2023toolformer}, which shows a
+models to use tools includes Toolformer~\citep{schick2023toolformer}, which shows a
 model can learn to call APIs from self-supervised data, and
-Gorilla~\cite{patil2023gorilla}, which connects a model to massive real API
+Gorilla~\citep{patil2023gorilla}, which connects a model to massive real API
 collections and confronts the problem of selecting the correct call from many
 candidates. These establish that capable models can use tools; the question this
 thesis asks is the inverse one, namely how little model is needed once the
@@ -56,9 +56,9 @@ to act, the reflexer spends it once, offline, and replays the decision.
 \label{sec:bg-routing}
 
 Deciding which model or path should serve a request is the routing problem.
-RouteLLM~\cite{ong2024routellm} learns to route between a strong and a weak model
+RouteLLM~\citep{ong2024routellm} learns to route between a strong and a weak model
 from human preference data, optimizing the cost-quality trade-off;
-Dekoninck et al.~\cite{dekoninck2024unifiedrouting} give a unified treatment of
+\citet{dekoninck2024unifiedrouting} give a unified treatment of
 routing and cascading and frame multi-tier systems as structured cascades, which
 is exactly how A.L.F.R.E.D.'s router-then-reflexer-or-thinker path should be
 understood. The difference in emphasis matters for this thesis. The routing
@@ -73,18 +73,18 @@ and a more reliable reflexer multiply rather than substitute.
 \label{sec:bg-skills}
 
 The closest neighbours come from work that turns agent experience into reusable
-skills. Voyager~\cite{wang2023voyager} introduced the skill-library framing, in
+skills. Voyager~\citep{wang2023voyager} introduced the skill-library framing, in
 which an agent accumulates a growing library of executable skills and composes
-them; Memp~\cite{fang2025memp} studies procedural memory directly, abstracting
+them; Memp~\citep{fang2025memp} studies procedural memory directly, abstracting
 successful trajectories into reusable scripts. A.L.F.R.E.D.'s patterns can be read
 as the deterministic compilation of exactly such procedural abstractions: where
 Memp keeps scripts the agent re-interprets, A.L.F.R.E.D.\ freezes them into a
 template whose only run-time freedom is slot-filling.
 
-The Memento line is the nearest published relative. Memento~\cite{zhou2025memento}
+The Memento line is the nearest published relative. Memento~\citep{zhou2025memento}
 adapts an agent without updating model weights by retrieving from a growing case
 bank---non-parametric personalization, the same high-level strategy A.L.F.R.E.D.\
-uses with patterns. Its successor, Memento-Skills~\cite{zhou2026mementoskills},
+uses with patterns. Its successor, Memento-Skills~\citep{zhou2026mementoskills},
 adds a \emph{learned} skill-router and reflective read-write learning over
 free-form markdown skills. A.L.F.R.E.D.\ contrasts on two axes: its skills are
 \emph{compiled, deterministic} patterns rather than free-form documents, and (as
@@ -92,12 +92,12 @@ the evaluation will argue) the production end is best served by a constrained
 executor whose command shape is fixed, trading the generality of a reflective
 skill for the reliability of a frozen one. The opposite design point---updating
 model weights to personalize an agent---is represented by reinforcement-learning
-approaches such as OpenClaw-RL~\cite{wang2026openclawrl}; this is the path
+approaches such as OpenClaw-RL~\citep{wang2026openclawrl}; this is the path
 A.L.F.R.E.D.\ explicitly does not take, because weight updates sacrifice the
 plug-and-play, inspectable extensibility that a symbolic pattern provides.
 
 A note on naming is needed to avoid confusion. Our \emph{reflexer} is unrelated
-to Reflexion~\cite{shinn2023reflexion}, which uses verbal self-feedback as a form
+to Reflexion~\citep{shinn2023reflexion}, which uses verbal self-feedback as a form
 of reinforcement to improve an agent across attempts. Reflexion adds deliberation;
 the reflexer removes it. The shared root word denotes opposite design intents.
 
@@ -107,7 +107,7 @@ the reflexer removes it. The shared root word denotes opposite design intents.
 The mechanism that makes the cheap tier work is distillation, and its lineage is
 explicit. Classical knowledge distillation compresses a large teacher network
 into the \emph{weights} of a smaller student, transferring the teacher's soft
-behaviour into a deployable model~\cite{hinton2015distilling}. A.L.F.R.E.D.\
+behaviour into a deployable model~\citep{hinton2015distilling}. A.L.F.R.E.D.\
 distills along the same teacher-to-student axis but changes the target: the
 teacher's knowledge of device conventions is compressed into an inspectable
 \emph{symbolic} artifact---a pattern---rather than into student parameters. The
@@ -116,7 +116,7 @@ must be retrained to extend; symbolic distillation yields a student that is
 plug-and-play, auditable, and composable, at the cost of covering only distilled
 intents. This positions the contribution against both the distillation literature
 (same teacher-student idea, different artifact) and the programmatic-prompt line
-such as DSPy~\cite{khattab2024dspy}, which compiles declarative model calls into
+such as DSPy~\citep{khattab2024dspy}, which compiles declarative model calls into
 optimized pipelines; A.L.F.R.E.D.\ similarly compiles intents into fixed command
 shapes, but targets on-device execution rather than prompt-program optimization.
 
@@ -124,15 +124,15 @@ shapes, but targets on-device execution rather than prompt-program optimization.
 \label{sec:bg-eval}
 
 Agent evaluation has converged on task suites that score completion of realistic
-multi-step goals---AgentBench~\cite{liu2023agentbench} across diverse
-environments, and AssistantBench~\cite{yoran2024assistantbench} for realistic,
+multi-step goals---AgentBench~\citep{liu2023agentbench} across diverse
+environments, and AssistantBench~\citep{yoran2024assistantbench} for realistic,
 time-consuming web tasks. A.L.F.R.E.D.'s benchmarks share their realism goal but
 differ in instrument: rather than scoring trajectory completion, the settings
 benchmarks score the \emph{end state} of a mutable backend with a no-collateral
 constraint (Chapter~\ref{ch:method}), which isolates the specific failure of
 emitting a plausible command that produces the wrong device state. The skill
 interface itself follows the emerging \texttt{SKILL.md} convention for equipping
-agents with packaged capabilities~\cite{anthropic2025skills}, with which
+agents with packaged capabilities~\citep{anthropic2025skills}, with which
 A.L.F.R.E.D.\ is structurally compatible.
 
 \section{The gap}

@@ -91,7 +91,7 @@ the pattern has removed almost everything it could fail at.
 \section{The thinker: a general agent for the tail}
 \label{sec:thinker}
 
-The thinker is a full agent loop in the ReAct style~\cite{yao2022react}: the
+The thinker is a full agent loop in the ReAct style~\citep{yao2022react}: the
 model is given the relevant skill documentation and a set of tools (a shell, a
 file reader), and it reasons, acts, observes, and repeats until it judges the
 task complete. It is invoked for everything the reflexer cannot serve:
@@ -150,7 +150,7 @@ be checked uniformly regardless of which tier produced the command.
 
 The skill model is an application of Ousterhout's principle of \emph{deep
 modules}: a simple interface that hides substantial implementation
-complexity~\cite{ousterhout2018philosophy}. A well-designed skill exposes a
+complexity~\citep{ousterhout2018philosophy}. A well-designed skill exposes a
 small, intent-shaped vocabulary (\texttt{clock timer --duration 10m}) while
 absorbing the messy device-specific mechanism behind it. This depth is what lets
 even a small model act competently when it is given the right tool: on a clean,
@@ -184,7 +184,7 @@ amortized over every subsequent on-device invocation.
 The relationship to classical knowledge distillation is deliberate and worth
 making precise. In the original formulation, a large teacher network is
 compressed into the \emph{weights} of a smaller student
-network~\cite{hinton2015distilling}. A.L.F.R.E.D.\ distills along the same
+network~\citep{hinton2015distilling}. A.L.F.R.E.D.\ distills along the same
 teacher$\rightarrow$student axis, but into a different target: a teacher model
 compresses its knowledge of a device's conventions into an \emph{inspectable
 symbolic artifact}---the pattern---rather than into student parameters. The trade

@@ -24,9 +24,9 @@ distillation teacher is Claude Sonnet~4.6. The Qwen3.5 family at 0.8B and 4B als
 appears in the reflexer sweep.
 
 \paragraph{Serving stack and quantization.} Local models are served with
-\texttt{llama-server} from \texttt{llama.cpp}~\cite{llamacpp} over its
+\texttt{llama-server} from \texttt{llama.cpp}~\citep{llamacpp} over its
 OpenAI-compatible HTTP endpoint, and the agent loop is driven by
-\texttt{pi}~\cite{pi-agent}. \textbf{All models use 4-bit (Q4) GGUF
+\texttt{pi}~\citep{pi-agent}. \textbf{All models use 4-bit (Q4) GGUF
 quantization}, so that every reported number reflects a model that fits a
 phone-class memory budget. The two executor models (\texttt{qwen-3.5-2b} and
 \texttt{ministral-3-3b}) are served with \textbf{identical decoding parameters};
