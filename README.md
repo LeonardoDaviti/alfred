@@ -14,7 +14,7 @@ command pattern in a single forward pass) and escalates the rest to a heavier
 > the pattern manages 30%. On a realistic device API, **scale buys discovery, not
 > convention** — and a distilled pattern carries the convention.
 
-![binding](thesis/figures/fig_binding.pdf)
+![binding](thesis/figures/fig_binding.png)
 
 ## The idea in three bullets
 
@@ -29,8 +29,8 @@ command pattern in a single forward pass) and escalates the rest to a heavier
 
 ## Architecture
 
-![architecture](thesis/figures/fig_architecture.pdf)
-![reflexer](thesis/figures/fig_reflexer.pdf)
+![architecture](thesis/figures/fig_architecture.png)
+![reflexer](thesis/figures/fig_reflexer.png)
 
 ## Reproduce a headline in one command
 

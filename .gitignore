@@ -22,7 +22,6 @@ thesis/*.blg
 thesis/chapters/*.aux
 
 # figure previews (regenerated; vector pdf is tracked)
-thesis/figures/*.png
 
 # node (SET runners use tsx)
 node_modules/
