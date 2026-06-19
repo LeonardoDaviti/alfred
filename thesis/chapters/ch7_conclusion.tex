@@ -71,6 +71,13 @@ exchanged without leaking personal data. A parametric alternative---fine-tuning 
 very small model on the pattern conventions---is a path worth measuring against the
 symbolic approach, trading inspectability for a smaller artifact.
 
+\paragraph{Development substrate.} All of the above extensions are intended to be
+built inside the \textbf{Pi coding-agent framework}~\citep{pi-agent} on which the
+thinker already runs (Section~\ref{sec:thinker}). Consolidating the reflexer's
+future work in the same minimal, transparent environment keeps the executor and
+the agent loop on one runtime, tool surface, and instrumentation path, which lowers
+the cost of the iterate-and-measure loop the rest of this section depends on.
+
 \section{Closing}
 \label{sec:c-closing}
 

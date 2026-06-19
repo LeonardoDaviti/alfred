@@ -98,6 +98,17 @@ task complete. It is invoked for everything the reflexer cannot serve:
 multi-intent or compound requests, requests requiring clarification or planning,
 and any intent for which no pattern has been distilled.
 
+Concretely, the thinker is built on the \textbf{Pi coding-agent
+framework}~\citep{pi-agent}, a minimal and self-contained agent loop. Pi was
+chosen deliberately: among available agent frameworks it is the simplest and most
+functional---a small, transparent loop with a clean tool interface and no heavy
+orchestration layer---which keeps the thinker easy to reason about and to
+instrument for the binding measurements of Chapter~\ref{ch:eval}. The same
+property makes Pi the intended home for future work: the planned extensions of the
+reflexer (Chapter~\ref{ch:conclusion}) are to be developed inside the Pi
+environment, so that the executor and the agent loop share one runtime and tool
+surface.
+
 The thinker is where capability lives, but it is also where the architecture
 pays its costs. An agent loop emits many commands across several turns, consumes
 substantially more tokens and wall-clock time than a single reflexer call, and
