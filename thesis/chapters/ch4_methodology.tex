@@ -33,7 +33,7 @@ phone-class memory budget. The two executor models (\texttt{qwen-3.5-2b} and
 the qwen-3.5-2b invocation is reproduced verbatim in Listing~\ref{lst:serve} and
 ministral-3-3b uses the same flags. The decisive settings are a low sampling
 temperature ($0.2$) for near-deterministic command generation and, crucially,
-\textbf{reasoning disabled} (\texttt{enable\_thinking=false})---the reflexer is an
+\textbf{reasoning disabled} (\texttt{enable\_thinking=false}); the reflexer is an
 executor, not a reasoner, so chain-of-thought is switched off. The 35B is run in
 its native reasoning mode (thinking enabled), since it is evaluated precisely as
 the free-form reasoning ceiling.
@@ -71,9 +71,9 @@ real end-to-end bottleneck.
 For the binding experiments, success is scored by \emph{token coverage}: a task
 carries a set of gold tokens that must appear (case-insensitively) in the union
 of the commands the model emitted. Both tracks read the same task files and use
-the same checker---the reflexer harness
+the same checker. The reflexer harness
 (\texttt{alfred/eval/binding\_only\_eval.py}) and the thinker harness
-(\texttt{src/run-binding-compare.ts}) implement identical coverage semantics---so
+(\texttt{src/run-binding-compare.ts}) implement identical coverage semantics, so
 that the only difference between conditions is the model and whether it received
 the pattern. Standardizing the checker across both tracks was a deliberate change
 to make the headline comparison fair: the reflexer is not scored by an easier
@@ -93,8 +93,8 @@ hold: the requested keys reached their target values, \emph{and} no other key wa
 changed (no collateral edits).
 
 This two-part definition catches two failures that command matching misses. The
-first is ``right command, wrong outcome''---a command that looks correct but
-leaves the device in the wrong state. The second is over-action---an agent that
+first is ``right command, wrong outcome'', a command that looks correct but
+leaves the device in the wrong state. The second is over-action, an agent that
 achieves the goal but also changes settings it was never asked to touch, which a
 command-matching scorer would happily pass. The no-collateral clause is not
 hypothetical: in the distillation experiments an over-verbose pattern caused the
@@ -133,8 +133,8 @@ report for inspection.
 
 Three benchmarks are used, chosen to bracket the difficulty of on-device action.
 
-\paragraph{Expansion skills (binding).} Seven execution skills---clock, media,
-focus, device settings, call, app, and browser---with thirty-six atoms and a set
+\paragraph{Expansion skills (binding).} Seven execution skills (clock, media,
+focus, device settings, call, app, and browser) with thirty-six atoms and a set
 of cross-skill composites, each backed by a mock CLI that emits a structured
 result. The task set provides one to two queries per skill (the
 \emph{balanced-10}) and a larger per-skill set (seventy-two atom tasks), with gold
@@ -150,8 +150,8 @@ of a deep tool on an easy surface.
 \paragraph{SET-2 (realistic Android API).} An \texttt{adb}-style interface
 (\texttt{settings put <ns> <key> <value>}) over thirty-two settings in three
 namespaces (\texttt{system}, \texttt{secure}, \texttt{global}), with non-obvious
-encodings---brightness on 0--255, timeouts in milliseconds, integer enums for Do
-Not Disturb, ringer, and location, and a string-float font scale---and a
+encodings (brightness on 0--255, timeouts in milliseconds, integer enums for Do
+Not Disturb, ringer, and location, and a string-float font scale), and a
 permissive \texttt{put} that silently accepts wrong inputs, exactly as the real
 Android tool behaves. Forty-eight tasks, scored by the end-state oracle. SET-2 is
 the realistic stressor and the setting for the limit-of-scale and distillation

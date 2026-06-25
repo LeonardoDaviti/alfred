@@ -11,7 +11,7 @@ are settled by the evaluation.
 
 \emph{On scale versus distillation} (RQ1), a 2B reflexer with a distilled pattern
 matches a 35B free-form thinker on binding (both 100\% balanced), while the same
-2B without a pattern reaches 30\%---the pattern is worth roughly $17\times$ the
+2B without a pattern reaches 30\%; the pattern is worth roughly $17\times$ the
 parameters. \emph{On the spectrum} (RQ2), the abstraction is an efficiency win on
 a clean API (a $+65$-point oracle gain at two calls instead of nine) and an
 accuracy win on a realistic one. \emph{On the limit of scale} (RQ3), a 35B thinker
@@ -26,8 +26,8 @@ The contribution, stated once more in plain terms: \textbf{on a real device API,
 scale buys discovery but not undiscoverable convention; distillation buys the
 convention; and a small reflexer applies it at a fraction of the cost.} The
 executioner paradigm is validated through the full teacher-to-student loop, and
-its central mechanism---compressing a teacher's device knowledge into an
-inspectable symbolic pattern rather than into student weights---is the thesis's
+its central mechanism, compressing a teacher's device knowledge into an
+inspectable symbolic pattern rather than into student weights, is the thesis's
 main idea.
 
 \section{Future work}
@@ -39,10 +39,10 @@ ordered by leverage.
 \paragraph{Session-based device grounding.} Both teachers miss the genuinely
 undiscoverable conventions because cold-start distillation gives them no way to
 check a value against reality. Granting the teacher read-only access to the real
-device---observing actual codes before committing an encoding---would convert those
-guesses into facts and close the remaining convention errors. The integrity rule
-carries over: ground on the device or a development split, never on the evaluation
-gold.
+device, so it observes actual codes before committing an encoding, would convert
+those guesses into facts and close the remaining convention errors. The integrity
+rule carries over: ground on the device or a development split, never on the
+evaluation gold.
 
 \paragraph{Deterministic value transforms.} The reflexer's residual errors are
 arithmetic and enum-lookup mistakes (percent-to-0--255, label-to-code). Moving
@@ -53,8 +53,8 @@ engineering change.
 \paragraph{The router.} The evaluation localizes the open bottleneck precisely:
 retrieval places the correct candidate in the top-3, but selection picks the wrong
 sibling, and selection does not improve with selector scale. The next investment
-is sibling discrimination---better selection prompting or a learned selector over
-behavioural signals---since the router gates both tiers.
+is sibling discrimination, whether through better selection prompting or a learned
+selector over behavioural signals, since the router gates both tiers.
 
 \paragraph{Iterative, grounded distillation.} The cold-start patterns can be run,
 executed on a real device, and re-distilled from the observed failures over two to
@@ -67,8 +67,8 @@ round to stop patterns accreting special cases.
 \paragraph{Authoring and personalization at scale.} Longer-term, mining a user's
 own repeated trajectories into candidate patterns would extend coverage beyond
 hand-authored skills, and a privacy-preserving sharing layer would let patterns be
-exchanged without leaking personal data. A parametric alternative---fine-tuning a
-very small model on the pattern conventions---is a path worth measuring against the
+exchanged without leaking personal data. A parametric alternative, fine-tuning a
+very small model on the pattern conventions, is a path worth measuring against the
 symbolic approach, trading inspectability for a smaller artifact.
 
 \paragraph{Development substrate.} All of the above extensions are intended to be
@@ -85,5 +85,5 @@ The shift toward on-device assistants raises a practical question that this thes
 takes seriously: not how powerful a model can be, but how little model an action
 actually needs once its knowledge is placed where it belongs. The answer found
 here is that a great deal of on-device action is not a reasoning problem at all. It
-is a knowledge-placement problem---and once the convention is distilled into a
+is a knowledge-placement problem, and once the convention is distilled into a
 pattern, a small model executing a frozen reflex is enough.

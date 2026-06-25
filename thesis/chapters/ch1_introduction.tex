@@ -7,7 +7,7 @@
 A growing share of what people ask a phone to do is not a question but an
 \emph{action}: set an alarm, dim the screen, start a timer, turn on Do Not
 Disturb, call a contact. These requests are short, frequent, and repetitive, and
-they share a property that the conversational use of assistants does not---they
+they share a property that the conversational use of assistants does not. They
 have a single correct outcome. Either the alarm is set for 7:00 or it is not.
 
 How these actions are served is in the middle of an industry shift. The dominant
@@ -31,7 +31,7 @@ a device action by free-form reasoning, it either fails to act at all or invents
 a command from its pretraining priors instead of the one the device expects
 (Chapter~\ref{ch:eval} measures both failures). A model large enough to reason
 reliably does not fit on the device, answers an order of magnitude more slowly,
-costs money per call, and---as this thesis shows---is \emph{still} wrong on the
+costs money per call, and, as this thesis shows, is \emph{still} wrong on the
 device-specific conventions that no amount of reasoning can recover.
 
 So neither obvious option is satisfactory. Shipping a big model defeats the point
@@ -44,14 +44,14 @@ clever, paired with something that supplies the knowledge it lacks.
 
 Two gaps in the existing picture motivate the work. First, the literature treats
 ``the model is too small'' as a single problem, when on a realistic device API it
-is really two. One is \emph{discovery}---finding which setting, namespace, or key
-a request maps to---which is a search problem that a larger model solves by
-exploring the API. The other is \emph{convention}---knowing that ``total
-silence'' is encoded as the integer \texttt{2}, or that ``largest font'' is the
-string \texttt{1.30}---which is not discoverable from the API at all, because the
-meaning lives in a device's tribal knowledge rather than in any queryable surface.
-These two difficulties respond to completely different remedies, and conflating
-them hides the most useful result in the thesis (Figure~\ref{fig:discovery}).
+is really two. One is \emph{discovery}: finding which setting, namespace, or key a
+request maps to, which a larger model solves by exploring the API. The other is
+\emph{convention}: knowing that ``total silence'' is encoded as the integer
+\texttt{2}, or that ``largest font'' is the string \texttt{1.30}. Convention is
+not discoverable from the API at all, because the meaning lives in a device's
+accumulated conventions rather than in any queryable surface. These two
+difficulties respond to completely different remedies, and conflating them hides
+the most useful result in the thesis (Figure~\ref{fig:discovery}).
 
 Second, the standard tool for compressing a capable model into a deployable one
 is knowledge distillation into a smaller network's weights. That approach yields
@@ -84,7 +84,7 @@ Chapter~\ref{ch:eval}:
     (intent $\rightarrow$ correct command) require, and can a distilled pattern
     close the gap a small model has?
   \item[RQ2 (the spectrum)] Does the value of the reflexer change with API
-    difficulty---when is it an efficiency win and when an accuracy win?
+    difficulty: when is it an efficiency win and when an accuracy win?
   \item[RQ3 (the limit of scale)] Are there task difficulties that model scale
     cannot solve but a distilled pattern can?
   \item[RQ4 (teacher quality)] In teacher$\rightarrow$student distillation, how
@@ -104,7 +104,7 @@ Chapter~\ref{ch:eval}:
     (Chapter~\ref{ch:design}).
   \item \textbf{Symbolic distillation}: knowledge distillation into a
     plug-and-play JSON pattern rather than student weights, with the
-    teacher$\rightarrow$student loop measured end-to-end (Sections~\ref{sec:p5}).
+    teacher$\rightarrow$student loop measured end-to-end (Section~\ref{sec:p5}).
   \item \textbf{The discovery-vs-convention distinction}: two kinds of task
     difficulty, separated by what model scale can and cannot fix, demonstrated on
     a realistic device API (Section~\ref{sec:p4}).
@@ -120,13 +120,13 @@ Chapter~\ref{ch:eval}:
 \section{Thesis structure}
 \label{sec:structure}
 
-Chapter~\ref{ch:design} presents A.L.F.R.E.D.\ as a system---the two tiers, the
+Chapter~\ref{ch:design} presents A.L.F.R.E.D.\ as a system: the two tiers, the
 pattern artifact, the skill model, and the distillation step that connects them.
-Chapter~\ref{ch:method} specifies how the system is evaluated: the binding-only
-methodology, the end-state oracle, the benchmarks, and the integrity rules.
-Chapter~\ref{ch:eval} is the core, establishing the five results above in turn.
-Chapter~\ref{ch:discussion} draws out the implications for design and
+Chapter~\ref{ch:method} specifies how the system is evaluated, covering the
+binding-only methodology, the end-state oracle, the benchmarks, and the integrity
+rules. Chapter~\ref{ch:eval} is the core, establishing the five results above in
+turn. Chapter~\ref{ch:discussion} draws out the implications for design and
 productization and states the threats to validity. Chapter~\ref{ch:conclusion}
-summarizes the contributions and outlines the next steps---device grounding,
+summarizes the contributions and outlines the next steps: device grounding,
 deterministic value transforms, and the routing work that the evaluation
 identifies as the remaining limit.

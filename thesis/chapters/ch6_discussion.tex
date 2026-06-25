@@ -7,7 +7,7 @@
 The five results of Chapter~\ref{ch:eval} compose into a single claim with a sharp
 boundary. On the repeatable head of on-device tasks, a 2B reflexer with a
 distilled pattern matches a $17\times$ larger free-form thinker, because the
-reflexer does not solve the task---it replays a solution found once. The boundary
+reflexer does not solve the task; it replays a solution found once. The boundary
 is the distinction the thesis makes precise: model scale buys \emph{discovery},
 the search for which namespace and key a request maps to, but it does not buy
 \emph{convention}, the device-specific meaning of a value. A 35B thinker explores
@@ -23,7 +23,7 @@ the API nor the model's parameters at any scale tested; it exists only in a
 distilled artifact. Once that is seen, the economics follow directly
 (Section~\ref{sec:economics}): pay a strong teacher once to externalize the
 convention, and a cheap student applies it forever. The teacher-quality result
-sharpens the recipe---because the student faithfully executes whatever convention
+sharpens the recipe: because the student faithfully executes whatever convention
 the teacher encoded, a weak teacher bakes in wrong priors, so the one-time
 distillation step should use the strongest available teacher
 (Section~\ref{sec:p5}).
@@ -33,8 +33,8 @@ distillation step should use the strongest available teacher
 
 The architecture suggests a clear product shape and an equally clear set of
 blockers. The defensible first version is a \emph{deterministic-intent
-accelerator}: the high-frequency, unambiguous head---media and device control,
-smart-home toggles, timers, system actions---served on-device by the reflexer at
+accelerator}: the high-frequency, unambiguous head (media and device control,
+smart-home toggles, timers, system actions), served on-device by the reflexer at
 near-100\% binding, with the thinker as a safety net for everything else. This is
 the slice where the value is highest and the risk is lowest, and it coincides with
 the on-device sweet spot that the Pixel and Apple use-case mapping identifies
@@ -77,8 +77,8 @@ purpose-built benchmarks} with specific models. SET-2 is realistic but is a mode
 of the Android settings surface, not the full device; the 35B is one large model,
 not a survey of large models; and two runs of the cold-start reflexer disagreed by
 one task (19 versus 20 of 25), which the thesis reports rather than reconciles. The
-qualitative pattern---scale fixes discovery but not convention, distillation fixes
-both, teacher quality propagates---is robust across the experiments, but the exact
+qualitative pattern (scale fixes discovery but not convention, distillation fixes
+both, teacher quality propagates) is robust across the experiments, but the exact
 percentages should be read as evidence for that pattern rather than as universal
 constants.
 
@@ -90,8 +90,8 @@ evaluated but not solved; it is named as the open bottleneck rather than fixed.
 Composite slot-filling is identified as weak but not repaired. Both teachers,
 cloud and local, miss the genuinely undiscoverable conventions (the version- or
 OEM-specific values), which no cold-start teacher can recover and which require
-observing the real device. And the reflexer's residual application errors---using
-an enum label instead of its code, or mis-doing brightness arithmetic---point to a
+observing the real device. And the reflexer's residual application errors (using
+an enum label instead of its code, or mis-doing brightness arithmetic) point to a
 value-transform step that is currently left to the model. Each of these limitations
 maps onto a concrete next step rather than an open research question, which the
 next chapter sets out.
