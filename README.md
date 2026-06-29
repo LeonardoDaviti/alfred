@@ -47,6 +47,26 @@ A local OpenAI-compatible endpoint is required for model runs (see
 [REPRODUCE.md](REPRODUCE.md) for the exact `llama.cpp` serving config: Q4, temp 0.2,
 reasoning disabled). Figure generation and benchmark *preflight* need no model.
 
+### Adapting A.L.F.R.E.D. to your own usage
+
+A.L.F.R.E.D. earns its keep by moving *your* repetitive, deterministic intents off a
+heavy model and onto the on-device reflexer. The catch is knowing which of your
+intents qualify. If you are setting this up with a coding agent (Claude Code, Cursor,
+or similar), you can ask it to help you find them:
+
+> *"Run a full analysis of my session/usage and tell me which intents are good
+> candidates for A.L.F.R.E.D. — i.e. where routing to a small local model would reduce
+> my dependency on a higher model."*
+
+A well-behaved agent should, before doing anything, **ask whether you want this
+analysis at all** — it touches your personal usage. When you opt in, it should keep
+the work **local**, present its findings in-chat (recurring deterministic intents,
+which existing skill each maps to, and the rough escalation it would save), and
+**write nothing** — no new patterns, no config changes — until you explicitly approve.
+The output is a shortlist: *"these N intents are slot-fill, not reasoning; distill a
+pattern for them and the reflexer handles them forever."* That shortlist is exactly
+the input to the symbolic-distillation step described above.
+
 ## Results (every number traces to a saved run in `benchmarks/reports/`)
 
 | Result | Number | Where |
