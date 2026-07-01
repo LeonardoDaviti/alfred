@@ -49,23 +49,35 @@ Distillation for Small Language Models}
 % ---------------------------------------------------------------- front matter
 \begin{titlepage}
 \centering
-\vspace*{2cm}
-{\Large International Black Sea University\par}
-{\large Faculty of Computer Science / Engineering\par}
+\vspace*{1.5cm}
+{\large\bfseries INTERNATIONAL BLACK SEA UNIVERSITY\par}
+\vspace{0.25cm}
+{\large School of Computer Science\par}
+{\large COMPUTER SCIENCE PROGRAM\par}
 \vfill
-{\huge\bfseries A.L.F.R.E.D.\par}
+{\large\bfseries A.L.F.R.E.D.: Adaptive Local-First Routing and Execution
+Distillation for Small Language Models\par}
+\vfill
+{\large David Zoidze\par}
 \vspace{0.5cm}
-{\Large Adaptive Local-First Routing and Execution Distillation\\for Small Language Models\par}
-\vfill
-{\large Bachelor Thesis\par}
-\vspace{1cm}
-{\large \textbf{Author:} David Zoidze\par}
-{\large \textbf{Supervisor:} Giorgi Merabishvili\par}
+{\large Bachelor's Thesis in Computer Science\par}
+\vspace{0.5cm}
+{\large Supervisor: Giorgi Merabishvili\par}
 \vfill
 {\large Tbilisi, 2026\par}
 \end{titlepage}
 
 \pagenumbering{roman}
+
+% Front-matter order follows the IBSU template:
+% Contents -> Acknowledgements -> Abstract -> Introduction.
+% (Lists of Tables/Figures and Abbreviations intentionally omitted.)
+\tableofcontents
+
+% Acknowledgements
+\chapter*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+\input{chapters/acknowledgements}
 
 % Abstract (EN) — IBSU: max 1 page, in Georgian and English.
 \chapter*{Abstract}
@@ -78,8 +90,6 @@ Distillation for Small Language Models}
 % paragraph into the final document. Re-enable the two lines below there.
 % \chapter*{აბსტრაქტი}\addcontentsline{toc}{chapter}{Abstract (Georgian)}
 % \input{chapters/abstract_ka}
-
-\tableofcontents
 
 \cleardoublepage
 \pagenumbering{arabic}
