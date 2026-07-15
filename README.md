@@ -35,7 +35,7 @@ command pattern in a single forward pass) and escalates the rest to a heavier
 ![architecture](thesis/figures/fig_architecture.png)
 ![reflexer](thesis/figures/fig_reflexer.png)
 
-## Reproduce a headline in one command
+## Reproduce the headline results
 
 See [REPRODUCE.md](REPRODUCE.md). Quick start:
 
@@ -52,23 +52,16 @@ reasoning disabled). Figure generation and benchmark *preflight* need no model.
 
 ### Adapting A.L.F.R.E.D. to your own usage
 
-A.L.F.R.E.D. earns its keep by moving *your* repetitive, deterministic intents off a
-heavy model and onto the on-device reflexer. The catch is knowing which of your
-intents qualify. If you are setting this up with a coding agent (Claude Code, Cursor,
-or similar), you can ask it to help you find them:
+A.L.F.R.E.D. earns its keep by moving *your* repetitive, deterministic intents onto
+the on-device reflexer. To find which of your intents qualify, ask a coding agent:
 
 > *"Run a full analysis of my session/usage and tell me which intents are good
 > candidates for A.L.F.R.E.D. — i.e. where routing to a small local model would reduce
 > my dependency on a higher model."*
 
-A well-behaved agent should, before doing anything, **ask whether you want this
-analysis at all** — it touches your personal usage. When you opt in, it should keep
-the work **local**, present its findings in-chat (recurring deterministic intents,
-which existing skill each maps to, and the rough escalation it would save), and
-**write nothing** — no new patterns, no config changes — until you explicitly approve.
-The output is a shortlist: *"these N intents are slot-fill, not reasoning; distill a
-pattern for them and the reflexer handles them forever."* That shortlist is exactly
-the input to the symbolic-distillation step described above.
+This touches personal usage, so the agent should ask before analyzing, keep the work
+local, and write nothing until you approve. The resulting shortlist of slot-fill
+intents is exactly the input to the symbolic-distillation step described above.
 
 ## Results (every number traces to a saved run in `benchmarks/reports/`)
 
@@ -80,7 +73,7 @@ the input to the symbolic-distillation step described above.
 | Realistic API: even the 35B fails on conventions | 62.5% | `docs/findings_settings_distillation.md` |
 | Cold-start distillation lifts the 2B | 25% → 76–80% | `docs/findings_teacher_model.md` |
 | Teacher quality propagates (cloud vs local teacher) | 80% vs 60% | `docs/findings_teacher_model.md` |
-| The honest bottleneck: routing, not execution | 66–85% | `docs/findings_retrieval_and_selection.md` |
+| The honest bottleneck: routing, not execution | 66–85% | thesis §5.8 |
 
 ## Layout
 
