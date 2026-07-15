@@ -10,9 +10,11 @@ command pattern in a single forward pass) and escalates the rest to a heavier
 **thinker** (an agent loop).
 
 > **The result, in one line:** a 2B reflexer with a distilled pattern matches a
-> **17× larger** free-form agent on binding (both 100%), while the same 2B without
-> the pattern manages 30%. On a realistic device API, **scale buys discovery, not
-> convention** — and a distilled pattern carries the convention.
+> **17× larger** free-form agent on *binding* (given the right intent, emitting the
+> correct command — both 100%), while the same 2B without the pattern manages 30%.
+> On a realistic device API, **scale buys discovery, not convention** — a big model
+> can *find* the right setting, but not the undocumented value it expects ("total
+> silence" = `2`); a distilled pattern carries that convention.
 
 ![binding](thesis/figures/fig_binding.png)
 
@@ -20,8 +22,9 @@ command pattern in a single forward pass) and escalates the rest to a heavier
 
 - **Two tiers.** A router splits each request: deterministic, repeatable intents →
   reflexer; everything else → thinker.
-- **The reflexer is an executioner, not a generator.** It does not decide *what* to
-  do; it slot-fills a command shape supplied by a distilled pattern and runs it.
+- **The reflexer is an executioner, not a generator.** It executes a decision made
+  once, offline — it does not decide *what* to do; it slot-fills a command shape
+  supplied by a distilled pattern and runs it.
 - **Symbolic distillation.** A strong teacher compresses device conventions into an
   inspectable JSON *pattern* once, offline; the cheap on-device model applies it
   forever. (Knowledge distillation into an artifact, not into weights — so it stays
@@ -71,11 +74,13 @@ the input to the symbolic-distillation step described above.
 
 | Result | Number | Where |
 |---|---|---|
-| Binding: 2B+pattern = 35B thinker; 2B alone | 100% / 100% / 30% | `docs/findings_thinker_vs_reflexer.md` |
-| Reflexer model sweep (ministral 3B → qwen 2B) | 95.6% → **100%** | `docs/findings_reflexer_model_comparison.md` |
-| Clean vs realistic API (efficiency vs accuracy) | +65pp / 25%→ | `docs/findings_settings_distillation.md` |
-| Limit of scale: even 35B fails conventions | 62.5% | `docs/findings_settings_distillation.md` |
-| Cold-start distillation; teacher quality | 25%→76–80%; 80% vs 60% | `docs/findings_teacher_model.md` |
+| 2B + distilled pattern matches a 35B free-form agent | 100% = 100% (2B alone: 30%) | `docs/findings_thinker_vs_reflexer.md` |
+| Best small executor: qwen-3.5-2b model sweep | 95.6% → **100%** | `docs/findings_reflexer_model_comparison.md` |
+| Clean API: a deep tool is an efficiency win | +65 pts, 2 calls instead of 9 | `docs/findings_settings_distillation.md` |
+| Realistic API: even the 35B fails on conventions | 62.5% | `docs/findings_settings_distillation.md` |
+| Cold-start distillation lifts the 2B | 25% → 76–80% | `docs/findings_teacher_model.md` |
+| Teacher quality propagates (cloud vs local teacher) | 80% vs 60% | `docs/findings_teacher_model.md` |
+| The honest bottleneck: routing, not execution | 66–85% | `docs/findings_retrieval_and_selection.md` |
 
 ## Layout
 
