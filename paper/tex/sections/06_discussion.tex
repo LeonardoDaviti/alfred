@@ -1,0 +1,8 @@
+% §6 Discussion - ~0.3 page (~250 words). v0 draft.
+\label{sec:disc}
+
+\textbf{Why position-weighting wins.} The 9.4~pp jump from $b_{\text{pos}}$ comes from a structural property of natural assistant queries: users place the salient skill keyword early. Prompts like ``\emph{schedule} a meeting tomorrow'' or ``\emph{message} Alice'' fire the relevant trigger in the first $\sim$50 characters; competing sibling patterns that match somewhere in the body are demoted. The bonus is cheating in the sense that it exploits a phrasing convention rather than learning intent, but it is a cheap and inspectable form of cheating compared to a learned router.
+
+\textbf{Why Laplace and margin gating look idle.} On this test set both safety nets are accuracy-neutral. They were not designed to lift accuracy: Laplace prevents stats poisoning when backends transiently fail, and margin gating prevents silent mis-routing when two patterns score within $0.05$. Both are dormant guards, valuable when the failure mode they target appears in the wild, which it did during the pilot runs that produced the regression categories in our test set.
+
+\textbf{Honest limitations.} (i) Single model (\texttt{ministral-3-3b}); results may not transfer to other 3B-class backbones. while newer models can achieve higher results, future experiments will reveal best candidate for Reflexer system. (ii) small subset of tasks, with more tasks database , we can improve system better and increase availability.

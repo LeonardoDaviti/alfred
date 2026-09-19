@@ -1,0 +1,84 @@
+% AICT2026 submission — A.L.F.R.E.D.
+% Target: 4 pages, IEEE conference format, double-column.
+% Compile: pdflatex main && bibtex main && pdflatex main && pdflatex main
+% IEEEtran.cls is provided by texlive-publishers (Arch) or built-in on Overleaf.
+
+% AICT2026 requires A4 paper. The default `conference` option is US Letter.
+\documentclass[conference,a4paper]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+% \usepackage{algorithmic}  % not used — needs texlive-latex-extra; re-enable if we add an Algorithm float
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{A.L.F.R.E.D.: Adaptive Local-First Routing and Execution Distillation for Small Language Models}
+
+\author{
+\IEEEauthorblockN{David Zoidze}
+\IEEEauthorblockA{\textit{Computer Science} \\
+\textit{International Black Sea University}\\
+Tbilisi, Georgia \\
+letoii@duck.com}
+\and
+\IEEEauthorblockN{Giorgi Merabishvili}
+\IEEEauthorblockA{\textit{Computer Science} \\
+\textit{International Black Sea University}\\
+Tbilisi, Georgia \\
+gmerabishvili@ibsu.edu.ge}
+}
+
+\maketitle
+
+\begin{abstract}
+% 150-word target. Lock after Sprint 2.
+\input{sections/00_abstract}
+\end{abstract}
+
+\begin{IEEEkeywords}
+small language models, agent routing, skill distillation, tool use, on-device inference, pattern matching, deterministic execution
+\end{IEEEkeywords}
+
+\section{Introduction}
+\input{sections/01_introduction}
+
+\section{Related Work}
+\input{sections/02_related_work}
+
+\section{System Design}
+\input{sections/03_system}
+
+\section{Methodology}
+\input{sections/04_methodology}
+
+\section{Evaluation}
+\input{sections/05_evaluation}
+
+\section{Discussion and Future Work}
+\input{sections/06_discussion}
+
+\section{Conclusion}
+\input{sections/07_conclusion}
+
+% AI usage disclosure (AICT/IEEE policy — generate via ARS `disclosure` mode in Sprint 6)
+\section*{AI Usage Disclosure}
+\input{sections/08_disclosure}
+
+\section*{Acknowledgment}
+The first author thanks Giorgi Merabishvili for supervision and guidance throughout this work.
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}
